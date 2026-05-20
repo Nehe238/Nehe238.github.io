@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NCS 5수준 AI 서비스 기획 — 반응평가 보고서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2563EB;
+    --blue-light: #DBEAFE;
+    --blue-dark: #1E40AF;
+    --green: #10B981;
+    --green-light: #D1FAE5;
+    --yellow: #F59E0B;
+    --yellow-light: #FEF3C7;
+    --red: #EF4444;
+    --red-light: #FEE2E2;
+    --bg: #F8FAFC;
+    --surface: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #0F172A;
+    --text-2: #475569;
+    --text-3: #94A3B8;
+    --nav-h: 64px;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 32px rgba(37,99,235,.12);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 2rem;
+    gap: 0;
+  }
+  .nav-brand {
+    font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+    color: var(--blue); text-transform: uppercase;
+    margin-right: 2rem; white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+  .tabs { display: flex; gap: 0; flex: 1; }
+  .tab-btn {
+    padding: .5rem 1.25rem;
+    font-size: .875rem; font-weight: 500;
+    color: var(--text-2);
+    background: none; border: none; cursor: pointer;
+    border-radius: 8px;
+    transition: all .2s;
+    white-space: nowrap;
+    font-family: 'Noto Sans KR', sans-serif;
+    position: relative;
+  }
+  .tab-btn::after {
+    content: ''; position: absolute; bottom: -1px; left: 1.25rem; right: 1.25rem;
+    height: 2px; background: var(--blue);
+    transform: scaleX(0); transition: transform .2s;
+    border-radius: 2px;
+  }
+  .tab-btn:hover { color: var(--blue); background: var(--blue-light); }
+  .tab-btn.active { color: var(--blue); font-weight: 600; }
+  .tab-btn.active::after { transform: scaleX(1); }
+
+  /* ── MAIN ── */
+  main { padding-top: var(--nav-h); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #1D4ED8 100%);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(37,99,235,.4), transparent);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 100px;
+    padding: .375rem 1rem;
+    font-size: .8rem; font-weight: 600; color: #93C5FD;
+    letter-spacing: .05em;
+    margin-bottom: 1.5rem;
+    font-family: 'DM Mono', monospace;
+  }
+  .hero h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 900; color: #fff;
+    line-height: 1.2; margin-bottom: .75rem;
+    position: relative;
+  }
+  .hero-sub {
+    font-size: clamp(.9rem, 2vw, 1.1rem);
+    color: #93C5FD; margin-bottom: 2rem; font-weight: 400;
+  }
+  .hero-team {
+    display: inline-flex; align-items: center; gap: .75rem;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 100px;
+    padding: .5rem 1.5rem;
+    font-size: .875rem; color: #CBD5E1;
+    margin-bottom: 2rem;
+  }
+  .hero-team strong { color: #fff; font-weight: 600; }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+    position: relative;
+  }
+  .hero-stat {
+    text-align: center;
+  }
+  .hero-stat .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.75rem; font-weight: 500; color: #fff;
+    line-height: 1;
+  }
+  .hero-stat .lbl {
+    font-size: .75rem; color: #93C5FD; margin-top: .25rem;
+  }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 1080px; margin: 0 auto; padding: 3rem 2rem; }
+  .section { margin-bottom: 2.5rem; }
+  .section-title {
+    font-size: 1.1rem; font-weight: 700; color: var(--text);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .section-title .icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+  }
+  .card + .card { margin-top: 1rem; }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: .75rem 1rem; text-align: left; font-size: .875rem; }
+  th {
+    background: var(--bg); font-weight: 600; color: var(--text-2);
+    border-bottom: 2px solid var(--border); font-size: .8rem;
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  td { border-bottom: 1px solid var(--border); color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .num-cell { font-family: 'DM Mono', monospace; font-weight: 500; }
+  .sig { color: var(--blue); font-weight: 700; }
+
+  /* ── INFO GRID ── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 640px) { .info-grid { grid-template-columns: 1fr; } }
+
+  /* ── ANONYMITY LIST ── */
+  .anon-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+  .anon-list li {
+    display: flex; align-items: flex-start; gap: .75rem;
+    font-size: .9rem; color: var(--text-2);
+  }
+  .anon-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    font-size: .75rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: .15rem;
+  }
+
+  /* ── STAT CARDS ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 768px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-card .val {
+    font-family: 'DM Mono', monospace;
+    font-size: 2rem; font-weight: 500;
+    color: var(--blue); line-height: 1;
+  }
+  .stat-card .lab { font-size: .8rem; color: var(--text-2); margin-top: .375rem; }
+
+  /* ── ALPHA GAUGE ── */
+  .alpha-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: .625rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .alpha-row:last-child { border-bottom: none; }
+  .alpha-label { width: 80px; font-size: .85rem; font-weight: 600; color: var(--text); }
+  .alpha-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .alpha-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), #60A5FA); transition: width .8s ease; }
+  .alpha-val { font-family: 'DM Mono', monospace; font-size: .875rem; font-weight: 500; color: var(--blue); width: 42px; text-align: right; }
+  .alpha-level { font-size: .75rem; color: var(--text-3); width: 64px; }
+
+  /* ── SURVEY ── */
+  .survey-intro {
+    background: linear-gradient(135deg, var(--blue-light), #EFF6FF);
+    border: 1px solid #BFDBFE;
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    font-size: .9rem; color: var(--blue-dark);
+    display: flex; align-items: center; gap: .75rem;
+  }
+  .part-header {
+    font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--blue);
+    background: var(--blue-light);
+    padding: .5rem 1rem; border-radius: 8px;
+    margin: 2rem 0 1rem;
+  }
+  .domain-header {
+    font-size: .8rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-2);
+    border-left: 3px solid var(--blue);
+    padding: .25rem .75rem;
+    margin: 1.75rem 0 1rem;
+    background: var(--bg); border-radius: 0 8px 8px 0;
+  }
+  .q-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: .75rem;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .q-item:hover { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
+  .q-num { font-size: .75rem; color: var(--blue); font-weight: 700; font-family: 'DM Mono', monospace; margin-bottom: .375rem; }
+  .q-text { font-size: .9rem; color: var(--text); margin-bottom: .875rem; font-weight: 500; }
+  .radio-group { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .radio-btn {
+    display: flex; align-items: center; gap: .375rem;
+    cursor: pointer;
+  }
+  .radio-btn input[type=radio] { display: none; }
+  .radio-btn span {
+    padding: .375rem .875rem;
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    font-size: .825rem; color: var(--text-2);
+    transition: all .15s;
+    user-select: none;
+  }
+  .radio-btn input[type=radio]:checked + span {
+    background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600;
+  }
+  .radio-btn:hover span { border-color: var(--blue); color: var(--blue); }
+
+  /* Likert */
+  .likert-group {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: .375rem;
+  }
+  .likert-btn {
+    display: flex; flex-direction: column; align-items: center;
+    cursor: pointer;
+  }
+  .likert-btn input[type=radio] { display: none; }
+  .likert-btn .circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; font-weight: 600; color: var(--text-2);
+    transition: all .15s;
+    font-family: 'DM Mono', monospace;
+  }
+  .likert-btn .lbl-text { font-size: .65rem; color: var(--text-3); margin-top: .25rem; text-align: center; }
+  .likert-btn input[type=radio]:checked + .circle { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .likert-btn:hover .circle { border-color: var(--blue); color: var(--blue); }
+
+  .submit-btn {
+    display: block; width: 100%;
+    margin-top: 2rem; padding: 1rem;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 10px;
+    font-size: 1rem; font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: not-allowed; opacity: .6;
+    letter-spacing: .02em;
+  }
+  .submit-note { text-align: center; font-size: .75rem; color: var(--text-3); margin-top: .5rem; }
+
+  /* ── INSIGHTS ── */
+  .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 768px) { .insight-grid { grid-template-columns: 1fr; } }
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--blue);
+  }
+  .insight-card .ic-icon { font-size: 1.5rem; margin-bottom: .5rem; }
+  .insight-card .ic-text { font-size: .875rem; color: var(--text); font-weight: 500; }
+
+  /* ── CHART SECTION ── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .chart-card img { width: 100%; display: block; }
+  .chart-caption {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: .825rem; color: var(--text-2);
+    background: var(--bg);
+    display: flex; align-items: flex-start; gap: .5rem;
+  }
+  .chart-caption::before { content: '💡'; flex-shrink: 0; }
+
+  /* ── ACTION PLAN ── */
+  .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 900px) { .action-grid { grid-template-columns: 1fr; } }
+  .action-col { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .action-col-header {
+    padding: 1rem 1.25rem;
+    font-size: .85rem; font-weight: 700; color: #fff;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .action-col-header.short { background: var(--blue); }
+  .action-col-header.mid { background: var(--green); }
+  .action-col-header.long { background: #7C3AED; }
+  .action-col-period { font-size: .75rem; opacity: .8; font-weight: 400; margin-left: auto; }
+  .action-items { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: .625rem; }
+  .action-item {
+    display: flex; align-items: flex-start; gap: .625rem;
+    font-size: .85rem; color: var(--text-2);
+  }
+  .action-item::before {
+    content: '→';
+    color: var(--blue); font-weight: 700; flex-shrink: 0; margin-top: .05rem;
+  }
+  .action-col.mid .action-item::before { color: var(--green); }
+  .action-col.long .action-item::before { color: #7C3AED; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    padding: .2rem .6rem; border-radius: 100px;
+    font-size: .75rem; font-weight: 600;
+  }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-green { background: var(--green-light); color: #065F46; }
+  .badge-yellow { background: var(--yellow-light); color: #92400E; }
+  .badge-gray { background: #F1F5F9; color: #475569; }
+
+  /* ── ANOVA TABLE ── */
+  .sig-star { color: var(--blue); font-weight: 700; }
+  .eta-bar-wrap { display: flex; align-items: center; gap: .5rem; }
+  .eta-bar { height: 6px; border-radius: 3px; background: var(--blue); }
+  .note-box {
+    background: var(--yellow-light);
+    border: 1px solid #FDE68A;
+    border-radius: 8px;
+    padding: .75rem 1rem;
+    font-size: .825rem; color: #92400E;
+    margin-top: 1rem;
+    display: flex; align-items: flex-start; gap: .5rem;
+  }
+
+  /* ── GROUP TABLE color coding ── */
+  .high { color: var(--blue); font-weight: 700; }
+  .low { color: #EF4444; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 2rem 0; }
+
+  /* ── SCROLL ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .tab-panel.active .card,
+  .tab-panel.active .stat-card,
+  .tab-panel.active .action-col,
+  .tab-panel.active .chart-card,
+  .tab-panel.active .insight-card {
+    animation: fadeUp .4s ease both;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">NCS Lv.5 · AI기획</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('intro', this)">📋 도입부</button>
+    <button class="tab-btn" onclick="switchTab('process', this)">🛠️ 설계 과정</button>
+    <button class="tab-btn" onclick="switchTab('survey', this)">📝 설문지</button>
+    <button class="tab-btn" onclick="switchTab('data', this)">📊 더미데이터</button>
+    <button class="tab-btn" onclick="switchTab('result', this)">🔬 분석 결과</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════ TAB 1: 도입부 ════════════════════════════════ -->
+<div id="tab-intro" class="tab-panel active">
+
+  <div class="hero">
+    <div class="hero-badge">Kirkpatrick Level 1 · Reaction Evaluation</div>
+    <h1>NCS 5수준 인공지능 서비스 활용 기획<br>교육과정 만족도 분석 보고서</h1>
+    <p class="hero-sub">Kirkpatrick 1수준 반응평가 종합 분석 보고서</p>
+    <div class="hero-team">
+      <strong>3조</strong>
+      <span style="color:#CBD5E1;">|</span>
+      윤재원 · 이선학 · 장은비 · 유용주
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">400</div>
+        <div class="lbl">총 응답자 수</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">17</div>
+        <div class="lbl">만족도 문항</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">5</div>
+        <div class="lbl">평가 영역</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">3</div>
+        <div class="lbl">집단비교 변수</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📌</div> 조사 개요</div>
+      <div class="card">
+        <table>
+          <tr><th style="width:160px;">항목</th><th>내용</th></tr>
+          <tr><td><strong>과정명</strong></td><td>NCS 5수준 인공지능 서비스 활용 기획</td></tr>
+          <tr><td><strong>평가 목적</strong></td><td>Kirkpatrick 1수준 반응평가 — 수강생의 주관적 만족도 측정 및 교육 품질 개선</td></tr>
+          <tr><td><strong>수강 형태</strong></td><td>전일제 대면 수업 단일 운영 <span class="badge badge-gray">변수 제외, 고정 조건</span></td></tr>
+          <tr><td><strong>배포 시기</strong></td><td>수료 당일 종료 후 24시간 이내 온라인 배포</td></tr>
+          <tr><td><strong>응답률 가정</strong></td><td>80% 이상 응답 가정</td></tr>
+          <tr><td><strong>표본 크기</strong></td><td><span class="num-cell" style="font-size:1rem; color:var(--blue); font-weight:700;">n = 400</span> (완전 응답 기준, seed = 42)</td></tr>
+          <tr><td><strong>예상 소요 시간</strong></td><td>5분 내외</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🔍</div> 분석 방법 개요</div>
+      <div class="info-grid">
+        <div class="card">
+          <div style="font-size:.8rem; font-weight:700; color:var(--blue); margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.05em;">도구 검증</div>
+          <div style="font-size:.875rem; color:var(--text-2);">
+            <div style="margin-bottom:.5rem;">📐 <strong>크론바흐 알파</strong> — 문항 내부 일관성 (신뢰도)</div>
+            <div style="margin-bottom:.5rem;">🧩 <strong>탐색적 요인분석(EFA)</strong> — 구성 타당도 검증</div>
+            <div>🔗 <strong>상관관계 분석</strong> — 문항 간 독립 구조 확인</div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:.8rem; font-weight:700; color:var(--green); margin-bottom:.5rem; text-transform:uppercase; letter-spacing:.05em;">데이터 분석</div>
+          <div style="font-size:.875rem; color:var(--text-2);">
+            <div style="margin-bottom:.5rem;">📊 <strong>집단별 평균 비교</strong> — 기술통계 기반 차이 확인</div>
+            <div>📈 <strong>일원배치 ANOVA + η²</strong> — 유의성 + 효과 크기 검증</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🔒</div> 익명성 및 윤리 고지</div>
+      <div class="card" style="background:linear-gradient(135deg, #F0F9FF, #EFF6FF); border-color:#BFDBFE;">
+        <ul class="anon-list">
+          <li><span class="anon-num">①</span><span>응답 내용은 <strong>교육과정 개선 목적으로만</strong> 활용됩니다.</span></li>
+          <li><span class="anon-num">②</span><span>이름·연락처 등 개인 식별 정보는 수집하지 않으며, 응답은 <strong>완전 익명 처리</strong>됩니다.</span></li>
+          <li><span class="anon-num">③</span><span>응답은 <strong>자발적</strong>이며, 거부하거나 중도 중단하더라도 어떠한 불이익도 없습니다.</span></li>
+          <li><span class="anon-num">④</span><span>수집된 데이터는 <strong>기관 내부에서만</strong> 관리되며 외부에 제공되지 않습니다.</span></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ TAB 2: 설문지 ════════════════════════════════ -->
+<div id="tab-survey" class="tab-panel">
+  <div class="container" style="max-width:780px;">
+
+    <div style="margin-bottom:1.5rem;">
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:.5rem;">만족도 설문지</h2>
+      <p style="color:var(--text-2); font-size:.9rem;">NCS 5수준 인공지능 서비스 활용 기획 교육과정</p>
+    </div>
+
+    <div class="survey-intro">
+      <span style="font-size:1.25rem;">⏱️</span>
+      <div>아래 문항에 <strong>솔직하게</strong> 응답해 주십시오. 응답 내용은 교육과정 개선에만 사용되며 익명으로 처리됩니다. 예상 소요 시간은 <strong>5분 내외</strong>입니다.</div>
+    </div>
+
+    <div class="part-header">Part 1 — 기본 정보 (인구통계)</div>
+
+    <div class="q-item">
+      <div class="q-num">Q1</div>
+      <div class="q-text">귀하의 성별은 무엇입니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="gender" value="남"><span>남</span></label>
+        <label class="radio-btn"><input type="radio" name="gender" value="여"><span>여</span></label>
+      </div>
+    </div>
+
+    <div class="q-item">
+      <div class="q-num">Q2</div>
+      <div class="q-text">귀하의 연령대는 어떻게 됩니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="age" value="20대"><span>20대</span></label>
+        <label class="radio-btn"><input type="radio" name="age" value="30대"><span>30대</span></label>
+        <label class="radio-btn"><input type="radio" name="age" value="40대"><span>40대</span></label>
+        <label class="radio-btn"><input type="radio" name="age" value="50대이상"><span>50대 이상</span></label>
+      </div>
+    </div>
+
+    <div class="q-item">
+      <div class="q-num">Q3</div>
+      <div class="q-text">귀하의 최종 학력은 무엇입니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="edu" value="재학"><span>대학 재학/졸업예정</span></label>
+        <label class="radio-btn"><input type="radio" name="edu" value="대졸"><span>대졸</span></label>
+        <label class="radio-btn"><input type="radio" name="edu" value="대학원졸"><span>대학원졸 이상</span></label>
+      </div>
+    </div>
+
+    <div class="q-item">
+      <div class="q-num">Q4</div>
+      <div class="q-text">귀하의 총 직장 경력은 어느 정도입니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="career" value="없음"><span>경력 없음/학생</span></label>
+        <label class="radio-btn"><input type="radio" name="career" value="1-3"><span>1~3년 미만</span></label>
+        <label class="radio-btn"><input type="radio" name="career" value="4-9"><span>4~9년</span></label>
+        <label class="radio-btn"><input type="radio" name="career" value="10-14"><span>10~14년</span></label>
+        <label class="radio-btn"><input type="radio" name="career" value="15+"><span>15년 이상</span></label>
+      </div>
+    </div>
+
+    <div class="q-item">
+      <div class="q-num">Q5</div>
+      <div class="q-text">본 과정 수강 전, 인공지능(AI) 관련 분야 경험 또는 활용 경험이 있습니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="ai_exp" value="없음"><span>경험 없음/미사용</span></label>
+        <label class="radio-btn"><input type="radio" name="ai_exp" value="개인"><span>개인적 활용</span></label>
+        <label class="radio-btn"><input type="radio" name="ai_exp" value="업무부분"><span>업무 부분 적용</span></label>
+        <label class="radio-btn"><input type="radio" name="ai_exp" value="업무주도"><span>업무 주도적 사용</span></label>
+      </div>
+    </div>
+
+    <div class="q-item">
+      <div class="q-num">Q6</div>
+      <div class="q-text">본 과정에 참여하신 주된 목적은 무엇입니까?</div>
+      <div class="radio-group">
+        <label class="radio-btn"><input type="radio" name="purpose" value="취업"><span>취업/스펙업</span></label>
+        <label class="radio-btn"><input type="radio" name="purpose" value="이직"><span>이직</span></label>
+        <label class="radio-btn"><input type="radio" name="purpose" value="직무"><span>직무 능력 향상 (부서 권고/의무)</span></label>
+      </div>
+    </div>
+
+    <div class="part-header">Part 2 — 만족도 평가 (5점 리커트 척도)</div>
+    <p style="font-size:.825rem; color:var(--text-2); margin-bottom:1rem;">각 문항을 읽고 귀하의 생각과 가장 가까운 번호를 선택해 주세요.</p>
+
+    <div class="domain-header">📚 교육 내용</div>
+
+    <div class="q-item"><div class="q-num">1</div><div class="q-text">교육 내용은 실제 현장 업무와 연관성이 높았습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="c1" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c1" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c1" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="c1" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c1" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">2</div><div class="q-text">교육에서 배운 내용은 실무에 직접 적용 가능합니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="c2" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c2" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c2" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="c2" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c2" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">3</div><div class="q-text">교육 내용은 최신 인공지능 서비스 기획 관련 기술 동향을 반영하고 있습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="c3" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c3" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c3" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="c3" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c3" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">4</div><div class="q-text">교육 내용의 난이도는 본 과정 수강생에게 적절하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="c4" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c4" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c4" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="c4" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c4" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">5</div><div class="q-text">교육 내용은 해당 직무의 국가직무능력표준(NCS)에서 요구하는 지식과 기술을 충실히 다루었습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="c5" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c5" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c5" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="c5" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="c5" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="domain-header">👨‍🏫 강사</div>
+
+    <div class="q-item"><div class="q-num">6</div><div class="q-text">강사는 인공지능 서비스 활용 기획 분야에 충분한 전문 지식을 갖추고 있었습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="p1" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p1" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p1" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="p1" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p1" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">7</div><div class="q-text">강사는 교육 내용을 이해하기 쉽게 설명하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="p2" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p2" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p2" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="p2" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p2" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">8</div><div class="q-text">강사는 교육에 적극적인 태도로 임하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="p3" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p3" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p3" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="p3" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p3" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">9</div><div class="q-text">강사는 훈련생의 수준과 반응에 맞게 강의 속도와 설명 방식을 조절하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="p4" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p4" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p4" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="p4" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p4" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">10</div><div class="q-text">강사는 실제 현장 경험을 바탕으로 구체적인 사례를 제시하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="p5" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p5" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p5" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="p5" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="p5" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="domain-header">🏢 운영 및 시설</div>
+
+    <div class="q-item"><div class="q-num">11</div><div class="q-text">교육에 사용된 장비 및 소프트웨어는 실습 진행에 문제없이 작동하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="f1" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f1" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f1" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="f1" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f1" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">12</div><div class="q-text">교육장의 온도, 조명, 소음 등 학습 환경은 쾌적하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="f2" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f2" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f2" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="f2" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f2" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">13</div><div class="q-text">행정 담당자는 수강과 관련한 문의 및 요청에 친절하게 응대하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="f3" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f3" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f3" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="f3" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="f3" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="domain-header">💼 취업 지원</div>
+
+    <div class="q-item"><div class="q-num">14</div><div class="q-text">취업 관련 상담이 나의 상황과 목표에 맞게 충실하게 이루어졌습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="j1" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j1" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j1" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="j1" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j1" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">15</div><div class="q-text">취업 및 창업과 관련한 정보가 본 교육과정의 목적에 맞게 제공되었습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="j2" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j2" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j2" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="j2" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="j2" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="domain-header">⭐ 전반적 만족도</div>
+
+    <div class="q-item"><div class="q-num">16</div><div class="q-text">본 교육과정 전반에 대해 만족하였습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="o1" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o1" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o1" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="o1" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o1" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <div class="q-item"><div class="q-num">17</div><div class="q-text">이 교육과정을 주변 지인에게 추천할 의향이 있습니다.</div>
+      <div class="likert-group">
+        <label class="likert-btn"><input type="radio" name="o2" value="1"><div class="circle">1</div><div class="lbl-text">매우<br>불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o2" value="2"><div class="circle">2</div><div class="lbl-text">불만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o2" value="3"><div class="circle">3</div><div class="lbl-text">보통</div></label>
+        <label class="likert-btn"><input type="radio" name="o2" value="4"><div class="circle">4</div><div class="lbl-text">만족</div></label>
+        <label class="likert-btn"><input type="radio" name="o2" value="5"><div class="circle">5</div><div class="lbl-text">매우<br>만족</div></label>
+      </div>
+    </div>
+
+    <button class="submit-btn" disabled>제출하기</button>
+    <p class="submit-note">※ 본 설문지는 교육과정 품질 개선을 위한 시뮬레이션 도구입니다.</p>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ TAB 3: 더미데이터 ════════════════════════════════ -->
+<div id="tab-data" class="tab-panel">
+  <div class="container">
+
+    <div style="margin-bottom:2rem;">
+      <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:.5rem;">시뮬레이션 데이터 개요</h2>
+      <p style="color:var(--text-2); font-size:.9rem;">크론바흐 알파 신뢰도·탐색적 요인분석 검증을 위한 가상 응답 데이터 (seed=42, 재현 가능)</p>
+    </div>
+
+    <div class="stat-grid" style="margin-bottom:2rem;">
+      <div class="stat-card"><div class="val">400</div><div class="lab">총 응답자 수</div></div>
+      <div class="stat-card"><div class="val">23</div><div class="lab">총 문항 수<br><span style="font-size:.7rem; color:var(--text-3);">인구통계 6 + 만족도 17</span></div></div>
+      <div class="stat-card"><div class="val" style="color:var(--green);">0</div><div class="lab">결측값</div></div>
+      <div class="stat-card"><div class="val" style="color:#7C3AED;">42</div><div class="lab">난수 시드<br><span style="font-size:.7rem; color:var(--text-3);">재현 가능</span></div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">α</div> 영역별 신뢰도 (Cronbach's Alpha)</div>
+      <div class="card">
+        <div class="alpha-row"><span class="alpha-label">교육내용</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:86.4%"></div></div><span class="alpha-val">0.864</span><span class="alpha-level"><span class="badge badge-blue">높음</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">강사</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:86.0%"></div></div><span class="alpha-val">0.860</span><span class="alpha-level"><span class="badge badge-blue">높음</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">운영시설</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:79.7%"></div></div><span class="alpha-val">0.797</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">취업지원</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:70.7%"></div></div><span class="alpha-val">0.707</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">전반만족</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:76.7%"></div></div><span class="alpha-val">0.767</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+      </div>
+      <p style="font-size:.775rem; color:var(--text-3); margin-top:.5rem; padding-left:.25rem;">기준: α ≥ 0.80 높음 / 0.70~0.79 수용 가능 / &lt;0.70 개선 필요</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📊</div> 참여 목적별 집단 평균</div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table>
+          <tr><th>영역</th><th>이직</th><th>직무능력향상<br>(부서권고/의무)</th><th>취업/스펙업</th></tr>
+          <tr><td>교육내용</td><td class="num-cell">3.726</td><td class="num-cell low">3.560</td><td class="num-cell high">3.822</td></tr>
+          <tr><td>강사</td><td class="num-cell">3.818</td><td class="num-cell low">3.770</td><td class="num-cell high">3.920</td></tr>
+          <tr><td>운영시설</td><td class="num-cell">3.703</td><td class="num-cell low">3.579</td><td class="num-cell high">3.877</td></tr>
+          <tr><td>취업지원</td><td class="num-cell">3.487</td><td class="num-cell low">3.246</td><td class="num-cell high">3.558</td></tr>
+          <tr><td>전반만족</td><td class="num-cell">3.765</td><td class="num-cell low">3.619</td><td class="num-cell high">3.861</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🤖</div> AI 경험별 집단 평균</div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table>
+          <tr><th>영역</th><th>경험없음</th><th>개인적활용</th><th>업무부분적용</th><th>업무주도적사용</th></tr>
+          <tr><td>교육내용</td><td class="num-cell low">3.560</td><td class="num-cell high">3.795</td><td class="num-cell">3.729</td><td class="num-cell">3.719</td></tr>
+          <tr><td>강사</td><td class="num-cell">3.882</td><td class="num-cell">3.803</td><td class="num-cell">3.844</td><td class="num-cell high">3.885</td></tr>
+          <tr><td>운영시설</td><td class="num-cell">3.663</td><td class="num-cell high">3.771</td><td class="num-cell">3.747</td><td class="num-cell">3.716</td></tr>
+          <tr><td>취업지원</td><td class="num-cell">3.445</td><td class="num-cell high">3.474</td><td class="num-cell low">3.389</td><td class="num-cell">3.415</td></tr>
+          <tr><td>전반만족</td><td class="num-cell">3.815</td><td class="num-cell">3.688</td><td class="num-cell">3.763</td><td class="num-cell high">3.840</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">👥</div> 연령별 집단 평균</div>
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table>
+          <tr><th>영역</th><th>20대</th><th>30대</th><th>40대</th><th>50대 이상</th></tr>
+          <tr><td>교육내용</td><td class="num-cell">3.668</td><td class="num-cell">3.672</td><td class="num-cell high">3.800</td><td class="num-cell">3.754</td></tr>
+          <tr><td>강사</td><td class="num-cell high">4.008</td><td class="num-cell">3.806</td><td class="num-cell">3.726</td><td class="num-cell">3.749</td></tr>
+          <tr><td>운영시설</td><td class="num-cell high">3.856</td><td class="num-cell">3.691</td><td class="num-cell">3.683</td><td class="num-cell low">3.607</td></tr>
+          <tr><td>취업지원</td><td class="num-cell">3.472</td><td class="num-cell high">3.489</td><td class="num-cell low">3.350</td><td class="num-cell">3.385</td></tr>
+          <tr><td>전반만족</td><td class="num-cell">3.756</td><td class="num-cell">3.768</td><td class="num-cell">3.725</td><td class="num-cell high">3.795</td></tr>
+        </table>
+      </div>
+      <p style="font-size:.775rem; color:var(--text-3); margin-top:.5rem; padding-left:.25rem;"><span style="color:var(--blue); font-weight:700;">파랑</span> = 집단 최고값 &nbsp;|&nbsp; <span style="color:#EF4444; font-weight:700;">빨강</span> = 집단 최저값</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ TAB 4: 분석 결과 ════════════════════════════════ -->
+<div id="tab-result" class="tab-panel">
+  <div class="container">
+
+    <!-- 신뢰도 -->
+    <div class="section">
+      <div class="section-title"><div class="icon">α</div> 신뢰도 분석 — Cronbach's Alpha</div>
+      <div class="card" style="margin-bottom:1rem; background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border-color:#BFDBFE;">
+        <div style="font-size:.75rem; font-weight:800; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;">💬 쉽게 말하면</div>
+        <p style="font-size:.9rem; color:var(--text);">"<strong>이 설문지를 믿을 수 있는가?</strong>"를 확인하는 지표입니다. 예를 들어 '교육 내용' 영역의 5개 문항이 정말로 같은 개념을 묻고 있다면, 한 문항에 높은 점수를 준 사람은 나머지 문항에도 비슷하게 높은 점수를 줄 것입니다. 0에서 1 사이 값으로 표시되며, <strong>0.70 이상이면 믿을 만한 설문</strong>으로 판단합니다.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <p style="font-size:.9rem; color:var(--text-2); margin-bottom:1.25rem;">크론바흐 알파(α)는 같은 구인을 측정하는 문항들이 얼마나 일관되게 응답되었는지를 나타냅니다. <strong>전 영역 α ≥ 0.70 기준 통과</strong>, 신뢰도를 저해하는 문항이 발견되지 않았습니다.</p>
+        <div class="alpha-row"><span class="alpha-label">교육내용</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:86.4%"></div></div><span class="alpha-val">0.864</span><span class="alpha-level"><span class="badge badge-blue">높음</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">강사</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:86.0%"></div></div><span class="alpha-val">0.860</span><span class="alpha-level"><span class="badge badge-blue">높음</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">운영시설</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:79.7%"></div></div><span class="alpha-val">0.797</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">전반만족</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:76.7%"></div></div><span class="alpha-val">0.767</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+        <div class="alpha-row"><span class="alpha-label">취업지원</span><div class="alpha-bar-wrap"><div class="alpha-bar" style="width:70.7%"></div></div><span class="alpha-val">0.707</span><span class="alpha-level"><span class="badge badge-green">수용</span></span></div>
+      </div>
+      <div class="note-box">⚠️ 취업지원 영역(α=0.707)은 2문항 구조의 한계로 신뢰도 여유 폭이 가장 좁습니다. 향후 문항 확충(4~5문항) 권고.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- EFA -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🧩</div> 타당도 분석 — 탐색적 요인분석 (EFA)</div>
+      <div class="card" style="margin-bottom:1rem; background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border-color:#BFDBFE;">
+        <div style="font-size:.75rem; font-weight:800; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;">💬 쉽게 말하면</div>
+        <p style="font-size:.9rem; color:var(--text);">"<strong>각 문항이 측정하려는 것을 제대로 측정하고 있는가?</strong>"를 검증합니다. 예를 들어 '강사 전문성' 문항이 실제로 강사에 대한 만족을 측정하는지, 아니면 엉뚱하게 시설 만족도와 섞이는지를 확인합니다. 아래 차트에서 <strong>각 열(요인)에 진한 색이 몰려있을수록</strong> 문항들이 의도한 대로 잘 묶인 것입니다.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <p style="font-size:.9rem; color:var(--text-2);">탐색적 요인분석(EFA, Varimax 회전, n_factors=5)은 17개 문항이 이론적으로 설계된 5개 영역으로 올바르게 묶이는지 검증합니다. 행이 dominant factor 기준으로 정렬되어 <strong>대각 블록 구조</strong>가 선명하게 나타납니다.</p>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem;">
+        <img src="charts/factor_loadings.png" alt="EFA 요인부하량 히트맵">
+        <div class="chart-caption">대각선 방향으로 진한 블록이 형성 — 각 문항이 설계 의도한 요인에만 강하게 적재됨을 의미합니다.</div>
+      </div>
+      <div class="info-grid">
+        <div class="card" style="background:var(--green-light); border-color:#A7F3D0;">
+          <div style="font-size:.8rem; font-weight:700; color:#065F46; margin-bottom:.375rem;">✅ 수렴 타당도</div>
+          <div style="font-size:.875rem; color:#065F46;">모든 17문항이 귀속 요인에 <strong>λ ≥ 0.574</strong>로 수렴</div>
+        </div>
+        <div class="card" style="background:var(--blue-light); border-color:#BFDBFE;">
+          <div style="font-size:.8rem; font-weight:700; color:var(--blue-dark); margin-bottom:.375rem;">✅ 변별 타당도</div>
+          <div style="font-size:.875rem; color:var(--blue-dark);">교차부하량 <strong>|λ| &lt; 0.15</strong> — 요인 간 혼재 없음</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 상관관계 -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🔗</div> 문항 간 상관관계 분석</div>
+      <div class="card" style="margin-bottom:1rem; background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border-color:#BFDBFE;">
+        <div style="font-size:.75rem; font-weight:800; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;">💬 쉽게 말하면</div>
+        <p style="font-size:.9rem; color:var(--text);">"<strong>어떤 문항에 높은 점수를 준 사람이 다른 어떤 문항에도 높은 점수를 주는가?</strong>"를 보는 지표입니다. <span style="color:#DC2626; font-weight:600;">빨간색</span>일수록 같이 움직이고, <span style="color:#2563EB; font-weight:600;">파란색</span>일수록 반대로 움직입니다. 같은 영역 내 문항끼리는 빨갛게, 다른 영역 문항끼리는 흰색(무관)에 가까울수록 설문이 잘 설계된 것입니다.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <p style="font-size:.9rem; color:var(--text-2);">하삼각 행렬만 표시하며 <strong>|r| ≥ 0.50인 셀에만 수치</strong>를 표기합니다. coolwarm 컬러맵으로 양의 상관(붉은색)과 음의 상관(파란색)을 균형 있게 표현합니다.</p>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem;">
+        <img src="charts/satisfaction_heatmap.png" alt="문항 간 상관관계 히트맵">
+        <div class="chart-caption">같은 영역 내 문항(대각 블록)은 붉은 계열로 수렴하고, 영역 간 상관은 흰색에 가까워 독립성이 시각적으로 명확합니다.</div>
+      </div>
+      <div class="info-grid">
+        <div class="card">
+          <div style="font-size:.8rem; font-weight:700; color:var(--text-2); margin-bottom:.375rem;">영역 내 상관</div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.1rem; color:var(--blue); font-weight:500;">r = 0.487 ~ 0.623</div>
+          <div style="font-size:.8rem; color:var(--text-3); margin-top:.25rem;">중강도 정적 상관 — 내부 일관성 확인</div>
+        </div>
+        <div class="card">
+          <div style="font-size:.8rem; font-weight:700; color:var(--text-2); margin-bottom:.375rem;">영역 간 상관</div>
+          <div style="font-family:'DM Mono',monospace; font-size:1.1rem; color:var(--green); font-weight:500;">|r| &lt; 0.15</div>
+          <div style="font-size:.8rem; color:var(--text-3); margin-top:.25rem;">거의 독립 — 5개 구인의 개념적 분리 지지</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 집단비교 기술통계 -->
+    <div class="section">
+      <div class="section-title"><div class="icon">📈</div> 집단비교 분석 — 기술통계 (Point Plot)</div>
+      <div class="card" style="margin-bottom:1rem; background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border-color:#BFDBFE;">
+        <div style="font-size:.75rem; font-weight:800; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;">💬 쉽게 말하면</div>
+        <p style="font-size:.9rem; color:var(--text);">"<strong>어떤 집단이 더 만족했는가?</strong>"를 평균값으로 비교합니다. 점이 위에 있을수록 만족도가 높고, 점 주변의 선(오차 막대)은 <strong>95% 신뢰구간</strong>으로 "이 정도 범위 안에 실제 값이 있을 것"을 나타냅니다. 단, 평균이 다르다고 해서 그 차이가 의미 있는지는 다음 ANOVA로 확인합니다.</p>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <p style="font-size:.9rem; color:var(--text-2);">참여 목적·AI 경험·연령 3개 집단변수별로 5대 영역 만족도 평균을 <strong>점(Point)과 95% 신뢰구간</strong>으로 시각화합니다. y축은 데이터 범위에 맞게 자동 조정되어 집단 간 차이가 왜곡 없이 표현됩니다.</p>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem;">
+        <img src="charts/group_comparison.png" alt="집단별 만족도 점 그래프">
+        <div class="chart-caption">신뢰구간이 겹치지 않는 구간에서 집단 간 차이가 통계적으로 유의할 가능성이 높습니다.</div>
+      </div>
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="ic-icon">🎯</div>
+          <div class="ic-text">취업/스펙업 집단이 <strong>전 영역 최고 만족도</strong> — 자발적 동기의 긍정적 효과</div>
+        </div>
+        <div class="insight-card">
+          <div class="ic-icon">🤖</div>
+          <div class="ic-text">AI 미경험자의 교육내용 만족도 <strong>3.560</strong> — 타 집단(3.719~3.795) 대비 상대적 낮음</div>
+        </div>
+        <div class="insight-card">
+          <div class="ic-icon">👨‍🎓</div>
+          <div class="ic-text">20대의 강사 만족도 <strong>4.008</strong> — 5점 만점 기준 유일하게 4점 초과</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ANOVA -->
+    <div class="section">
+      <div class="section-title"><div class="icon">F</div> 집단비교 분석 — ANOVA + η²</div>
+      <div class="card" style="margin-bottom:1rem; background:linear-gradient(135deg,#EFF6FF,#F0FDF4); border-color:#BFDBFE;">
+        <div style="font-size:.75rem; font-weight:800; color:var(--blue); letter-spacing:.08em; text-transform:uppercase; margin-bottom:.5rem;">💬 쉽게 말하면</div>
+        <p style="font-size:.9rem; color:var(--text); margin-bottom:.75rem;">"<strong>집단 간 점수 차이가 진짜 차이인가, 우연인가?</strong>"를 검증합니다. 평균이 달라 보여도 표본 수가 적거나 개인차가 크면 우연일 수 있습니다.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:.75rem;">
+          <div style="background:white; border-radius:8px; padding:.75rem; border:1px solid var(--border);">
+            <div style="font-weight:700; font-size:.825rem; color:var(--text); margin-bottom:.25rem;">p값 (유의확률)</div>
+            <div style="font-size:.8rem; color:var(--text-2);">0.05보다 작으면 "우연이 아니다" → <span style="color:var(--blue); font-weight:600;">통계적으로 유의</span>. 하지만 표본이 크면 아주 작은 차이도 유의하게 나올 수 있습니다.</div>
+          </div>
+          <div style="background:white; border-radius:8px; padding:.75rem; border:1px solid var(--border);">
+            <div style="font-weight:700; font-size:.825rem; color:var(--text); margin-bottom:.25rem;">η² 효과 크기</div>
+            <div style="font-size:.8rem; color:var(--text-2);">집단 차이가 얼마나 <strong>실질적으로 의미 있는지</strong>를 나타냅니다. 0.01 미만이면 거의 무시 가능, 0.06 이상이면 체감 가능한 차이입니다.</div>
+          </div>
+        </div>
+        <div style="margin-top:.75rem; font-size:.825rem; color:var(--text-2); background:white; border-radius:8px; padding:.625rem .875rem; border:1px solid var(--border);">
+          📌 <strong>이번 결과 요약:</strong> 차이가 통계적으로 유의하더라도 η² 값이 모두 0.044 이하(소효과)로, 집단 특성이 만족도를 설명하는 비율은 최대 4.4%에 불과합니다. 즉 <strong>"차이는 있지만 아주 크지는 않다"</strong>는 것이 핵심 메시지입니다.
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:1rem;">
+        <p style="font-size:.9rem; color:var(--text-2);">일원배치 분산분석(One-way ANOVA)으로 집단 간 차이의 통계적 유의성을 검증합니다. η²(에타제곱)은 <strong>실질적 효과 크기</strong>를 나타냅니다. n=400 대표본에서는 p값과 η²를 반드시 함께 해석해야 합니다.</p>
+      </div>
+      <div class="chart-card" style="margin-bottom:1rem;">
+        <img src="charts/anova_eta2.png" alt="ANOVA η² 효과크기 차트">
+        <div class="chart-caption">η² 내림차순 정렬. Cohen 기준선: 소효과(0.01) · 중효과(0.06) · 대효과(0.14). * = p &lt; 0.05 유의.</div>
+      </div>
+
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:1rem;">
+        <table>
+          <tr><th>집단변수</th><th>영역</th><th>F</th><th>p값</th><th>η²</th><th>효과</th><th>유의</th></tr>
+          <tr><td>참여 목적</td><td>취업지원</td><td class="num-cell">9.234</td><td class="num-cell sig">&lt;0.001</td><td class="num-cell">0.044</td><td><span class="badge badge-yellow">소</span></td><td class="sig-star">*</td></tr>
+          <tr><td>참여 목적</td><td>운영시설</td><td class="num-cell">8.979</td><td class="num-cell sig">&lt;0.001</td><td class="num-cell">0.043</td><td><span class="badge badge-yellow">소</span></td><td class="sig-star">*</td></tr>
+          <tr><td>참여 목적</td><td>교육내용</td><td class="num-cell">6.876</td><td class="num-cell sig">0.001</td><td class="num-cell">0.033</td><td><span class="badge badge-yellow">소</span></td><td class="sig-star">*</td></tr>
+          <tr><td>연령</td><td>강사</td><td class="num-cell">5.615</td><td class="num-cell sig">0.001</td><td class="num-cell">0.041</td><td><span class="badge badge-yellow">소</span></td><td class="sig-star">*</td></tr>
+          <tr><td>AI 경험</td><td>교육내용</td><td class="num-cell">3.208</td><td class="num-cell sig">0.023</td><td class="num-cell">0.024</td><td><span class="badge badge-yellow">소</span></td><td class="sig-star">*</td></tr>
+        </table>
+      </div>
+      <div class="note-box">⚠️ 모든 유의 결과의 η² &lt; 0.06 (소효과 수준) — 통계적으로 유의하나 집단 변수가 만족도 분산의 최대 4.4%만 설명합니다. 실무적 판단 시 효과 크기를 우선 고려하세요.</div>
+
+      <div style="margin-top:1.25rem;" class="card" style="background:var(--blue-light);">
+        <div style="font-size:.85rem; font-weight:700; color:var(--blue-dark); margin-bottom:.75rem;">🔍 Tukey HSD 사후검정 — 주요 유의 결과</div>
+        <div style="font-size:.825rem; color:var(--text-2); display:flex; flex-direction:column; gap:.5rem;">
+          <div>📌 <strong>취업지원</strong>: 직무능력향상(의무) vs 취업/스펙업 — 평균차 0.312, p&lt;0.001 <strong class="sig-star">유의</strong></div>
+          <div>📌 <strong>운영시설</strong>: 직무능력향상(의무) vs 취업/스펙업 — 평균차 0.298, p&lt;0.001 <strong class="sig-star">유의</strong></div>
+          <div>📌 <strong>강사(연령)</strong>: 20대 vs 40대 — 평균차 0.282, p=0.001 <strong class="sig-star">유의</strong> (20대가 더 높음)</div>
+          <div>📌 <strong>교육내용(AI경험)</strong>: 경험없음 vs 개인적활용 — 평균차 0.235, p=0.012 <strong class="sig-star">유의</strong> (경험없음이 더 낮음)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 액션 플랜 -->
+    <div class="section">
+      <div class="section-title"><div class="icon">🚀</div> 차기 교육과정 개선 액션 플랜</div>
+      <div class="action-grid">
+        <div class="action-col short">
+          <div class="action-col-header short">⚡ 단기 액션 <span class="action-col-period">1~3개월</span></div>
+          <div class="action-items">
+            <div class="action-item">사전 수준 진단 도구 도입 — AI 미경험자 선별 및 사전학습 콘텐츠 배포</div>
+            <div class="action-item">오리엔테이션 목표 설정 워크숍 — 비자발적 참여자 내적 동기 유발</div>
+            <div class="action-item">취업지원 서비스 목적별 분기화 — 비취업 목적자 대상 직무역량 트랙 안내</div>
+            <div class="action-item">운영시설 긴급 점검 — 고령 수강생 접근성·편의시설 개선</div>
+          </div>
+        </div>
+        <div class="action-col mid">
+          <div class="action-col-header mid">🔧 중기 액션 <span class="action-col-period">3~6개월</span></div>
+          <div class="action-items">
+            <div class="action-item">학습자 유형별 커리큘럼 모듈 재설계 — 취업/재직자 트랙 분리</div>
+            <div class="action-item">강사 역량 표준화 — 20대 고만족 강사의 성공 요인 분석·공유</div>
+            <div class="action-item">취업지원 측정 도구 확충 — 2문항 → 4~5문항, 목적별 문항 풀 구성</div>
+            <div class="action-item">AI 입문 사전과정 정규화 — 미경험자 대상 4시간 사전학습 필수화</div>
+          </div>
+        </div>
+        <div class="action-col long">
+          <div class="action-col-header long">🏗️ 장기 액션 <span class="action-col-period">6개월~1년</span></div>
+          <div class="action-items">
+            <div class="action-item">Kirkpatrick 2~4수준 연계 체계 구축 — 학습·행동·결과 추적 평가 설계</div>
+            <div class="action-item">종단 패널 데이터 구축 — 수료 후 3개월·6개월 추적 조사</div>
+            <div class="action-item">맞춤형 자동화 평가 시스템 — LMS 연동 개인화 설문 자동 배분</div>
+            <div class="action-item">강사 피드백 루프 정착 — 반응평가 결과 익명화 강사 피드백 제공</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:2rem 0 1rem; color:var(--text-3); font-size:.8rem;">
+      <div style="font-family:'DM Mono',monospace; margin-bottom:.25rem;">3조 · 윤재원 · 이선학 · 장은비 · 유용주</div>
+      NCS 5수준 인공지능 서비스 활용 기획 교육과정 · Kirkpatrick Level 1 반응평가 보고서 · 2026.05.20
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════ TAB 5: 설계 과정 ════════════════════════════════ -->
+<div id="tab-process" class="tab-panel">
+<style>
+  .process-timeline { position: relative; padding-left: 2rem; }
+  .process-timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--blue), #C7D2FE);
+    border-radius: 2px;
+  }
+  .process-step { position: relative; margin-bottom: 2.5rem; }
+  .process-step::before {
+    content: ''; position: absolute;
+    left: -2.375rem; top: .25rem;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--blue);
+  }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: .7rem; font-weight: 700;
+    color: var(--blue); letter-spacing: .08em;
+    text-transform: uppercase; margin-bottom: .375rem;
+  }
+  .step-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--text);
+    margin-bottom: .75rem;
+  }
+
+  /* Before/After */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: .75rem; }
+  @media(max-width:640px) { .ba-grid { grid-template-columns: 1fr; } }
+  .ba-card { border-radius: 10px; padding: 1rem; font-size: .85rem; }
+  .ba-before { background: #FEF2F2; border: 1px solid #FECACA; }
+  .ba-after  { background: #F0FDF4; border: 1px solid #A7F3D0; }
+  .ba-label {
+    font-size: .7rem; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; margin-bottom: .5rem;
+  }
+  .ba-before .ba-label { color: #DC2626; }
+  .ba-after  .ba-label { color: #059669; }
+  .ba-text { color: var(--text); line-height: 1.6; }
+  .ba-reason {
+    font-size: .775rem; color: var(--text-2);
+    background: var(--bg); border-radius: 6px;
+    padding: .5rem .75rem; margin-top: .625rem;
+    border-left: 3px solid var(--blue);
+  }
+
+  /* Principle cards */
+  .principle-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; }
+  @media(max-width:768px) { .principle-grid { grid-template-columns: 1fr; } }
+  .principle-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.25rem;
+    box-shadow: var(--shadow); border-top: 3px solid var(--blue);
+    text-align: center;
+  }
+  .principle-card .pc-icon { font-size: 2rem; margin-bottom: .5rem; }
+  .principle-card .pc-name { font-weight: 700; font-size: .95rem; margin-bottom: .375rem; }
+  .principle-card .pc-desc { font-size: .825rem; color: var(--text-2); }
+
+  /* Domain tags */
+  .domain-tag {
+    display: inline-block; padding: .3rem .8rem;
+    border-radius: 100px; font-size: .8rem; font-weight: 600;
+    margin: .25rem;
+  }
+  .domain-tag-blue { background: var(--blue-light); color: var(--blue-dark); }
+
+  /* Item tag */
+  .item-section-label {
+    font-size: .75rem; font-weight: 700; color: var(--text-2);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin: 1.25rem 0 .625rem;
+    padding-bottom: .375rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Decision card */
+  .decision-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+  @media(max-width:640px) { .decision-grid { grid-template-columns: 1fr; } }
+  .decision-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem;
+    box-shadow: var(--shadow);
+  }
+  .decision-card .dc-label { font-size: .75rem; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .375rem; }
+  .decision-card .dc-val { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .decision-card .dc-reason { font-size: .8rem; color: var(--text-2); margin-top: .375rem; }
+
+  /* Summary counts */
+  .summary-bar {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    background: linear-gradient(135deg, #EFF6FF, #F0FDF4);
+    border: 1px solid #BFDBFE; border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+  .summary-item { text-align: center; flex: 1; min-width: 80px; }
+  .summary-item .sv { font-family: 'DM Mono',monospace; font-size: 1.75rem; font-weight: 500; color: var(--blue); }
+  .summary-item .sl { font-size: .75rem; color: var(--text-2); margin-top: .2rem; }
+</style>
+
+<div class="container">
+
+  <div style="margin-bottom:2rem;">
+    <h2 style="font-size:1.4rem; font-weight:800; margin-bottom:.5rem;">설문 문항 설계 과정</h2>
+    <p style="color:var(--text-2); font-size:.9rem;">초안 생성부터 Human-in-the-loop 검토를 거쳐 최종 확정까지의 전 과정을 기록합니다.</p>
+  </div>
+
+  <!-- 요약 -->
+  <div class="summary-bar" style="margin-bottom:2.5rem;">
+    <div class="summary-item"><div class="sv">5</div><div class="sl">설계 단계</div></div>
+    <div class="summary-item"><div class="sv">23</div><div class="sl">최종 문항</div></div>
+    <div class="summary-item"><div class="sv">13</div><div class="sl">수정된 문항</div></div>
+    <div class="summary-item"><div class="sv">1</div><div class="sl">제거된 변수<br><span style="font-size:.7rem;">(수강 형태)</span></div></div>
+  </div>
+
+  <div class="process-timeline">
+
+    <!-- STEP 1 -->
+    <div class="process-step">
+      <div class="step-num">Step 01</div>
+      <div class="step-title">설문 설계 기본 원칙 수립</div>
+      <div class="principle-grid">
+        <div class="principle-card">
+          <div class="pc-icon">🎯</div>
+          <div class="pc-name">명확성</div>
+          <div class="pc-desc">모든 응답자가 동일한 의미로 이해할 수 있도록 모호한 표현을 지양</div>
+        </div>
+        <div class="principle-card">
+          <div class="pc-icon">✂️</div>
+          <div class="pc-name">간결성</div>
+          <div class="pc-desc">한 문항에는 반드시 하나의 질문만 포함 — Double-barreled 문항 금지</div>
+        </div>
+        <div class="principle-card">
+          <div class="pc-icon">⚖️</div>
+          <div class="pc-name">객관성</div>
+          <div class="pc-desc">특정 답변을 유도하는 표현을 지양하고 중립적 서술 사용</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="process-step">
+      <div class="step-num">Step 02</div>
+      <div class="step-title">평가 영역 및 인구통계 변수 선정</div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="font-size:.85rem; font-weight:700; color:var(--text-2); margin-bottom:.625rem;">5대 만족도 평가 영역</div>
+        <div>
+          <span class="domain-tag domain-tag-blue">📚 교육 내용</span>
+          <span class="domain-tag domain-tag-blue">👨‍🏫 강사</span>
+          <span class="domain-tag domain-tag-blue">🏢 운영 및 시설</span>
+          <span class="domain-tag domain-tag-blue">💼 취업 지원</span>
+          <span class="domain-tag domain-tag-blue">⭐ 전반적 만족도</span>
+        </div>
+        <div style="font-size:.85rem; font-weight:700; color:var(--text-2); margin-top:1rem; margin-bottom:.625rem;">인구통계 변수 (초기 7개 → 최종 6개)</div>
+        <div>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">성별</span>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">연령</span>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">학력</span>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">경력</span>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">AI 경험</span>
+          <span class="domain-tag" style="background:#F1F5F9; color:#475569;">참여 목적</span>
+          <span class="domain-tag" style="background:#FEE2E2; color:#DC2626; text-decoration:line-through;">수강 형태 ✕</span>
+        </div>
+        <div class="ba-reason" style="margin-top:.75rem;">
+          <strong>수강 형태 제거 이유:</strong> 본 과정이 전일제 대면 수업으로 단일 운영되므로 모든 응답자의 값이 동일합니다. 분산이 없는 변수는 분석적 가치가 없어 인구통계 문항에서 제외하고, 보고서 조사 조건에 고정값으로 명시했습니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="process-step">
+      <div class="step-num">Step 03</div>
+      <div class="step-title">AI 에이전트를 통한 초안 설문지 자동 생성</div>
+      <div class="card">
+        <p style="font-size:.875rem; color:var(--text-2); margin-bottom:1rem;">survey-designer 에이전트가 설계 원칙·평가 영역·인구통계 변수·var_name 명명 규칙을 주입받아 23개 문항 초안과 SURVEY_DATA JSON을 자동 생성했습니다.</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <div style="text-align:center; flex:1; min-width:80px;">
+            <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--blue); font-weight:500;">6</div>
+            <div style="font-size:.75rem; color:var(--text-2);">인구통계 문항</div>
+          </div>
+          <div style="text-align:center; flex:1; min-width:80px;">
+            <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--blue); font-weight:500;">17</div>
+            <div style="font-size:.75rem; color:var(--text-2);">만족도 문항</div>
+          </div>
+          <div style="text-align:center; flex:1; min-width:80px;">
+            <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--blue); font-weight:500;">5점</div>
+            <div style="font-size:.75rem; color:var(--text-2);">리커트 척도</div>
+          </div>
+          <div style="text-align:center; flex:1; min-width:80px;">
+            <div style="font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--blue); font-weight:500;">JSON</div>
+            <div style="font-size:.75rem; color:var(--text-2);">출력 형식</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3-5: 매트릭스 -->
+    <div class="process-step">
+      <div class="step-num">Step 03-2</div>
+      <div class="step-title">설문지 구성 매트릭스</div>
+      <p style="font-size:.875rem; color:var(--text-2); margin-bottom:1rem;">설문의 <strong>내용타당도(Content Validity)</strong>를 증명하기 위해 상위 개념 → 하위 요인 → 문항 → 식별자까지 구조화한 매트릭스입니다. 어떤 문항이 어떤 개념을 측정하는지 한눈에 확인할 수 있습니다.</p>
+      <div class="card" style="padding:0; overflow:hidden; overflow-x:auto;">
+        <table style="min-width:600px;">
+          <tr><th>상위 개념</th><th>하위 요인</th><th>문항 내용</th><th>번호</th><th style="font-family:'DM Mono',monospace;">var_name</th></tr>
+          <tr><td rowspan="6" style="font-weight:700; color:var(--text-3); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem;">인구<br>통계</td><td>성별</td><td style="font-size:.825rem;">귀하의 성별은 무엇입니까?</td><td class="num-cell">D1</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">gender</td></tr>
+          <tr><td>연령</td><td style="font-size:.825rem;">귀하의 연령대는 어떻게 됩니까?</td><td class="num-cell">D2</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">age</td></tr>
+          <tr><td>학력</td><td style="font-size:.825rem;">귀하의 최종 학력은 무엇입니까?</td><td class="num-cell">D3</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">education</td></tr>
+          <tr><td>경력</td><td style="font-size:.825rem;">귀하의 총 직장 경력은 어느 정도입니까?</td><td class="num-cell">D4</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">career</td></tr>
+          <tr><td>AI 경험</td><td style="font-size:.825rem;">본 과정 수강 전 AI 관련 경험이 있습니까?</td><td class="num-cell">D5</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">ai_exp</td></tr>
+          <tr><td>참여 목적</td><td style="font-size:.825rem;">본 과정에 참여하신 주된 목적은 무엇입니까?</td><td class="num-cell">D6</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">purpose</td></tr>
+          <tr><td rowspan="5" style="font-weight:700; color:#1E40AF; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem; background:#EFF6FF;">교육<br>내용</td><td>현장 적합성</td><td style="font-size:.825rem;">교육 내용은 실제 현장 업무와 연관성이 높았습니다.</td><td class="num-cell">1</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">content_sat_1</td></tr>
+          <tr style="background:#EFF6FF;"><td>실무 활용 가능성</td><td style="font-size:.825rem;">교육에서 배운 내용은 실무에 직접 적용 가능합니다.</td><td class="num-cell">2</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">content_sat_2</td></tr>
+          <tr style="background:#EFF6FF;"><td>최신 기술 반영</td><td style="font-size:.825rem;">교육 내용은 최신 AI 서비스 기획 관련 기술 동향을 반영하고 있습니다.</td><td class="num-cell">3</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">content_sat_3</td></tr>
+          <tr style="background:#EFF6FF;"><td>난이도 적절성</td><td style="font-size:.825rem;">교육 내용의 난이도는 본 과정 수강생에게 적절하였습니다.</td><td class="num-cell">4</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">content_sat_4</td></tr>
+          <tr style="background:#EFF6FF;"><td>NCS 기준 부합성</td><td style="font-size:.825rem;">교육 내용은 NCS에서 요구하는 지식과 기술을 충실히 다루었습니다.</td><td class="num-cell">5</td><td class="num-cell" style="color:var(--blue); font-size:.8rem;">content_sat_5</td></tr>
+          <tr><td rowspan="5" style="font-weight:700; color:#065F46; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem; background:#F0FDF4;">강사</td><td>전문성</td><td style="font-size:.825rem;">강사는 AI 서비스 활용 기획 분야에 충분한 전문 지식을 갖추고 있었습니다.</td><td class="num-cell">6</td><td class="num-cell" style="color:var(--green); font-size:.8rem;">prof_sat_1</td></tr>
+          <tr style="background:#F0FDF4;"><td>전달력</td><td style="font-size:.825rem;">강사는 교육 내용을 이해하기 쉽게 설명하였습니다.</td><td class="num-cell">7</td><td class="num-cell" style="color:var(--green); font-size:.8rem;">prof_sat_2</td></tr>
+          <tr style="background:#F0FDF4;"><td>교육 열정</td><td style="font-size:.825rem;">강사는 교육에 적극적인 태도로 임하였습니다.</td><td class="num-cell">8</td><td class="num-cell" style="color:var(--green); font-size:.8rem;">prof_sat_3</td></tr>
+          <tr style="background:#F0FDF4;"><td>상호작용 능력</td><td style="font-size:.825rem;">강사는 훈련생 수준에 맞게 강의 속도와 설명 방식을 조절하였습니다.</td><td class="num-cell">9</td><td class="num-cell" style="color:var(--green); font-size:.8rem;">prof_sat_4</td></tr>
+          <tr style="background:#F0FDF4;"><td>실무 경험</td><td style="font-size:.825rem;">강사는 실제 현장 경험을 바탕으로 구체적인 사례를 제시하였습니다.</td><td class="num-cell">10</td><td class="num-cell" style="color:var(--green); font-size:.8rem;">prof_sat_5</td></tr>
+          <tr><td rowspan="3" style="font-weight:700; color:#92400E; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem; background:#FFFBEB;">운영<br>시설</td><td>장비 작동 여부</td><td style="font-size:.825rem;">장비 및 소프트웨어는 실습 진행에 문제없이 작동하였습니다.</td><td class="num-cell">11</td><td class="num-cell" style="color:var(--yellow); font-size:.8rem;">fac_sat_1</td></tr>
+          <tr style="background:#FFFBEB;"><td>냉난방 및 쾌적성</td><td style="font-size:.825rem;">교육장의 온도, 조명, 소음 등 학습 환경은 쾌적하였습니다.</td><td class="num-cell">12</td><td class="num-cell" style="color:var(--yellow); font-size:.8rem;">fac_sat_2</td></tr>
+          <tr style="background:#FFFBEB;"><td>행정지원 친절도</td><td style="font-size:.825rem;">행정 담당자는 문의 및 요청에 친절하게 응대하였습니다.</td><td class="num-cell">13</td><td class="num-cell" style="color:var(--yellow); font-size:.8rem;">fac_sat_3</td></tr>
+          <tr><td rowspan="2" style="font-weight:700; color:#5B21B6; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem; background:#F5F3FF;">취업<br>지원</td><td>상담 충실도</td><td style="font-size:.825rem;">취업 관련 상담이 나의 상황과 목표에 맞게 충실하게 이루어졌습니다.</td><td class="num-cell">14</td><td class="num-cell" style="color:#7C3AED; font-size:.8rem;">job_sat_1</td></tr>
+          <tr style="background:#F5F3FF;"><td>정보 제공 적정성</td><td style="font-size:.825rem;">취업 및 창업 정보가 교육과정 목적에 맞게 제공되었습니다.</td><td class="num-cell">15</td><td class="num-cell" style="color:#7C3AED; font-size:.8rem;">job_sat_2</td></tr>
+          <tr><td rowspan="2" style="font-weight:700; color:#9F1239; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; vertical-align:top; padding-top:1rem; background:#FFF1F2;">전반<br>만족</td><td>총체적 만족도</td><td style="font-size:.825rem;">본 교육과정 전반에 대해 만족하였습니다.</td><td class="num-cell">16</td><td class="num-cell" style="color:#E11D48; font-size:.8rem;">overall_sat_1</td></tr>
+          <tr style="background:#FFF1F2;"><td>타인 추천 의향</td><td style="font-size:.825rem;">이 교육과정을 주변 지인에게 추천할 의향이 있습니다.</td><td class="num-cell">17</td><td class="num-cell" style="color:#E11D48; font-size:.8rem;">overall_sat_2</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="process-step">
+      <div class="step-num">Step 04</div>
+      <div class="step-title">Human-in-the-loop 문항 검토 및 수정 (13개 문항)</div>
+      <p style="font-size:.875rem; color:var(--text-2); margin-bottom:1.25rem;">사용자가 설문 설계 원칙(명확성·간결성·객관성) 위반 사례를 직접 식별하고 수정 방향을 제시했습니다. 에이전트는 해당 수정을 즉시 반영했습니다.</p>
+
+      <div class="item-section-label">📚 교육 내용 (5문항 전부 수정)</div>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · content_sat_1</div><div class="ba-text">교육 내용은 실제 현장 업무와 연관성이 높다고 <strong>생각합니다</strong>.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육 내용은 실제 현장 업무와 연관성이 높<strong>았습니다</strong>.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"생각합니다"</strong>는 주관적 판단을 유도하는 표현. 과거형 서술로 교육 경험에 대한 사실적 평가로 전환.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · content_sat_2</div><div class="ba-text">교육에서 배운 내용을 실무에 직접 적용<strong>할 수 있을 것 같습니다</strong>.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육에서 배운 내용은 실무에 직접 적용 <strong>가능합니다</strong>.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>미래 추측형("것 같습니다")</strong> 표현이 현재 교육 평가인지 미래 예측인지 혼동 유발. 현재형으로 명확화.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · content_sat_3</div><div class="ba-text">교육 내용은 최신 인공지능 기술 트렌드를 <strong>충분히</strong> 반영하고 있었습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육 내용은 최신 인공지능 <strong>서비스 기획 관련</strong> 기술 동향을 반영하고 있습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"충분히"</strong>는 기준이 모호한 유도 표현. "인공지능 기술 트렌드"도 과정 특성(기획)을 반영하도록 구체화.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · content_sat_4</div><div class="ba-text">교육 내용의 난이도는 <strong>나의 수준에</strong> 적절하였습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육 내용의 난이도는 <strong>본 과정 수강생에게</strong> 적절하였습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"나의 수준"</strong>은 응답자마다 기준이 달라 측정 일관성이 낮아짐. 수강생 전체 관점으로 전환하여 객관성 확보.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · content_sat_5</div><div class="ba-text">교육 내용은 <strong>NCS(국가직무능력표준) 기준에</strong> 부합하였습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육 내용은 해당 직무의 <strong>국가직무능력표준(NCS)에서 요구하는 지식과 기술을 충실히 다루었습니다</strong>.</div></div>
+      </div>
+      <div class="ba-reason">🔍 NCS를 모르는 20대 취준생 등이 판단하기 어려운 문제. 괄호 설명을 문항 본문에 녹여 이해도 향상.</div>
+
+      <div class="item-section-label">👨‍🏫 강사 (3문항 수정)</div>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · prof_sat_2</div><div class="ba-text">강사는 <strong>어려운 개념을</strong> 이해하기 쉽게 설명하였습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">강사는 <strong>교육 내용을</strong> 이해하기 쉽게 설명하였습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"어려운 개념"</strong>은 난이도를 전제하는 유도 표현. 중립적 표현으로 교체하여 객관성 확보.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · prof_sat_3</div><div class="ba-text">강사는 교육에 대한 <strong>열정과 성의</strong>를 보여주었습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">강사는 교육에 <strong>적극적인 태도</strong>로 임하였습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"열정과 성의"</strong>는 두 개념을 한 문항에 담은 Double-barreled 표현. 단일 개념(태도)으로 통합.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · prof_sat_4</div><div class="ba-text">강사는 훈련생의 질문에 <strong>성실하고 충분하게</strong> 답변하였습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">강사는 훈련생의 수준과 반응에 맞게 <strong>강의 속도와 설명 방식을 조절</strong>하였습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"성실하고 충분하게"</strong>는 두 기준을 동시에 묻는 Double-barreled. 또한 Q&A만으로는 상호작용 전체를 측정하기 부족하여 범위 확대.</div>
+
+      <div class="item-section-label">🏢 운영 및 시설 (2문항 수정)</div>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · fac_sat_1</div><div class="ba-text">교육에 사용된 장비 및 소프트웨어는 <strong>최신 수준으로 충분하였습니다</strong>.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육에 사용된 장비 및 소프트웨어는 실습 진행에 <strong>문제없이 작동하였습니다</strong>.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"최신성 + 충분함"</strong>은 Double-barreled. AI 기획 과정 특성상 최신성보다 <strong>정상 작동 여부</strong>가 더 현실적인 지표.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · fac_sat_2</div><div class="ba-text">교육장의 <strong>냉난방 및 전반적인 환경</strong>은 쾌적하였습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">교육장의 <strong>온도, 조명, 소음 등</strong> 학습 환경은 쾌적하였습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"전반적인 환경"</strong>은 범위가 넓어 응답자마다 다른 기준(소음, 조명, 좌석 등)을 떠올릴 수 있음. 측정 대상 구체화.</div>
+
+      <div class="item-section-label">💼 취업 지원 (1문항 수정)</div>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · job_sat_2</div><div class="ba-text">취업 및 창업과 관련한 정보가 <strong>적절하고 충분하게</strong> 제공되었습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">취업 및 창업과 관련한 정보가 <strong>본 교육과정의 목적에 맞게</strong> 제공되었습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"적절하고 충분하게"</strong>는 두 가지 기준을 동시에 묻는 Double-barreled. 단일 기준(목적 부합성)으로 정제.</div>
+
+      <div class="item-section-label">⭐ 전반적 만족도 (2문항 수정)</div>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · overall_sat_1</div><div class="ba-text">본 교육과정 <strong>전반에 걸쳐 종합적으로</strong> 만족합니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">본 교육과정 <strong>전반에 대해</strong> 만족하<strong>였습니다</strong>.</div></div>
+      </div>
+      <div class="ba-reason">🔍 "전반에 걸쳐"와 "종합적으로"가 의미 <strong>중복</strong>. "만족합니다"(현재형)는 교육 종료 후 회고 응답인지 현재 감정인지 모호 → 과거형으로 명확화.</div>
+
+      <div class="ba-grid" style="margin-top:.875rem;">
+        <div class="ba-card ba-before"><div class="ba-label">✗ Before · overall_sat_2</div><div class="ba-text">이 교육과정을 주변 지인에게 <strong>적극적으로</strong> 추천할 의향이 있습니다.</div></div>
+        <div class="ba-card ba-after"><div class="ba-label">✓ After</div><div class="ba-text">이 교육과정을 주변 지인에게 추천할 의향이 있습니다.</div></div>
+      </div>
+      <div class="ba-reason">🔍 <strong>"적극적으로"</strong>는 높은 점수를 유도하는 표현(Leading Question). 삭제하여 중립적 측정.</div>
+
+    </div><!-- end step 4 -->
+
+    <!-- STEP 5 -->
+    <div class="process-step">
+      <div class="step-num">Step 05</div>
+      <div class="step-title">조사 조건 및 운영 방침 확정</div>
+      <div class="decision-grid">
+        <div class="decision-card">
+          <div class="dc-label">⏰ 배포 시기</div>
+          <div class="dc-val">수료 당일 종료 후 24시간 이내</div>
+          <div class="dc-reason">수료 직전 배포는 응답률이 높으나 강사 눈치 편향 발생 우려. 24시간 이내 온라인 배포로 반응 신선도와 솔직성을 동시에 확보.</div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-label">⏱️ 예상 응답 시간</div>
+          <div class="dc-val">5분 내외</div>
+          <div class="dc-reason">인구통계 6문항(~28초) + 만족도 17문항(~2분 20초) 실측 기준 약 3~4분. 안내 문구에는 여유 있게 5분으로 표기하여 응답 이탈 방지.</div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-label">🔒 익명성 방침</div>
+          <div class="dc-val">완전 익명 처리 4개 항목</div>
+          <div class="dc-reason">① 개선 목적 한정 활용 ② 개인 식별 정보 미수집 ③ 자발적 참여 보장 ④ 기관 내부 관리 — 직업훈련기관 설문 표준 수준.</div>
+        </div>
+        <div class="decision-card">
+          <div class="dc-label">📊 결측 처리 방침</div>
+          <div class="dc-val">고려하지 않음 (완전 응답 가정)</div>
+          <div class="dc-reason">시뮬레이션 데이터는 설문 도구의 신뢰도·타당도 검증이 목적이므로 결측 처리 로직 불필요. 실데이터 수집 시 Listwise deletion 권고.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end timeline -->
+
+  <div style="text-align:center; padding:2rem 0 1rem; color:var(--text-3); font-size:.8rem;">
+    <div style="font-family:'DM Mono',monospace; margin-bottom:.25rem;">3조 · 윤재원 · 이선학 · 장은비 · 유용주</div>
+    NCS 5수준 인공지능 서비스 활용 기획 교육과정 · 설문 설계 과정 기록 · 2026.05.20
+  </div>
+
+</div>
+</div>
+
+</main>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
