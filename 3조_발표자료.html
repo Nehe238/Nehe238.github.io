@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3조 — AI 서비스 활용 기획 평가도구 개발</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;font-family:'Noto Sans KR',system-ui,sans-serif;background:#0a0e1a;overflow:hidden}
+#progress{position:fixed;top:0;left:0;height:3px;background:#4f8ef7;transition:width .3s ease;z-index:100}
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.slide.active{opacity:1;pointer-events:all}
+#nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:7px 18px;z-index:100}
+#nav button{background:none;border:none;cursor:pointer;color:white;font-size:16px;padding:3px 8px;border-radius:6px;transition:background .2s}
+#nav button:hover{background:rgba(255,255,255,.2)}
+#nav .counter{font-size:12px;color:rgba(255,255,255,.7);min-width:55px;text-align:center}
+
+/* cover */
+.slide-cover{background:linear-gradient(135deg,#0c1b3d 0%,#1a3a8f 50%,#0d2e6e 100%);justify-content:center;align-items:center;overflow:hidden}
+.slide-cover::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(79,142,247,.15) 0%,transparent 60%)}
+.cover-content{text-align:center;z-index:1}
+.cover-badge{display:inline-block;background:rgba(79,142,247,.2);border:1px solid rgba(79,142,247,.5);color:#7ab3ff;font-size:13px;font-weight:500;padding:5px 16px;border-radius:20px;margin-bottom:24px;letter-spacing:.5px}
+.cover-title{font-size:40px;font-weight:900;color:white;line-height:1.25;margin-bottom:14px}
+.cover-sub{font-size:19px;color:rgba(255,255,255,.6);margin-bottom:36px}
+.cover-meta{display:flex;gap:28px;justify-content:center;font-size:13px;color:rgba(255,255,255,.45)}
+
+/* section header */
+.slide-section{justify-content:center;align-items:center}
+.slide-section.p1{background:linear-gradient(135deg,#1a3a8f,#0d2e6e)}
+.slide-section.p2{background:linear-gradient(135deg,#0d5c3a,#063d26)}
+.slide-section.p3{background:linear-gradient(135deg,#6b2f9e,#4a1a7a)}
+.sec-label{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:14px}
+.sec-title{font-size:46px;font-weight:900;color:white;margin-bottom:10px}
+.sec-sub{font-size:18px;color:rgba(255,255,255,.6)}
+
+/* content slide */
+.slide-content{background:#f1f3f8}
+.sh{background:white;padding:17px 44px 14px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sh h2{font-size:21px;font-weight:700;color:#111827}
+.ptag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:12px}
+.ptag.t1{background:#dbeafe;color:#1d4ed8}
+.ptag.t2{background:#dcfce7;color:#15803d}
+.ptag.t3{background:#f3e8ff;color:#7e22ce}
+.sb{flex:1;padding:22px 44px;overflow:hidden;display:grid}
+.card{background:white;border-radius:10px;padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280;margin-bottom:10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.b-blue{background:#dbeafe;color:#1d4ed8}
+.b-green{background:#dcfce7;color:#15803d}
+.b-yellow{background:#fef3c7;color:#92400e}
+.b-red{background:#fee2e2;color:#991b1b}
+.b-purple{background:#f3e8ff;color:#7e22ce}
+.b-gray{background:#f3f4f6;color:#374151}
+.b-orange{background:#ffedd5;color:#9a3412}
+.dt{width:100%;border-collapse:collapse;font-size:12px}
+.dt th{background:#f9fafb;padding:7px 10px;text-align:left;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb}
+.dt td{padding:6px 10px;border-bottom:1px solid #f3f4f6;color:#374151}
+.dt tr:hover td{background:#fafafa}
+.hl{border-left:4px solid;border-radius:6px;padding:9px 13px;font-size:12px;line-height:1.6}
+.hl.blue{border-color:#3b82f6;background:#eff6ff}
+.hl.green{border-color:#22c55e;background:#f0fdf4}
+.hl.orange{border-color:#f97316;background:#fff7ed}
+.cw{position:relative;width:100%;height:100%}
+.flow{display:flex;gap:0;align-items:stretch}
+.fstep{flex:1;background:white;padding:13px 10px;border:1px solid #e5e7eb;text-align:center;position:relative}
+.fstep:first-child{border-radius:8px 0 0 8px}
+.fstep:last-child{border-radius:0 8px 8px 0}
+.fstep::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);font-size:16px;color:#9ca3af;z-index:1;font-weight:700}
+.fstep:last-child::after{display:none}
+.fn{font-size:17px;font-weight:900;color:#3b82f6;margin-bottom:3px}
+.fl{font-size:11px;font-weight:700;color:#111827;margin-bottom:2px}
+.fd{font-size:10px;color:#6b7280;line-height:1.4}
+.blist{list-style:none}
+.blist li{font-size:13px;color:#374151;padding:4px 0 4px 18px;position:relative;border-bottom:1px solid #f3f4f6}
+.blist li::before{content:'▸';color:#3b82f6;position:absolute;left:0}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sc{background:white;border-radius:10px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.sv{font-size:24px;font-weight:900;color:#111827}
+.sl{font-size:10px;color:#6b7280;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- 0: 표지 -->
+<div class="slide slide-cover active">
+  <div class="cover-content">
+    <div class="cover-badge">HRD 3조 · NCS 2001070206_18v1</div>
+    <h1 class="cover-title">인공지능 서비스 활용 기획<br>평가도구 개발 보고서</h1>
+    <p class="cover-sub">만족도조사 &amp; 성취도평가 — 문항 개발부터 데이터 분석까지</p>
+    <div class="cover-meta">
+      <span>📋 만족도조사 17문항</span>
+      <span>📝 성취도평가 21문항 · 120점</span>
+      <span>👥 더미 N=400명</span>
+      <span>📅 2025</span>
+    </div>
+    <div style="margin-top:28px;font-size:14px;color:rgba(255,255,255,.55);letter-spacing:.3px">
+      3조 &nbsp;·&nbsp; 윤재원 &nbsp;·&nbsp; 이선학 &nbsp;·&nbsp; 장은비 &nbsp;·&nbsp; 유용주
+    </div>
+  </div>
+</div>
+
+<!-- 1: Part1 헤더 -->
+<div class="slide slide-section p1">
+  <div style="text-align:center">
+    <div class="sec-label">Part 1 · 2</div>
+    <div class="sec-title">문항 개발 흐름</div>
+    <div class="sec-sub">검사 목적 구체화 → 측정 내용 규명 → 문항 제작 계획</div>
+  </div>
+</div>
+
+<!-- 2: 검사 목적 구체화 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 1</span><h2>검사 목적 구체화</h2></div>
+  <div class="sb" style="grid-template-rows:auto 1fr;gap:16px">
+    <div class="card">
+      <div class="ct">평가 유형 결정 — 총괄평가 채택</div>
+      <div class="flow">
+        <div class="fstep"><div class="fn">📋</div><div class="fl">진단평가</div><div class="fd">훈련 시작 전<br>수준 파악</div></div>
+        <div class="fstep"><div class="fn">✏️</div><div class="fl">형성평가</div><div class="fd">훈련 진행 중<br>교수·학습 개선</div></div>
+        <div class="fstep" style="border-color:#3b82f6;background:#eff6ff"><div class="fn">🎯</div><div class="fl" style="color:#1d4ed8">총괄평가</div><div class="fd" style="color:#1d4ed8;font-weight:600">훈련 종료 후<br>성취 수준 판정 ← 본 과제</div></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="card" style="border-top:3px solid #3b82f6">
+        <div style="font-size:15px;font-weight:700;color:#1d4ed8;margin-bottom:10px">📊 만족도조사 (Reaction Survey)</div>
+        <ul class="blist">
+          <li>Kirkpatrick Level 1 — 반응 평가</li>
+          <li>훈련 프로그램 품질 점검 및 피드백 수집</li>
+          <li>강사·시설·운영·취업지원 등 5개 영역</li>
+          <li>Likert 5점 척도, 총 17문항</li>
+          <li>신뢰도·타당도 검증 → 도구 개선 근거 확보</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid #22c55e">
+        <div style="font-size:15px;font-weight:700;color:#15803d;margin-bottom:10px">📝 성취도평가 (Achievement Test)</div>
+        <ul class="blist">
+          <li>Kirkpatrick Level 2 — 학습 평가</li>
+          <li>NCS 기반 학습 목표 달성도 확인</li>
+          <li>3개 능력단위, 총 21문항 · 120점 만점</li>
+          <li>CTT 기반 문항 품질 분석 (P · D)</li>
+          <li>준거참조검사 — 합격 기준 60점 설정</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3: NCS 과정 개요 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 1</span><h2>NCS 훈련 과정 개요</h2></div>
+  <div class="sb" style="grid-template-columns:2fr 1fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:13px 18px">
+        <div class="ct">능력단위 코드</div>
+        <div style="font-size:17px;font-weight:700;color:#1d4ed8">2001070206_18v1</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:3px">인공지능 서비스 활용 기획</div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;flex:1">
+        <table class="dt">
+          <thead><tr>
+            <th>학습 단원</th><th>능력단위 요소</th><th>수행 준거 (요약)</th><th style="text-align:center">문항</th><th style="text-align:center">배점</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-blue">학습 1</span></td>
+              <td>인공지능 서비스 활용 방안 분석하기</td>
+              <td style="font-size:11px;color:#6b7280">구성요소 파악 → 응용범위 식별 → 필요요소 도출 → 활용방안 분석</td>
+              <td style="text-align:center;font-weight:700">7</td>
+              <td style="text-align:center;font-weight:700;color:#1d4ed8">39점</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">학습 2</span></td>
+              <td>비즈니스 모델 활용 기획하기</td>
+              <td style="font-size:11px;color:#6b7280">BM 파악 → 잠재시장 파악 → 고객 니즈 → 전략 수립 → 중장기 기획</td>
+              <td style="text-align:center;font-weight:700">7</td>
+              <td style="text-align:center;font-weight:700;color:#15803d">43점</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-purple">학습 3</span></td>
+              <td>인공지능 서비스 상품화 기획하기</td>
+              <td style="font-size:11px;color:#6b7280">특장점 파악 → 고객 세분화 → 고객특성 도출 → 상품화계획 수립</td>
+              <td style="text-align:center;font-weight:700">7</td>
+              <td style="text-align:center;font-weight:700;color:#7e22ce">38점</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="sc"><div class="sv" style="color:#1d4ed8">21</div><div class="sl">성취도 총 문항</div></div>
+      <div class="sc"><div class="sv" style="color:#15803d">120<span style="font-size:14px">점</span></div><div class="sl">총 배점</div></div>
+      <div class="sc"><div class="sv" style="color:#ea580c">60<span style="font-size:14px">점</span></div><div class="sl">합격 기준 (준거참조)</div></div>
+      <div class="sc"><div class="sv" style="color:#7e22ce">17</div><div class="sl">만족도 총 문항</div></div>
+      <div class="card" style="padding:12px;background:#fef3c7;border:none">
+        <div style="font-size:10px;color:#92400e;font-weight:700;margin-bottom:4px">행동 영역</div>
+        <div style="font-size:12px;color:#78350f">지식(K) · 기술(S) · 태도(A)</div>
+        <div style="font-size:10px;color:#6b7280;margin-top:4px">Bloom: Remember → Understand → Apply</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4: 만족도 측정 대상 규명 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>측정 대상 규명 — 만족도조사</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:0;overflow:hidden;flex:1">
+        <table class="dt">
+          <thead><tr><th>평가 영역</th><th>세부 측정 지표</th><th style="text-align:center">문항</th><th>척도</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">교육내용</span></td><td style="font-size:11px">현장적합성·실무활용·최신성·난이도·NCS부합성</td><td style="text-align:center;font-weight:700">5</td><td><span class="badge b-gray">Likert 5</span></td></tr>
+            <tr><td><span class="badge b-green">강사</span></td><td style="font-size:11px">전문성·전달력·교육열정·상호작용·현장이해도</td><td style="text-align:center;font-weight:700">5</td><td><span class="badge b-gray">Likert 5</span></td></tr>
+            <tr><td><span class="badge b-yellow">운영시설</span></td><td style="font-size:11px">장비최신성·쾌적성·행정지원 친절도</td><td style="text-align:center;font-weight:700">3</td><td><span class="badge b-gray">Likert 5</span></td></tr>
+            <tr><td><span class="badge b-red">취업지원</span></td><td style="font-size:11px">상담충실도·취업·창업 정보 제공 적정성</td><td style="text-align:center;font-weight:700">2</td><td><span class="badge b-gray">Likert 5</span></td></tr>
+            <tr><td><span class="badge b-purple">전반만족</span></td><td style="font-size:11px">전반적 만족도·타인 추천 의향</td><td style="text-align:center;font-weight:700">2</td><td><span class="badge b-gray">Likert 5</span></td></tr>
+            <tr style="background:#f9fafb"><td colspan="2" style="text-align:right;font-weight:600">합계</td><td style="text-align:center;font-weight:900;color:#1d4ed8">17</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="hl blue"><strong>Likert 5점 척도 선택 근거:</strong> 방향성(긍·부정)과 강도를 동시 측정 가능. 내적일관성(α) 산출에 최적. 국내 HRD 만족도 조사 표준 형태.</div>
+      <div class="hl green"><strong>인구통계 변수 (별도 6문항):</strong> 성별·연령·학력·경력·AI경험·참여목적 → 집단비교 변수로 활용</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">영역별 문항 수 분포</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s3"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4-1: 설문 문항 구성표 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>설문 문항 구성표 — 만족도조사 전 문항</h2></div>
+  <div class="sb" style="grid-template-rows:1fr;overflow:hidden">
+    <div class="card" style="padding:0;overflow:auto">
+      <table class="dt" style="min-width:780px">
+        <thead>
+          <tr style="background:#1d4ed8">
+            <th style="background:#1d4ed8;color:white;width:120px">문항 변수</th>
+            <th style="background:#1d4ed8;color:white;width:90px">평가 영역</th>
+            <th style="background:#1d4ed8;color:white;width:120px">세부 측정 지표</th>
+            <th style="background:#1d4ed8;color:white">문항 내용 (구체화)</th>
+            <th style="background:#1d4ed8;color:white;width:80px">문항 유형</th>
+            <th style="background:#1d4ed8;color:white;width:70px;text-align:center">척도</th>
+          </tr>
+        </thead>
+        <tbody id="survey-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 5: 성취도 측정 대상 규명 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>측정 대상 규명 — 성취도평가</h2></div>
+  <div class="sb" style="grid-template-columns:1.2fr 1fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="ct">행동 영역 × Bloom 수준 매핑</div>
+        <table class="dt">
+          <thead><tr><th>행동 영역</th><th>Bloom 수준</th><th>측정 내용</th><th style="text-align:center">문항 수</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-blue">지식 (K)</span></td><td>Remember</td><td>개념·정의 재인·회상</td><td style="text-align:center;font-weight:700">5</td></tr>
+            <tr><td><span class="badge b-blue">지식 (K)</span></td><td>Understand</td><td>의미 이해·설명·해석</td><td style="text-align:center;font-weight:700">7</td></tr>
+            <tr><td><span class="badge b-green">기술 (S)</span></td><td>Understand</td><td>관계 파악·분류</td><td style="text-align:center;font-weight:700">3</td></tr>
+            <tr><td><span class="badge b-green">기술 (S)</span></td><td>Apply</td><td>절차·전략 적용</td><td style="text-align:center;font-weight:700">5</td></tr>
+            <tr><td><span class="badge b-yellow">태도 (A)</span></td><td>Apply</td><td>종합 판단·기획</td><td style="text-align:center;font-weight:700">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="ct">예상 난이도 규명 기준</div>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;text-align:center;padding:10px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac">
+            <div style="font-size:18px;font-weight:900;color:#15803d">하</div>
+            <div style="font-size:10px;color:#166534;margin-top:2px">Remember 수준<br>P ≥ 0.60 예상<br>배점 4점</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:10px;background:#fefce8;border-radius:8px;border:1px solid #fde047">
+            <div style="font-size:18px;font-weight:900;color:#a16207">중</div>
+            <div style="font-size:10px;color:#854d0e;margin-top:2px">Understand 수준<br>0.40 ≤ P &lt; 0.70<br>배점 5점</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:10px;background:#fff1f2;border-radius:8px;border:1px solid #fca5a5">
+            <div style="font-size:18px;font-weight:900;color:#991b1b">상</div>
+            <div style="font-size:10px;color:#7f1d1d;margin-top:2px">Apply 수준<br>P &lt; 0.40 예상<br>배점 10점</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">Bloom 수준 × 난이도 분포 (21문항)</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s4"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6: 이원분류표 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>이원분류표 — 성취도평가 전 문항</h2></div>
+  <div class="sb" style="grid-template-rows:1fr;overflow:hidden">
+    <div class="card" style="padding:0;overflow:auto">
+      <table class="dt" style="min-width:860px">
+        <thead>
+          <tr style="background:#1d4ed8">
+            <th style="background:#1d4ed8;color:white;width:72px">문항 ID</th>
+            <th style="background:#1d4ed8;color:white">내용 영역</th>
+            <th style="background:#1d4ed8;color:white;width:85px">행동 영역</th>
+            <th style="background:#1d4ed8;color:white;width:90px">Bloom</th>
+            <th style="background:#1d4ed8;color:white;width:70px">인지 영역</th>
+            <th style="background:#1d4ed8;color:white;width:55px;text-align:center">난이도</th>
+            <th style="background:#1d4ed8;color:white;width:45px;text-align:center">배점</th>
+            <th style="background:#1d4ed8;color:white;width:75px">문항 유형</th>
+          </tr>
+        </thead>
+        <tbody id="twoway-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 7: 문항 수·유형 결정 기준 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>문항 수 · 유형 결정 기준</h2></div>
+  <div class="sb" style="grid-template-columns:1.2fr 1fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="flex:1">
+        <div class="ct">인지 수준별 문항 유형 선택 기준</div>
+        <table class="dt">
+          <thead><tr><th>Bloom</th><th>채택 유형</th><th>선택 이유</th><th style="text-align:center">수</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-green">Remember</span></td><td style="font-size:11px">진위형·완성형·선다형</td><td style="font-size:11px;color:#6b7280">단순 사실 회상 → 단답·선택 형식</td><td style="text-align:center">5</td></tr>
+            <tr><td><span class="badge b-blue">Understand</span></td><td style="font-size:11px">선다형·연결형·완성형</td><td style="font-size:11px;color:#6b7280">의미 파악 → 선택지 변별 적합</td><td style="text-align:center">10</td></tr>
+            <tr><td><span class="badge b-yellow">Apply</span></td><td style="font-size:11px">선다형(시나리오)·서논술형</td><td style="font-size:11px;color:#6b7280">상황 적용 → 복합 판단 필요</td><td style="text-align:center">6</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="ct">선다형 비중(67%)이 높은 이유</div>
+        <ul class="blist" style="font-size:12px">
+          <li>오답 매력도 분석(Distractor Analysis) 가능</li>
+          <li>채점 객관성 확보, 부분점수 불필요</li>
+          <li>집단비교·CTT 통계 처리에 최적</li>
+          <li>직업훈련 평가 실무 표준 형태</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="ct">서논술형 2문항 포함 이유</div>
+        <ul class="blist" style="font-size:12px">
+          <li>Apply 수준: 복합 적용 능력 서술로만 측정 가능</li>
+          <li>NCS 수행 준거 — "~할 수 있다"의 종합 판단</li>
+          <li>부분점수 채점기준 세분화로 객관성 보완</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">성취도 문항 유형 분포 (N=21)</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s6"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 8: 배점 기준 및 문항 수준 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t1">Part 2</span><h2>배점 기준 및 학습 단원별 구성</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.1fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="ct">성취도 배점 기준 (난이도 연동)</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac">
+            <div style="font-size:10px;color:#15803d;font-weight:700;margin-bottom:3px">난이도 하</div>
+            <div style="font-size:26px;font-weight:900;color:#15803d">4점</div>
+            <div style="font-size:10px;color:#6b7280;margin-top:3px">5문항 → 20점</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:12px;background:#fefce8;border-radius:8px;border:1px solid #fde047">
+            <div style="font-size:10px;color:#a16207;font-weight:700;margin-bottom:3px">난이도 중</div>
+            <div style="font-size:26px;font-weight:900;color:#a16207">5점</div>
+            <div style="font-size:10px;color:#6b7280;margin-top:3px">12문항 → 60점</div>
+          </div>
+          <div style="flex:1;text-align:center;padding:12px;background:#fff1f2;border-radius:8px;border:1px solid #fca5a5">
+            <div style="font-size:10px;color:#991b1b;font-weight:700;margin-bottom:3px">난이도 상</div>
+            <div style="font-size:26px;font-weight:900;color:#991b1b">10점</div>
+            <div style="font-size:10px;color:#6b7280;margin-top:3px">4문항 → 40점</div>
+          </div>
+        </div>
+        <div class="hl orange" style="font-size:11px"><strong>총점 120점</strong> — 합격 60점(50%). 서논술형은 동일 배점에 부분점수(채점기준 세분화) 적용.</div>
+      </div>
+      <div class="card">
+        <div class="ct">만족도 척도 기준</div>
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>점수</th><th>의미</th><th>분석 해석 기준</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700;color:#15803d">5점</td><td>매우 만족</td><td rowspan="5" style="font-size:10px;color:#6b7280;vertical-align:middle">영역 평균 ≥ 4.0: 우수<br>3.5~4.0: 양호<br>3.0~3.5: 보통<br>3.0 미만: 개선 필요</td></tr>
+            <tr><td style="font-weight:700;color:#84cc16">4점</td><td>만족</td></tr>
+            <tr><td style="font-weight:700;color:#eab308">3점</td><td>보통</td></tr>
+            <tr><td style="font-weight:700;color:#f97316">2점</td><td>불만족</td></tr>
+            <tr><td style="font-weight:700;color:#ef4444">1점</td><td>매우 불만족</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">학습 단원별 배점 구성 (난이도별 분해)</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s7"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 9: Part2 헤더 -->
+<div class="slide slide-section p2">
+  <div style="text-align:center">
+    <div class="sec-label">Part 3</div>
+    <div class="sec-title">더미데이터 설계</div>
+    <div class="sec-sub">통계 검증 가능한 현실적 가상 데이터 생성 전략</div>
+  </div>
+</div>
+
+<!-- 10: 더미데이터 설계 개요 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t2">Part 3</span><h2>더미데이터 설계 개요</h2></div>
+  <div class="sb" style="grid-template-rows:auto 1fr;gap:16px">
+    <div class="three">
+      <div class="card" style="border-top:3px solid #22c55e;text-align:center;padding:14px">
+        <div style="font-size:24px;margin-bottom:6px">🎯</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:5px">현실적 분포</div>
+        <div style="font-size:11px;color:#6b7280">NCS 직업훈련 수강생 특성을 반영한 인구통계 비율 설정</div>
+      </div>
+      <div class="card" style="border-top:3px solid #3b82f6;text-align:center;padding:14px">
+        <div style="font-size:24px;margin-bottom:6px">📐</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:5px">CTT 품질 조건</div>
+        <div style="font-size:11px;color:#6b7280">P: 0.20~0.85<br>D ≥ 0.20<br>Cronbach α ≥ 0.70</div>
+      </div>
+      <div class="card" style="border-top:3px solid #f97316;text-align:center;padding:14px">
+        <div style="font-size:24px;margin-bottom:6px">🔬</div>
+        <div style="font-weight:700;font-size:13px;margin-bottom:5px">집단 차이 내포</div>
+        <div style="font-size:11px;color:#6b7280">AI 경험·참여목적별 잠재 역량 차이를 의도적으로 반영</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">데이터 생성 파이프라인</div>
+      <div class="flow">
+        <div class="fstep"><div class="fn">⚙️</div><div class="fl">인구통계 생성</div><div class="fd">성별·연령·학력<br>경력·AI경험·목적<br>N=400명</div></div>
+        <div class="fstep"><div class="fn">🧠</div><div class="fl">잠재 역량 설정</div><div class="fd">N(0,1) 기반<br>집단별 가중치<br>ability 벡터</div></div>
+        <div class="fstep"><div class="fn">🎲</div><div class="fl">문항 응답 생성</div><div class="fd">IRT 정답확률<br>문항 유형별 분기<br>오답 매력도 적용</div></div>
+        <div class="fstep"><div class="fn">✅</div><div class="fl">품질 검증 루프</div><div class="fd">P·D 조건 미충족 시<br>seed 변경 재생성<br>최대 200회</div></div>
+        <div class="fstep"><div class="fn">💾</div><div class="fl">CSV 저장</div><div class="fd">assessment_<br>dummy_data.csv<br>survey_dummy.csv</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11: 인구통계 비율 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t2">Part 3</span><h2>인구통계 비율 설정 (N=400)</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="dt">
+        <thead><tr><th>변수</th><th>범주</th><th style="text-align:center">비율</th><th>설계 근거</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2" style="vertical-align:middle"><span class="badge b-gray">성별</span></td><td>남</td><td style="text-align:center">50%</td><td rowspan="2" style="font-size:10px;color:#6b7280">균등 분포 가정</td></tr>
+          <tr><td>여</td><td style="text-align:center">50%</td></tr>
+          <tr><td rowspan="4" style="vertical-align:middle"><span class="badge b-blue">연령</span></td><td>20대</td><td style="text-align:center">25%</td><td rowspan="4" style="font-size:10px;color:#6b7280">30~40대 핵심층 집중</td></tr>
+          <tr><td>30대</td><td style="text-align:center;font-weight:700;color:#1d4ed8">35%</td></tr>
+          <tr><td>40대</td><td style="text-align:center;font-weight:700;color:#1d4ed8">25%</td></tr>
+          <tr><td>50대+</td><td style="text-align:center">15%</td></tr>
+          <tr><td rowspan="4" style="vertical-align:middle"><span class="badge b-green">AI경험</span></td><td>경험 없음</td><td style="text-align:center">20%</td><td rowspan="4" style="font-size:10px;color:#6b7280">집단비교 균형 배분</td></tr>
+          <tr><td>개인적 활용</td><td style="text-align:center;font-weight:700;color:#15803d">35%</td></tr>
+          <tr><td>업무 부분 적용</td><td style="text-align:center;font-weight:700;color:#15803d">30%</td></tr>
+          <tr><td>업무 주도적</td><td style="text-align:center">15%</td></tr>
+          <tr><td rowspan="3" style="vertical-align:middle"><span class="badge b-purple">참여목적</span></td><td>취업/스펙업</td><td style="text-align:center;font-weight:700;color:#7e22ce">35%</td><td rowspan="3" style="font-size:10px;color:#6b7280">ANOVA 검증 균형</td></tr>
+          <tr><td>이직</td><td style="text-align:center">30%</td></tr>
+          <tr><td>직무 능력 향상</td><td style="text-align:center;font-weight:700;color:#7e22ce">35%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">AI 경험 수준별 분포 (N=400)</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s9"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 13: Part4 헤더 -->
+<div class="slide slide-section p3">
+  <div style="text-align:center">
+    <div class="sec-label">Part 4</div>
+    <div class="sec-title">데이터 분석 결과</div>
+    <div class="sec-sub">신뢰도 · 문항 난이도(P) · 문항 변별도(D) · 집단비교</div>
+  </div>
+</div>
+
+<!-- 14: 분석 방법 개요 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>분석 방법 개요</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card" style="border-top:3px solid #3b82f6">
+      <div style="font-size:14px;font-weight:700;color:#1d4ed8;margin-bottom:12px">📊 만족도조사 분석</div>
+      <table class="dt">
+        <thead><tr><th>분석 방법</th><th>목적</th><th>분류</th></tr></thead>
+        <tbody>
+          <tr><td>크론바흐 알파 (α)</td><td style="font-size:11px">영역별 내적일관성 신뢰도</td><td><span class="badge b-blue">신뢰도</span></td></tr>
+          <tr><td>Item-rest Correlation</td><td style="font-size:11px">문항별 신뢰도 기여도</td><td><span class="badge b-blue">신뢰도</span></td></tr>
+          <tr><td>상관행렬 (Pearson r)</td><td style="font-size:11px">문항 간 관계 히트맵</td><td><span class="badge b-blue">신뢰도</span></td></tr>
+          <tr><td>EFA (Varimax, 5요인)</td><td style="font-size:11px">구인 타당도 확인</td><td><span class="badge b-green">타당도</span></td></tr>
+          <tr><td>ANOVA + η²</td><td style="font-size:11px">집단간 만족도 차이</td><td><span class="badge b-purple">집단비교</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="border-top:3px solid #22c55e">
+      <div style="font-size:14px;font-weight:700;color:#15803d;margin-bottom:12px">📝 성취도평가 분석</div>
+      <table class="dt">
+        <thead><tr><th>분석 방법</th><th>목적</th><th>분류</th></tr></thead>
+        <tbody>
+          <tr><td>문항 난이도 P</td><td style="font-size:11px">정답자 비율 (쉬움·보통·어려움)</td><td><span class="badge b-green">난이도</span></td></tr>
+          <tr><td>문항 변별도 D</td><td style="font-size:11px">상·하위 27% 집단 변별력</td><td><span class="badge b-blue">변별도</span></td></tr>
+          <tr><td>오답 매력도 분석</td><td style="font-size:11px">선다형 선지 적절성</td><td><span class="badge b-yellow">문항분석</span></td></tr>
+          <tr><td>ANOVA + Tukey HSD</td><td style="font-size:11px">집단간 총점 차이</td><td><span class="badge b-purple">집단비교</span></td></tr>
+          <tr><td>Wright Map (IRT 근사)</td><td style="font-size:11px">역량-난이도 매핑</td><td><span class="badge b-red">IRT</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 15: 신뢰도 분석 (만족도) -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>신뢰도 분석 결과 — 만족도조사</h2></div>
+  <div class="sb" style="grid-template-rows:auto 1fr;gap:14px">
+
+    <!-- 상단: 신뢰도 개념 + 추정 방법 -->
+    <div class="card" style="padding:14px 20px">
+      <div class="ct">신뢰도(Reliability) 개념 및 추정 방법</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:7px">📌 신뢰도란?</div>
+          <ul class="blist" style="font-size:12px">
+            <li>수집된 데이터들이 <strong>얼마나 모여있는지</strong>를 판단하는 것</li>
+            <li>측정의 <strong>일관성(Consistency)</strong> — 동일 대상을 반복 측정했을 때 같은 결과를 얻는 정도</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:7px">📐 채택한 추정 방법</div>
+          <div style="display:flex;gap:10px;font-size:11px">
+            <div style="background:#fff1f2;border-radius:6px;padding:9px 12px;flex:1;border:1px solid #fca5a5">
+              <div style="color:#b91c1c;font-weight:700;margin-bottom:3px">2회 측정 ✗</div>
+              <div style="color:#6b7280;line-height:1.5">연습효과·망각의<br>영향으로 미채택</div>
+            </div>
+            <div style="background:#f0fdf4;border-radius:6px;padding:9px 12px;flex:1.4;border:2px solid #22c55e">
+              <div style="color:#15803d;font-weight:700;margin-bottom:3px">1회 측정 ✓ 채택</div>
+              <div style="color:#374151;line-height:1.5">내적일관성 신뢰도<br><strong>크론바흐 알파(α) 계수</strong></div>
+              <div style="margin-top:5px;background:white;border-radius:4px;padding:4px 8px;font-size:11px;color:#374151;border:1px solid #e5e7eb">
+                범위 <strong>0 ~ 1</strong> &nbsp;·&nbsp; <strong>1에 가까울수록</strong> 신뢰도 높음
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단: 결과 2열 -->
+    <div class="two">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="flex:1;padding:0;overflow:hidden">
+          <table class="dt">
+            <thead><tr><th>영역</th><th style="text-align:center">문항수</th><th style="text-align:center">α 값</th><th>해석</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge b-blue">교육내용</span></td><td style="text-align:center">5</td><td style="text-align:center;font-weight:700;color:#15803d">0.864</td><td><span class="badge b-green">높음 (≥0.80)</span></td></tr>
+              <tr><td><span class="badge b-green">강사</span></td><td style="text-align:center">5</td><td style="text-align:center;font-weight:700;color:#15803d">0.860</td><td><span class="badge b-green">높음 (≥0.80)</span></td></tr>
+              <tr><td><span class="badge b-yellow">운영시설</span></td><td style="text-align:center">3</td><td style="text-align:center;font-weight:700;color:#b45309">0.797</td><td><span class="badge b-yellow">수용 (0.70~0.80)</span></td></tr>
+              <tr><td><span class="badge b-red">취업지원</span></td><td style="text-align:center">2</td><td style="text-align:center;font-weight:700;color:#b45309">0.707</td><td><span class="badge b-yellow">수용 (0.70~0.80)</span></td></tr>
+              <tr><td><span class="badge b-purple">전반만족</span></td><td style="text-align:center">2</td><td style="text-align:center;font-weight:700;color:#b45309">0.767</td><td><span class="badge b-yellow">수용 (0.70~0.80)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="hl blue" style="font-size:12px"><strong>결론:</strong> 전 영역 α ≥ 0.70 수용 기준 충족. 교육내용·강사는 α = 0.86 수준으로 높음. 운영시설·취업지원·전반만족도 수용 범위 내.</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column">
+        <div class="ct">영역별 α 값 비교</div>
+        <div class="cw" style="flex:1"><canvas id="chart-s12"></canvas></div>
+        <div style="display:flex;justify-content:center;gap:14px;font-size:10px;color:#6b7280;margin-top:6px">
+          <span>🟠 수용 (0.70~0.80)</span>
+          <span>🟢 높음 (≥0.80)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 15-1: 상관행렬 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>문항 간 상관행렬 — 만족도조사 (17문항)</h2></div>
+  <div class="sb" style="grid-template-rows:auto auto 1fr;gap:12px">
+    <!-- 색상 기준 + 해석 -->
+    <div class="card" style="padding:12px 18px">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px">색상 기준 (Pearson r)</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:11px">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:12px;background:#1d4ed8;display:inline-block;border-radius:2px"></span>r ≥ 0.60 (높은 정적 상관)</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:12px;background:#60a5fa;display:inline-block;border-radius:2px"></span>0.40~0.60 (중간 상관)</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:12px;background:#bfdbfe;display:inline-block;border-radius:2px"></span>0.20~0.40 (낮은 상관)</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:16px;height:12px;background:#f1f5f9;border:1px solid #e5e7eb;display:inline-block;border-radius:2px"></span>|r| &lt; 0.20 (무상관)</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:2px">해석</div>
+          <div class="hl blue" style="font-size:11px"><strong>영역 내 상관 (동일 영역 문항끼리):</strong> r = 0.49~0.61 — 중간 이상의 정적 상관. 같은 영역의 문항들이 동일한 구인을 측정하고 있음을 나타냄.</div>
+          <div class="hl green" style="font-size:11px"><strong>영역 간 상관 (서로 다른 영역):</strong> r ≈ −0.11~+0.19 — 실질적 무상관. 5개 영역이 독립적인 구인으로 분리되어 있음을 확인.</div>
+          <div class="hl orange" style="font-size:11px"><strong>종합:</strong> 블록 대각 구조(5개 색상 블록이 대각선 방향으로 집중) → EFA 5요인 구조를 지지하는 패턴.</div>
+          <div class="hl green" style="font-size:11px"><strong>결론:</strong> 문항 간 상관행렬에서 영역별 문항의 상관을 확인한 결과, <strong>동일 영역 내 문항끼리는 높은 상관(r=0.49~0.61)</strong>을 보이고 <strong>다른 영역 문항과는 낮은 상관(r≈0)</strong>을 보임. 이를 통해 <strong>영역별로 문항이 잘 묶여 있음</strong>을 확인할 수 있음.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="padding:10px;overflow:auto">
+      <div id="corr-matrix-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 15-2: 타당도 분석 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>타당도 분석 — 만족도조사</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.2fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="ct">타당도(Validity)란?</div>
+        <ul class="blist" style="font-size:12px">
+          <li>측정 도구가 <strong>측정하려고 의도하는 것</strong>을 얼마나 충실히 측정하는지</li>
+          <li>측정 도구가 <strong>무엇을 측정하고 있는지</strong>에 대한 설명이나 지수</li>
+          <li>0/1 이분법이 아닌 <strong>정도의 개념</strong> — "낮다 · 적절하다 · 높다"로 표현</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="ct">구인 타당도 (Construct Validity) 중점 분석</div>
+        <div style="font-size:12px;color:#374151;line-height:1.8;margin-bottom:8px">내적 구조에 기초한 타당도<br><strong>"검사가 측정하려는 심리적 구인(요인)을 올바르게 측정하는가?"</strong></div>
+        <div style="background:#eff6ff;border-radius:8px;padding:10px 12px;font-size:12px;border:1px solid #bfdbfe">
+          <strong>탐색적 요인분석 (EFA)</strong><br>
+          <span style="color:#6b7280">회전: Varimax · 추출 요인: 5개 · 방법: minres</span><br>
+          <span style="color:#374151;margin-top:4px;display:block">→ 설문 5개 영역의 이론적 구인과 실제 요인 구조 일치</span>
+        </div>
+      </div>
+      <div class="hl blue" style="font-size:12px">
+        <strong>분석 결과:</strong> 5개의 요인이 도출되었으며, <strong>요인 부하량 기준 0.40 이상</strong>으로 잡았을 때 각 문항이 해당 영역의 요인에만 높게 적재되고 나머지 요인에는 낮은 값을 보임. <strong>문항이 요인별로 잘 묶인 것을 확인</strong>할 수 있음.
+      </div>
+      <div class="hl green" style="font-size:12px"><strong>결론:</strong> 5요인이 교육내용·강사·운영시설·취업지원·전반만족 각 영역에 완벽히 대응. 구인 타당도 확보.</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">EFA 요인부하량 — 17문항 × 5요인 (Varimax)</div>
+      <div id="loadings-container" style="flex:1;overflow:auto"></div>
+      <div style="font-size:10px;color:#6b7280;margin-top:6px;text-align:center">진한 파랑 ≥ 0.60 · 연파랑 0.40~0.60 · 흰색 &lt;0.20</div>
+    </div>
+  </div>
+</div>
+
+<!-- 16-A: 문항 난이도 분석 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>문항 난이도 분석 (P)</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.3fr;gap:18px">
+
+    <!-- 왼쪽: grid 3행 (auto / auto / 나머지) -->
+    <div style="display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;height:100%;min-height:0">
+      <div class="card" style="padding:11px 14px">
+        <div class="ct">난이도 지수 정의 및 판단 기준</div>
+        <div style="font-family:monospace;font-size:11px;background:#f9fafb;padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;margin-bottom:7px">P = 정답자 수 / 전체 응답자 수</div>
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>P 범위</th><th>해석</th><th style="text-align:center">본 도구</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#b91c1c;font-weight:600">P &lt; 0.40</td><td><span class="badge b-red">어려움</span></td><td style="text-align:center;font-weight:700;color:#b91c1c">4문항</td></tr>
+            <tr><td style="font-weight:600">0.40 ≤ P &lt; 0.70</td><td><span class="badge b-yellow">보통</span></td><td style="text-align:center;font-weight:700;color:#15803d">17문항</td></tr>
+            <tr><td style="color:#1d4ed8;font-weight:600">P ≥ 0.70</td><td><span class="badge b-blue">쉬움</span></td><td style="text-align:center;color:#6b7280">0문항</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="padding:11px 14px">
+        <div class="ct">P값 기술통계 (N=21문항)</div>
+        <table class="dt" style="font-size:11px">
+          <tbody>
+            <tr><td style="color:#6b7280">평균 (M)</td><td style="font-weight:700;text-align:right">0.512</td><td style="color:#6b7280;padding-left:10px">표준편차 (SD)</td><td style="font-weight:700;text-align:right">0.113</td></tr>
+            <tr><td style="color:#6b7280">최솟값</td><td style="font-weight:700;text-align:right;color:#b91c1c">0.340</td><td style="color:#6b7280;padding-left:10px">최댓값</td><td style="font-weight:700;text-align:right;color:#1d4ed8">0.683</td></tr>
+            <tr><td style="color:#6b7280">범위</td><td style="font-weight:700;text-align:right">0.343</td><td style="color:#6b7280;padding-left:10px">중앙값</td><td style="font-weight:700;text-align:right">0.500</td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;gap:5px;margin-top:7px;font-size:11px">
+          <div style="flex:1;text-align:center;background:#fff1f2;border-radius:5px;padding:4px;border:1px solid #fca5a5"><span style="color:#b91c1c;font-weight:700;font-size:10px">어려움</span><br><span style="font-size:14px;font-weight:900;color:#b91c1c">4</span><span style="color:#6b7280;font-size:10px"> (19%)</span></div>
+          <div style="flex:1;text-align:center;background:#fefce8;border-radius:5px;padding:4px;border:1px solid #fde047"><span style="color:#a16207;font-weight:700;font-size:10px">보통</span><br><span style="font-size:14px;font-weight:900;color:#a16207">17</span><span style="color:#6b7280;font-size:10px"> (81%)</span></div>
+          <div style="flex:1;text-align:center;background:#f0fdf4;border-radius:5px;padding:4px;border:1px solid #86efac"><span style="color:#15803d;font-weight:700;font-size:10px">쉬움</span><br><span style="font-size:14px;font-weight:900;color:#6b7280">0</span><span style="color:#6b7280;font-size:10px"> (0%)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:0;overflow:auto;min-height:0">
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>문항</th><th style="text-align:center">P</th><th>해석</th><th>설계</th></tr></thead>
+          <tbody id="p-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 오른쪽: grid 2행 -->
+    <div style="display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1.3fr);gap:10px;height:100%;min-height:0">
+      <div class="card" style="display:flex;flex-direction:column;min-height:0">
+        <div class="ct">P값 분포 히스토그램 (구간별 문항 수)</div>
+        <div class="cw" style="flex:1;min-height:0"><canvas id="chart-p-hist"></canvas></div>
+        <div style="font-size:10px;color:#6b7280;margin-top:3px;text-align:center">가로축: P값 구간 · 세로축: 문항 수</div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;min-height:0">
+        <div class="ct">문항별 P값 (설계 난이도별 색상)</div>
+        <div class="cw" style="flex:1;min-height:0"><canvas id="chart-p"></canvas></div>
+        <div style="display:flex;justify-content:center;gap:12px;font-size:10px;color:#6b7280;margin-top:3px">
+          <span>🟡 보통</span><span>🔴 어려움</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 16-C: 예상 vs 실제 난이도 비교 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>예상 난이도 vs 분석 결과 난이도 — 문항별 비교</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.3fr;gap:18px">
+    <div class="card" style="padding:0;overflow:auto;min-height:0">
+      <table class="dt" style="font-size:11px">
+        <thead>
+          <tr style="background:#1d4ed8">
+            <th style="background:#1d4ed8;color:white;width:100px">문항</th>
+            <th style="background:#1d4ed8;color:white;width:55px">설계</th>
+            <th style="background:#1d4ed8;color:white">예상 P 기준</th>
+            <th style="background:#1d4ed8;color:white;width:60px;text-align:center">실제 P</th>
+            <th style="background:#1d4ed8;color:white;width:65px">실제 해석</th>
+            <th style="background:#1d4ed8;color:white;width:50px;text-align:center">일치</th>
+          </tr>
+        </thead>
+        <tbody id="compare-tbody"></tbody>
+      </table>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;min-height:0">
+      <div class="ct">문항별 실제 P값 — 설계 난이도별 색상 · 기준선 P=0.40 / 0.70</div>
+      <div class="cw" style="flex:1;min-height:0"><canvas id="chart-diff-compare"></canvas></div>
+      <div style="display:flex;justify-content:center;gap:14px;font-size:10px;color:#6b7280;margin-top:5px">
+        <span>🟢 설계 하 (P≥0.70 예상)</span><span>🟡 설계 중 (0.40~0.70)</span><span>🔴 설계 상 (P&lt;0.40)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16-B: 문항 변별도 분석 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>문항 변별도 분석 (D) + Wright Map</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.4fr;gap:18px">
+    <div style="display:grid;grid-template-rows:auto minmax(0,1fr);gap:10px;height:100%;min-height:0">
+      <div class="card" style="padding:11px 14px">
+        <div class="ct">변별도 지수 정의 및 Ebel 기준</div>
+        <div style="font-family:monospace;font-size:11px;background:#f9fafb;padding:6px 10px;border-radius:6px;border:1px solid #e5e7eb;margin-bottom:7px">D = P(상위 27%) − P(하위 27%)</div>
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>D 범위</th><th>해석 (Ebel)</th><th style="text-align:center">본 도구</th></tr></thead>
+          <tbody>
+            <tr><td style="color:#b91c1c;font-weight:600">D &lt; 0.20</td><td><span class="badge b-red">변별력 낮음</span></td><td style="text-align:center">0문항</td></tr>
+            <tr><td style="font-weight:600">0.20 ≤ D &lt; 0.30</td><td><span class="badge b-orange">다소 낮음</span></td><td style="text-align:center">0문항</td></tr>
+            <tr><td style="font-weight:600">0.30 ≤ D &lt; 0.40</td><td><span class="badge b-yellow">변별력 있음</span></td><td style="text-align:center;font-weight:700;color:#b45309">1문항</td></tr>
+            <tr><td style="color:#15803d;font-weight:600">D ≥ 0.40</td><td><span class="badge b-green">변별력 높음</span></td><td style="text-align:center;font-weight:700;color:#15803d">20문항</td></tr>
+          </tbody>
+        </table>
+        <div class="hl green" style="margin-top:8px;font-size:11px"><strong>해석:</strong> 전 문항 D ≥ 0.30 기준 충족. 20문항(95%)은 D ≥ 0.40 우수 수준.</div>
+      </div>
+      <div class="card" style="padding:0;overflow:auto;min-height:0">
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>문항</th><th style="text-align:center">D</th><th>해석</th></tr></thead>
+          <tbody id="d-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;min-height:0">
+      <div class="ct">문항별 변별도 지수 D (전 21문항)</div>
+      <div class="cw" style="flex:1;min-height:0"><canvas id="chart-d"></canvas></div>
+      <div style="display:flex;justify-content:center;gap:14px;font-size:10px;color:#6b7280;margin-top:4px">
+        <span>🟢 변별높음 (≥0.40)</span><span>🟡 변별있음 (0.30~0.40)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16-D: Wright Map -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>Wright Map — 피험자 역량 분포 vs 문항 난이도</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 2.8fr;gap:18px">
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="ct">Wright Map이란?</div>
+        <ul class="blist" style="font-size:12px">
+          <li>피험자 역량과 문항 난이도를 <strong>같은 로짓 척도</strong>에 배치</li>
+          <li>역량이 높을수록 위쪽, 난이도가 높을수록 위쪽</li>
+          <li>동일 로짓 위치의 피험자가 해당 문항을 <strong>정답률 50%</strong>로 맞힘</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="ct">변별도 확보 근거</div>
+        <div style="font-size:12px;line-height:1.9">
+          <div style="padding:6px 0;border-bottom:1px solid #f3f4f6">
+            <span class="badge b-red">상 난이도</span>
+            <span style="color:#6b7280;font-size:11px;display:block;margin-top:2px">logit ≈ +0.65 → 역량 상위 피험자만 정답<br>총점 높은 그룹이 맞히고, 낮은 그룹은 틀림</span>
+          </div>
+          <div style="padding:6px 0;border-bottom:1px solid #f3f4f6">
+            <span class="badge b-yellow">중 난이도</span>
+            <span style="color:#6b7280;font-size:11px;display:block;margin-top:2px">logit ≈ −0.07~+0.14 → 중간 역량 기준 변별</span>
+          </div>
+          <div style="padding:6px 0">
+            <span class="badge b-green">하 난이도</span>
+            <span style="color:#6b7280;font-size:11px;display:block;margin-top:2px">logit ≈ −0.74 → 역량 하위도 대부분 정답<br>기저 변별 역할</span>
+          </div>
+        </div>
+      </div>
+      <div class="hl orange" style="font-size:11px"><strong>결론:</strong> 총점이 높은 피험자가 난이도 높은 문항을 정답 → 문항이 역량 수준을 잘 변별함.</div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;min-height:0">
+      <div id="wright-map-svg" style="flex:1;width:100%;min-height:0"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 17: 집단비교 분석 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>집단비교 분석 — ANOVA · Tukey HSD</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1.2fr;gap:18px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card">
+        <div class="ct">One-way ANOVA 요약</div>
+        <table class="dt" style="font-size:11px">
+          <thead><tr><th>집단 변수</th><th style="text-align:center">F</th><th style="text-align:center">p</th><th style="text-align:center">η²</th><th>유의</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-purple">참여 목적</span></td><td style="text-align:center;font-weight:700">3.626</td><td style="text-align:center;color:#15803d;font-weight:700">.028*</td><td style="text-align:center">.018 (소)</td><td><span class="badge b-green">유의</span></td></tr>
+            <tr><td><span class="badge b-blue">AI 경험</span></td><td style="text-align:center;font-weight:700">4.583</td><td style="text-align:center;color:#15803d;font-weight:700">.004**</td><td style="text-align:center">.034 (소)</td><td><span class="badge b-green">유의</span></td></tr>
+            <tr><td><span class="badge b-yellow">연령</span></td><td style="text-align:center;font-weight:700">3.660</td><td style="text-align:center;color:#15803d;font-weight:700">.013*</td><td style="text-align:center">.027 (소)</td><td><span class="badge b-green">유의</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="ct">Tukey HSD 유의한 쌍 (참여 목적)</div>
+        <div style="font-size:12px;line-height:2">
+          <div style="padding:5px 0;border-bottom:1px solid #f3f4f6"><span class="badge b-green" style="margin-right:6px">유의</span>취업/스펙업 (60.9점) &gt; 직무능력향상 (52.8점) <span style="color:#6b7280;font-size:10px">p&lt;.001</span></div>
+          <div style="padding:5px 0;border-bottom:1px solid #f3f4f6"><span class="badge b-green" style="margin-right:6px">유의</span>이직 (58.3점) &gt; 직무능력향상 (52.8점) <span style="color:#6b7280;font-size:10px">p=.002</span></div>
+          <div style="padding:5px 0"><span class="badge b-gray" style="margin-right:6px">비유의</span>취업/스펙업 vs 이직 <span style="color:#6b7280;font-size:10px">p=.238</span></div>
+        </div>
+      </div>
+      <div class="hl orange" style="font-size:11px"><strong>시사점:</strong> 부서 권고·의무 참여 집단 성취도 가장 낮음 → 자기동기 부재가 학습 성취에 영향. 별도 학습 지원 방안 필요.</div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="ct">집단별 평균 총점 (참여 목적 · AI 경험)</div>
+      <div class="cw" style="flex:1"><canvas id="chart-s14"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 18: 종합 시사점 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>종합 시사점 — 평가도구 검증 결론</h2></div>
+  <div class="sb" style="grid-template-rows:1fr auto;gap:16px">
+    <div class="three">
+      <div class="card" style="border-top:3px solid #3b82f6">
+        <div style="font-size:18px;margin-bottom:6px">📐</div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#1d4ed8">개발 흐름</div>
+        <ul class="blist" style="font-size:11px">
+          <li>목적 → 내용 규명 → 이원분류표 → 문항 제작 체계적 순서 준수</li>
+          <li>Bloom 분류 기반 인지 수준별 유형 매핑</li>
+          <li>난이도-배점 연계로 변별력 있는 분포 설계</li>
+          <li>설문·성취도 각 목적에 맞는 척도 선택</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid #22c55e">
+        <div style="font-size:18px;margin-bottom:6px">✅</div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#15803d">도구 품질</div>
+        <ul class="blist" style="font-size:11px">
+          <li>만족도 α: 전 영역 ≥ 0.70 (수용 기준 충족)</li>
+          <li>성취도 α: 0.766 (수용 수준)</li>
+          <li>P 범위 0.34~0.68 (적절한 난이도)</li>
+          <li>D 전 문항 ≥ 0.37 (변별력 있음~높음)</li>
+          <li>IRC 전 문항 ≥ 0.55 (신뢰도 기여 충분)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid #a855f7">
+        <div style="font-size:18px;margin-bottom:6px">📊</div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:#7e22ce">분석 결과</div>
+        <ul class="blist" style="font-size:11px">
+          <li>참여목적·AI경험·연령 모두 유의한 차이 확인</li>
+          <li>취업/스펙업 집단 가장 높은 성취 (M=60.9)</li>
+          <li>직무 권고 집단 별도 지원 필요 시사</li>
+          <li>EFA 5요인 구조 — 설문 구인 타당도 확인</li>
+          <li>더미 데이터 설계 의도 통계적으로 검증됨</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="padding:14px 20px">
+      <div class="ct">평가도구 개발 흐름 총정리</div>
+      <div class="flow">
+        <div class="fstep" style="background:#eff6ff;border-color:#bfdbfe"><div class="fn" style="font-size:13px">기</div><div class="fl">목적 구체화</div><div class="fd">만족도·성취도<br>총괄평가 채택</div></div>
+        <div class="fstep" style="background:#f0fdf4;border-color:#bbf7d0"><div class="fn" style="font-size:13px">승①</div><div class="fl">내용 규명</div><div class="fd">Bloom·NCS 기반<br>이원분류표</div></div>
+        <div class="fstep" style="background:#f0fdf4;border-color:#bbf7d0"><div class="fn" style="font-size:13px">승②</div><div class="fl">문항 제작</div><div class="fd">유형·배점·수준<br>기준 수립</div></div>
+        <div class="fstep" style="background:#fdf4ff;border-color:#e9d5ff"><div class="fn" style="font-size:13px">전</div><div class="fl">더미 설계</div><div class="fd">IRT 기반<br>품질 검증 루프</div></div>
+        <div class="fstep" style="background:#fff7ed;border-color:#fed7aa"><div class="fn" style="font-size:13px">결</div><div class="fl">CTT 분석</div><div class="fd">α · P · D<br>ANOVA</div></div>
+        <div class="fstep" style="background:#f0fdf4;border-color:#86efac;border-radius:0 8px 8px 0"><div class="fn" style="font-size:13px">✓</div><div class="fl">검증 완료</div><div class="fd">도구 품질<br>확보</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 19: 팀원 소감 -->
+<div class="slide slide-content">
+  <div class="sh"><span class="ptag t3">Part 4</span><h2>팀원 소감</h2></div>
+  <div class="sb" style="grid-template-columns:1fr 1fr;gap:16px;overflow:hidden">
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- 윤재원 -->
+      <div class="card" style="border-left:4px solid #3b82f6;flex:1;overflow:auto">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px">
+          <span style="font-size:15px;font-weight:700;color:#1d4ed8">윤재원</span>
+          <span style="font-size:11px;color:#6b7280">2024100782</span>
+        </div>
+        <p style="font-size:12px;color:#374151;line-height:1.8">이번 HRD 프로젝트를 통해 그동안 이론으로만 알고 있던 HRD의 개념들을 직접 탐구하며 훨씬 깊이 있게 이해할 수 있었습니다. 팀원들과 함께 고민하고 의견을 나누는 과정이 생각보다 즐거웠고, 협업 속에서 자연스럽게 흥미와 동기를 얻을 수 있었습니다.</p>
+        <p style="font-size:12px;color:#374151;line-height:1.8;margin-top:6px">또한 프로젝트를 진행하는 동안 Claude와 같은 AI 도구를 실제로 활용해보면서, 도구를 효과적으로 사용하는 방법에 대한 감각도 키울 수 있었습니다. 정보를 찾고 정리하는 방식 자체가 달라진 것 같아 뿌듯함을 느꼈습니다.</p>
+      </div>
+
+      <!-- 장은비 -->
+      <div class="card" style="border-left:4px solid #f97316;flex:1;overflow:auto">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px">
+          <span style="font-size:15px;font-weight:700;color:#ea580c">장은비</span>
+          <span style="font-size:11px;color:#6b7280">2024100158</span>
+        </div>
+        <p style="font-size:12px;color:#374151;line-height:1.8">이번 프로젝트에서 더미데이터 생성 규칙과 분석설계를 작성해보면서, Claude를 통해 설계의 명확성이 얼마나 중요한지 느꼈습니다. 데이터 규칙을 정의하고 분석 방법을 기획하는 과정에서 이론으로만 배우던 신뢰도, 타당도, 집단비교 같은 개념들을 직접 적용해볼 수 있었습니다. 산출물을 검토하면서 설계 의도가 실제 분석 결과에 어떻게 반영되는지 확인했고, 그 과정에서 데이터 분석에 대한 이해가 한 단계 깊어진 것 같습니다. 팀원들과 함께 산출물을 검토하면서 문항의 문제를 찾아내고 차트를 개선해야 한다는 것을 확인했습니다. 설계 의도와 실제 결과를 비교하고 조정하는 과정이 필요했고, 그러한 피드백 과정을 통해 더 정교한 분석이 이루어질 수 있다는 것을 배웠습니다.</p>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- 이선학 -->
+      <div class="card" style="border-left:4px solid #22c55e;flex:1;overflow:auto">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px">
+          <span style="font-size:15px;font-weight:700;color:#15803d">이선학</span>
+          <span style="font-size:11px;color:#6b7280">2024100761</span>
+        </div>
+        <p style="font-size:12px;color:#374151;line-height:1.8">관련 분야에 대한 지식이 충분하지 않은 상태에서 AI를 활용하다 보면, AI가 조금만 앞서 나가도 그 결과물이 맞는지 틀린지 판단하기 어려운 순간이 찾아온다. 이번 작업을 통해 AI와의 협업에서는 작은 단계마다 승인을 받는 Human-in-the-loop가 단순한 형식이 아니라 실질적인 품질 관리 장치임을 체감했다. 검증 없이 몇 단계를 넘어가면 방향 자체가 틀어지기 쉽고, 그것을 뒤늦게 되돌리는 비용이 훨씬 크다는 것도 깨달았다.</p>
+        <p style="font-size:12px;color:#374151;line-height:1.8;margin-top:6px">그럼에도 이번 작업 전반은 매우 의미 있는 경험이었다. AI를 활용해 평가 문항을 설계하고, 더미데이터를 생성한 뒤, 평가 도구 자체의 질(신뢰도·타당도)과 성취 수준을 동시에 분석하는 파이프라인을 직접 구축하고 검증해 본 경험은 단순한 결과물 이상의 가치를 지닌다. CTT 분석의 흐름을 실제 데이터를 통해 체득했다는 점에서 스스로에게 가장 값진 성과였다.</p>
+      </div>
+
+      <!-- 유용주 -->
+      <div class="card" style="border-left:4px solid #a855f7;flex:1;overflow:auto">
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px">
+          <span style="font-size:15px;font-weight:700;color:#7e22ce">유용주</span>
+          <span style="font-size:11px;color:#6b7280">2024100023</span>
+        </div>
+        <p style="font-size:12px;color:#374151;line-height:1.8">이번 프로젝트는 설문 설계와 성취도 설계를 Claude Code를 이용해 구현했다. 하네스 설계로 파이프라인을 만들면 각 단계를 확인하며 진행할 수 있었고, 설계를 의도한 대로 명확하게 작성하는 과정이 중요하다고 느꼈다. 설문 문항과 성취도 문항을 만들고 더미 데이터를 활용한 분석 과정을 검토하며 이론 내용을 복습할 수 있었다.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button onclick="go(-1)">◀</button>
+  <div class="counter" id="counter">1 / 19</div>
+  <button onclick="go(1)">▶</button>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────
+const ITEMS_DATA = [
+  {id:'item_1_01',unit:'학습1',내용:'1-1. AI 서비스 구성요소 및 적용분야 파악',행동:'지식(K)',bloom:'Remember',인지:'지식/이해',난이도:'하',배점:4,유형:'진위형'},
+  {id:'item_1_02',unit:'학습1',내용:'1-2. AI 서비스 응용범위 식별',행동:'지식(K)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'연결형'},
+  {id:'item_1_03',unit:'학습1',내용:'1-3. AI 서비스 필요요소 도출 (Device·Platform·Policy)',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_1_04',unit:'학습1',내용:'1-4. AI 서비스 활용방안 분석 (PEST·3C·SWOT·STP·4C)',행동:'기술(S)',bloom:'Apply',인지:'적용',난이도:'상',배점:10,유형:'선다형'},
+  {id:'item_1_05',unit:'학습1',내용:'1-3. AI 서비스 필요요소 도출 (Policy 유형)',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_1_06',unit:'학습1',내용:'1-4. AI 서비스 활용방안 분석 (3C 분석)',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_1_07',unit:'학습1',내용:'1-2·3. 응용범위 식별 및 필요요소 도출 (통합)',행동:'기술(S)',bloom:'Apply',인지:'적용',난이도:'중',배점:5,유형:'서논술형'},
+  {id:'item_2_01',unit:'학습2',내용:'2-1. 비즈니스 모델 파악 (Narrative/Number Test)',행동:'지식(K)',bloom:'Remember',인지:'지식/이해',난이도:'하',배점:4,유형:'완성형'},
+  {id:'item_2_02',unit:'학습2',내용:'2-3. 잠재시장 고객 니즈 파악',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_2_03',unit:'학습2',내용:'2-4. 비즈니스 모델 활용전략 수립 (STP 전략)',행동:'기술(S)',bloom:'Apply',인지:'적용',난이도:'상',배점:10,유형:'선다형'},
+  {id:'item_2_04',unit:'학습2',내용:'2-2. 잠재시장 파악',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_2_05',unit:'학습2',내용:'2-5. 비즈니스 모델 중·장기 활용확대 기획',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_2_06',unit:'학습2',내용:'2-1. 비즈니스 모델 파악 (Narrative Test 이해)',행동:'지식(K)',bloom:'Understand',인지:'지식/이해',난이도:'하',배점:4,유형:'선다형'},
+  {id:'item_2_07',unit:'학습2',내용:'2-4·5. 전략수립 및 중장기 기획 (통합)',행동:'기술(S)',bloom:'Apply',인지:'적용',난이도:'상',배점:10,유형:'서논술형'},
+  {id:'item_3_01',unit:'학습3',내용:'3-2. AI 서비스 고객 세분화 기준 (4가지)',행동:'지식(K)',bloom:'Remember',인지:'지식/이해',난이도:'하',배점:4,유형:'선다형'},
+  {id:'item_3_02',unit:'학습3',내용:'3-1·3-3. 상품 특장점 파악 및 고객특성 도출',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'연결형'},
+  {id:'item_3_03',unit:'학습3',내용:'3-4. 상품화계획 수립 (시장성·수익성·기술)',행동:'태도(A)',bloom:'Apply',인지:'적용',난이도:'상',배점:10,유형:'선다형'},
+  {id:'item_3_04',unit:'학습3',내용:'3-3. AI 서비스 고객특성 도출',행동:'기술(S)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_3_05',unit:'학습3',내용:'3-4. 상품화계획 수립 (수익성 검토)',행동:'기술(S)',bloom:'Apply',인지:'적용',난이도:'중',배점:5,유형:'선다형'},
+  {id:'item_3_06',unit:'학습3',내용:'3-1. AI 서비스 상품 특장점 파악 (부가기능)',행동:'지식(K)',bloom:'Remember',인지:'지식/이해',난이도:'하',배점:4,유형:'선다형'},
+  {id:'item_3_07',unit:'학습3',내용:'3-2·3·4. 고객 세분화 → 고객특성 → 상품화계획',행동:'지식(K)',bloom:'Understand',인지:'지식/이해',난이도:'중',배점:5,유형:'완성형'},
+];
+
+const CTT_STATS = [
+  {id:'item_1_01',P:0.683,D:0.370,rpb:0.285},
+  {id:'item_1_02',P:0.480,D:0.556,rpb:0.353},
+  {id:'item_1_03',P:0.495,D:0.565,rpb:0.390},
+  {id:'item_1_04',P:0.343,D:0.565,rpb:0.342},
+  {id:'item_1_05',P:0.508,D:0.537,rpb:0.352},
+  {id:'item_1_06',P:0.555,D:0.519,rpb:0.330},
+  {id:'item_1_07',P:0.503,D:0.463,rpb:0.314},
+  {id:'item_2_01',P:0.678,D:0.426,rpb:0.301},
+  {id:'item_2_02',P:0.498,D:0.630,rpb:0.367},
+  {id:'item_2_03',P:0.340,D:0.602,rpb:0.326},
+  {id:'item_2_04',P:0.518,D:0.565,rpb:0.346},
+  {id:'item_2_05',P:0.515,D:0.528,rpb:0.339},
+  {id:'item_2_06',P:0.673,D:0.444,rpb:0.326},
+  {id:'item_2_07',P:0.348,D:0.593,rpb:0.328},
+  {id:'item_3_01',P:0.675,D:0.472,rpb:0.359},
+  {id:'item_3_02',P:0.500,D:0.500,rpb:0.322},
+  {id:'item_3_03',P:0.345,D:0.602,rpb:0.353},
+  {id:'item_3_04',P:0.465,D:0.565,rpb:0.355},
+  {id:'item_3_05',P:0.475,D:0.546,rpb:0.379},
+  {id:'item_3_06',P:0.670,D:0.444,rpb:0.352},
+  {id:'item_3_07',P:0.493,D:0.565,rpb:0.347},
+];
+
+// ── NAVIGATION ───────────────────────────────────────────────
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+const total = slides.length;
+
+function go(dir) {
+  slides[current].classList.remove('active');
+  current = (current + dir + total) % total;
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width = (current / (total-1) * 100) + '%';
+  document.getElementById('counter').textContent = (current+1) + ' / ' + total;
+  // Wright Map은 컨테이너 너비가 확정된 뒤 렌더링
+  if (slides[current].querySelector('#wright-map-svg')) {
+    requestAnimationFrame(() => buildWrightMap());
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') { e.preventDefault(); go(1); }
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') { e.preventDefault(); go(-1); }
+});
+
+// ── CORRELATION MATRIX DATA ─────────────────────────────────
+const CORR_MATRIX = [
+  [1.0,0.487,0.573,0.56,0.614,0.003,-0.084,0.027,-0.019,-0.044,-0.021,0.043,0.006,0.022,0.117,0.003,-0.013],
+  [0.487,1.0,0.519,0.508,0.54,0.019,-0.041,0.037,0.037,0.045,0.014,0.019,0.004,0.029,0.121,0.023,0.022],
+  [0.573,0.519,1.0,0.586,0.6,-0.055,-0.094,-0.04,-0.055,-0.029,0.009,0.068,-0.015,-0.051,0.019,0.01,-0.052],
+  [0.56,0.508,0.586,1.0,0.597,-0.055,-0.107,-0.058,-0.104,-0.014,0.007,0.03,0.021,-0.017,0.012,-0.075,-0.076],
+  [0.614,0.54,0.6,0.597,1.0,-0.031,-0.054,0.052,-0.003,0.081,0.004,0.032,0.009,0.018,0.031,0.028,-0.025],
+  [0.003,0.019,-0.055,-0.055,-0.031,1.0,0.529,0.589,0.516,0.605,0.019,-0.019,0.026,0.135,0.077,-0.005,0.0],
+  [-0.084,-0.041,-0.094,-0.107,-0.054,0.529,1.0,0.487,0.526,0.551,0.037,-0.006,-0.014,0.09,0.033,0.02,0.023],
+  [0.027,0.037,-0.04,-0.058,0.052,0.589,0.487,1.0,0.537,0.583,0.1,0.012,0.046,0.107,0.073,-0.02,-0.009],
+  [-0.019,0.037,-0.055,-0.104,-0.003,0.516,0.526,0.537,1.0,0.587,0.016,-0.022,-0.002,0.102,0.054,0.016,0.062],
+  [-0.044,0.045,-0.029,-0.014,0.081,0.605,0.551,0.583,0.587,1.0,0.02,0.054,-0.009,0.192,0.071,0.029,0.041],
+  [-0.021,0.014,0.009,0.007,0.004,0.019,0.037,0.1,0.016,0.02,1.0,0.598,0.538,-0.01,-0.009,0.027,0.036],
+  [0.043,0.019,0.068,0.03,0.032,-0.019,-0.006,0.012,-0.022,0.054,0.598,1.0,0.563,-0.005,0.005,-0.038,0.041],
+  [0.006,0.004,-0.015,0.021,0.009,0.026,-0.014,0.046,-0.002,-0.009,0.538,0.563,1.0,0.024,0.024,-0.011,0.008],
+  [0.022,0.029,-0.051,-0.017,0.018,0.135,0.09,0.107,0.102,0.192,-0.01,-0.005,0.024,1.0,0.547,0.077,0.046],
+  [0.117,0.121,0.019,0.012,0.031,0.077,0.033,0.073,0.054,0.071,-0.009,0.005,0.024,0.547,1.0,0.015,0.027],
+  [0.003,0.023,0.01,-0.075,0.028,-0.005,0.02,-0.02,0.016,0.029,0.027,-0.038,-0.011,0.077,0.015,1.0,0.623],
+  [-0.013,0.022,-0.052,-0.076,-0.025,0.0,0.023,-0.009,0.062,0.041,0.036,0.041,0.008,0.046,0.027,0.623,1.0]
+];
+const CORR_LABELS = ['교육1','교육2','교육3','교육4','교육5','강사1','강사2','강사3','강사4','강사5','시설1','시설2','시설3','취업1','취업2','전반1','전반2'];
+const DOMAIN_GROUPS = [{name:'교육내용',color:'#dbeafe',n:5},{name:'강사',color:'#dcfce7',n:5},{name:'운영시설',color:'#fef3c7',n:3},{name:'취업지원',color:'#fee2e2',n:2},{name:'전반만족',color:'#f3e8ff',n:2}];
+
+const FACTOR_LOADINGS = [
+  // [F1_교육, F2_강사, F3_시설, F4_취업지원, F5_전반만족]  ← F4↔F5 교환으로 대각 구조
+  [0.747,-0.022,0.002, 0.065,-0.002],[0.671,0.034,0.005, 0.07, 0.032],
+  [0.766,-0.057,0.017,-0.042,-0.011],[0.754,-0.072,0.015,-0.027,-0.082],
+  [0.803,0.03,0.006,-0.007,0.017],
+  [-0.016,0.753,-0.001, 0.068,-0.018],[-0.086,0.692,-0.004, 0.015, 0.017],
+  [0.02,0.739,0.056, 0.05,-0.028],[-0.023,0.724,-0.016, 0.035, 0.037],
+  [0.029,0.798,0.015, 0.076, 0.03],
+  [-0.004,0.041,0.758,-0.02, 0.035],[0.042,-0.004,0.791,-0.004,-0.005],
+  [-0.002,0.002,0.711, 0.027,-0.008],
+  [-0.004,0.131,0.0,  0.574, 0.055],[0.064,0.021,0.007, 0.949,-0.009],
+  [0.008,0.0,-0.019,  0.029, 0.907],[-0.031,0.021,0.031, 0.031, 0.686]
+];
+const FACTOR_NAMES = ['F1 교육내용','F2 강사','F3 운영시설','F4 취업지원','F5 전반만족'];
+
+function buildWrightMap() {
+  const el = document.getElementById('wright-map-svg');
+  if (!el) return;
+  const W = el.offsetWidth || 680, H = el.offsetHeight || 460;
+  const AXIS_X = Math.round(W * 0.40);
+  const PT = 26, PB = 22;
+  const CH = H - PT - PB;
+  const LMIN = -3.0, LMAX = 2.5;
+  const yL = v => PT + CH * (1 - (v - LMIN) / (LMAX - LMIN));
+  const FS = Math.max(9, Math.round(H / 48));  // 높이에 비례한 폰트 크기
+  const DR = Math.max(5, Math.round(H / 80));  // 높이에 비례한 도트 반지름
+  const DOT_GAP = DR * 4.5;
+
+  // Person ability histogram (bin center → count)
+  const hist = [
+    [-2.75,5],[-2.25,3],[-1.75,11],[-1.25,26],[-0.75,55],
+    [-0.25,62],[0.25,70],[0.75,53],[1.25,37],[1.75,15],[2.25,34]
+  ];
+  const maxCnt = 70, maxBarW = AXIS_X - 36;
+  const bH = CH / hist.length * 0.76;
+
+  // Item difficulty data
+  const items = [
+    {logit:0.663,diff:'상',id:'2-03'},{logit:0.652,diff:'상',id:'1-04'},
+    {logit:0.641,diff:'상',id:'3-03'},{logit:0.630,diff:'상',id:'2-07'},
+    {logit:0.140,diff:'중',id:'3-04'},{logit:0.100,diff:'중',id:'3-05'},
+    {logit:0.080,diff:'중',id:'1-02'},{logit:0.030,diff:'중',id:'3-07'},
+    {logit:0.020,diff:'중',id:'1-03'},{logit:0.010,diff:'중',id:'2-02'},
+    {logit:0.000,diff:'중',id:'3-02'},{logit:-0.010,diff:'중',id:'1-07'},
+    {logit:-0.030,diff:'중',id:'1-05'},{logit:-0.060,diff:'중',id:'2-05'},
+    {logit:-0.070,diff:'중',id:'2-04'},{logit:-0.221,diff:'중',id:'1-06'},
+    {logit:-0.708,diff:'하',id:'3-06'},{logit:-0.720,diff:'하',id:'2-06'},
+    {logit:-0.731,diff:'하',id:'3-01'},{logit:-0.742,diff:'하',id:'2-01'},
+    {logit:-0.765,diff:'하',id:'1-01'}
+  ];
+  const dC = {하:'#22c55e',중:'#f59e0b',상:'#ef4444'};
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif;display:block">`;
+
+  // Background panels
+  s += `<rect x="0" y="0" width="${AXIS_X}" height="${H}" fill="#eff6ff" rx="5"/>`;
+  s += `<rect x="${AXIS_X+1}" y="0" width="${W-AXIS_X-1}" height="${H}" fill="#fffbeb" rx="5"/>`;
+
+  // Panel headers
+  s += `<text x="${AXIS_X/2}" y="16" text-anchor="middle" font-size="${FS+1}" font-weight="600" fill="#1e40af">피험자 역량 분포 (N=400)</text>`;
+  s += `<text x="${AXIS_X+(W-AXIS_X)/2}" y="16" text-anchor="middle" font-size="${FS+1}" font-weight="600" fill="#92400e">문항 난이도</text>`;
+
+  // Center axis
+  s += `<line x1="${AXIS_X}" y1="${PT}" x2="${AXIS_X}" y2="${H-PB}" stroke="#374151" stroke-width="2"/>`;
+
+  // Logit ticks (-3 to +2)
+  for (let l = -3; l <= 2; l++) {
+    const yv = yL(l);
+    s += `<line x1="${AXIS_X-5}" y1="${yv}" x2="${AXIS_X+5}" y2="${yv}" stroke="#374151" stroke-width="1.5"/>`;
+    s += `<text x="${AXIS_X}" y="${yv-3}" text-anchor="middle" font-size="${FS}" font-weight="600" fill="#374151">${l>0?'+':''}${l}</text>`;
+  }
+  s += `<text x="${AXIS_X}" y="${H-4}" text-anchor="middle" font-size="${FS-1}" fill="#9ca3af">로짓(logit)</text>`;
+
+  // Person bars
+  hist.forEach(([center,cnt]) => {
+    if (center < LMIN || center > LMAX+0.5) return;
+    const yv = yL(center + 0.25);
+    const bw = (cnt / maxCnt) * maxBarW;
+    const bx = AXIS_X - bw - 5;
+    const op = (0.45 + 0.55 * cnt / maxCnt).toFixed(2);
+    s += `<rect x="${bx}" y="${yv-bH/2}" width="${bw}" height="${bH}" fill="#3b82f6" opacity="${op}" rx="2"/>`;
+    if (cnt >= 15) s += `<text x="${bx-3}" y="${yv + FS*0.36}" text-anchor="end" font-size="${FS}" fill="#1d4ed8" font-weight="600">${cnt}</text>`;
+  });
+  s += `<text x="8" y="${PT+FS+2}" font-size="${FS}" fill="#3b82f6" font-weight="600">↑ 고역량</text>`;
+  s += `<text x="8" y="${H-PB-4}" font-size="${FS}" fill="#3b82f6" font-weight="600">↓ 저역량</text>`;
+
+  // Mean ability line
+  const mY = yL(0.48);
+  s += `<line x1="10" y1="${mY}" x2="${AXIS_X-4}" y2="${mY}" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+  s += `<text x="12" y="${mY-4}" font-size="${FS}" fill="#8b5cf6" font-weight="600">평균 0.48</text>`;
+
+  // Highlight bands
+  const h1 = yL(0.70), h2 = yL(0.58);
+  s += `<rect x="${AXIS_X+1}" y="${h1}" width="${W-AXIS_X-1}" height="${Math.max(4,h2-h1)}" fill="#fef2f2" opacity="0.6"/>`;
+  const e1 = yL(-0.65), e2 = yL(-0.82);
+  s += `<rect x="${AXIS_X+1}" y="${e1}" width="${W-AXIS_X-1}" height="${Math.max(4,e2-e1)}" fill="#f0fdf4" opacity="0.6"/>`;
+
+  // Item dots — 2-pass: 점 배치 후 라벨 Y를 벌려서 겹침 방지
+  const ITEM_X0 = AXIS_X + DR + 8;
+  const bkts = {};
+  const minSpc = FS + 3; // 라벨 최소 간격
+
+  // 1단계: 각 문항의 dot (cx, yv) 계산
+  const itemR = [...items].sort((a,b) => b.logit - a.logit).map(it => {
+    const yv = yL(it.logit);
+    const bk = Math.round(yv / (DR * 2.2));
+    if (!bkts[bk]) bkts[bk] = 0;
+    const cx = ITEM_X0 + bkts[bk] * DOT_GAP;
+    bkts[bk]++;
+    return { ...it, yv, cx };
+  });
+
+  // 라벨 열 X (dot 오른쪽에 고정)
+  const maxCol = Object.values(bkts).reduce((a,b) => Math.max(a,b), 0);
+  const lblX = ITEM_X0 + maxCol * DOT_GAP + DR + 6;
+
+  // 2단계: 라벨 Y 위치 — 위→아래 순서로 최소 간격 유지
+  const lblY = itemR.map(it => it.yv);
+  for (let i = 1; i < lblY.length; i++) {
+    if (lblY[i] < lblY[i-1] + minSpc) lblY[i] = lblY[i-1] + minSpc;
+  }
+
+  // dot 먼저 렌더
+  itemR.forEach(it => {
+    s += `<circle cx="${it.cx}" cy="${it.yv}" r="${DR}" fill="${dC[it.diff]}" stroke="white" stroke-width="1.5"/>`;
+  });
+
+  // 연결선 + 라벨 렌더
+  itemR.forEach((it, i) => {
+    const ly = lblY[i];
+    if (Math.abs(ly - it.yv) > 4) {
+      s += `<line x1="${it.cx}" y1="${it.yv}" x2="${lblX - 4}" y2="${ly}" stroke="#d1d5db" stroke-width="0.8" opacity="0.8"/>`;
+    }
+    s += `<text x="${lblX}" y="${ly + FS*0.36}" font-size="${FS}" fill="#374151">${it.id}</text>`;
+  });
+
+  // Legend
+  const lx = W - 90, ly = H - 8;
+  ['상','중','하'].forEach((d,i) => {
+    s += `<circle cx="${lx}" cy="${ly - i*(DR*2+6)}" r="${DR}" fill="${dC[d]}"/>`;
+    s += `<text x="${lx+DR+5}" y="${ly - i*(DR*2+6) + FS*0.36}" font-size="${FS}" fill="#374151">${d} 난이도</text>`;
+  });
+
+  s += '</svg>';
+  el.innerHTML = s;
+}
+
+function corrBg(r,isdiag){if(isdiag)return'#374151';if(r>=0.60)return'#1d4ed8';if(r>=0.40)return'#60a5fa';if(r>=0.20)return'#bfdbfe';if(r>=-0.10)return'#f1f5f9';return'#fecaca';}
+function corrFg(r,isdiag){return(isdiag||r>=0.40)?'white':'#374151';}
+
+function populateCorr() {
+  const el = document.getElementById('corr-matrix-container');
+  if (!el) return;
+  const groups = DOMAIN_GROUPS;
+  let html = '<table style="border-collapse:collapse;font-size:9.5px">';
+  // Domain group header
+  html += '<tr><td style="padding:2px 4px;border:none"></td>';
+  groups.forEach(g => {
+    html += `<td colspan="${g.n}" style="text-align:center;font-weight:700;font-size:10px;background:${g.color};padding:2px 4px;border:1px solid white">${g.name}</td>`;
+  });
+  html += '</tr>';
+  // Column label row
+  html += '<tr><td></td>';
+  CORR_LABELS.forEach(l => { html += `<td style="text-align:center;padding:1px 3px;font-size:8.5px;color:#6b7280;writing-mode:horizontal-tb">${l}</td>`; });
+  html += '</tr>';
+  // Data rows
+  let rowIdx = 0;
+  groups.forEach(g => {
+    for (let gi = 0; gi < g.n; gi++) {
+      const i = rowIdx;
+      html += `<tr><td style="text-align:right;padding:1px 5px;font-size:8.5px;background:${g.color};font-weight:600;white-space:nowrap">${CORR_LABELS[i]}</td>`;
+      CORR_MATRIX[i].forEach((val, j) => {
+        const isDiag = i === j;
+        const bg = corrBg(val, isDiag);
+        const fg = corrFg(val, isDiag);
+        const disp = isDiag ? '—' : (Math.abs(val) < 0.10 ? '' : val.toFixed(2));
+        html += `<td title="${CORR_LABELS[i]}×${CORR_LABELS[j]}: ${val.toFixed(3)}" style="padding:2px 3px;text-align:center;background:${bg};color:${fg};border:1px solid rgba(255,255,255,0.4);min-width:28px">${disp}</td>`;
+      });
+      html += '</tr>';
+      rowIdx++;
+    }
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+function populateLoadings() {
+  const el = document.getElementById('loadings-container');
+  if (!el) return;
+  let html = '<table style="border-collapse:collapse;font-size:10px;width:100%">';
+  html += '<tr><td style="padding:3px"></td>';
+  FACTOR_NAMES.forEach(f => { html += `<td style="text-align:center;padding:3px 5px;font-weight:700;font-size:9.5px;color:#374151;white-space:nowrap">${f}</td>`; });
+  html += '</tr>';
+  let domainColors = ['#dbeafe','#dcfce7','#fef3c7','#fee2e2','#f3e8ff'];
+  let groupIdx = 0, groupCount = 0;
+  const groupSizes = [5,5,3,2,2];
+  FACTOR_LOADINGS.forEach((row, i) => {
+    if (groupCount >= groupSizes[groupIdx]) { groupIdx++; groupCount = 0; }
+    const bg0 = domainColors[groupIdx];
+    html += `<tr><td style="text-align:right;padding:1px 6px;background:${bg0};font-size:9px;white-space:nowrap;font-weight:600">${CORR_LABELS[i]}</td>`;
+    row.forEach(val => {
+      const abs = Math.abs(val);
+      const bg = abs>=0.60?'#1d4ed8':abs>=0.40?'#60a5fa':abs>=0.20?'#bfdbfe':'#f9fafb';
+      const fg = abs>=0.40?'white':'#6b7280';
+      html += `<td style="padding:2px 4px;text-align:center;background:${bg};color:${fg};border:1px solid rgba(255,255,255,0.3);font-size:9.5px">${val.toFixed(2)}</td>`;
+    });
+    html += '</tr>';
+    groupCount++;
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+// ── SURVEY ITEMS DATA ────────────────────────────────────────
+const SURVEY_ITEMS = [
+  {var:'gender',    영역:'인구통계', 지표:'성별',             내용:'귀하의 성별은 무엇입니까?',                                             유형:'선택형(2지)',  척도:'명목'},
+  {var:'age',       영역:'인구통계', 지표:'연령',             내용:'귀하의 연령대는 어떻게 됩니까?',                                        유형:'선택형(4지)',  척도:'명목'},
+  {var:'education', 영역:'인구통계', 지표:'학력',             내용:'귀하의 최종 학력은 무엇입니까?',                                        유형:'선택형(3지)',  척도:'명목'},
+  {var:'career',    영역:'인구통계', 지표:'경력',             내용:'귀하의 총 직장 경력은 어느 정도입니까?',                                유형:'선택형(5지)',  척도:'명목'},
+  {var:'ai_exp',    영역:'인구통계', 지표:'AI 경험',          내용:'본 과정 수강 전, 인공지능(AI) 관련 분야 활용 경험이 있습니까?',          유형:'선택형(4지)',  척도:'명목'},
+  {var:'purpose',   영역:'인구통계', 지표:'참여 목적',        내용:'본 과정에 참여하신 주된 목적은 무엇입니까?',                            유형:'선택형(3지)',  척도:'명목'},
+  {var:'content_sat_1', 영역:'교육내용', 지표:'현장 적합성',        내용:'교육 내용은 실제 현장 업무와 연관성이 높았습니다.',                      유형:'Likert 5점', 척도:'등간'},
+  {var:'content_sat_2', 영역:'교육내용', 지표:'실무 활용 가능성',    내용:'교육에서 배운 내용은 실무에 직접 적용 가능합니다.',                      유형:'Likert 5점', 척도:'등간'},
+  {var:'content_sat_3', 영역:'교육내용', 지표:'최신 기술 반영',      내용:'교육 내용은 최신 AI 서비스 기획 관련 기술 동향을 반영하고 있습니다.',    유형:'Likert 5점', 척도:'등간'},
+  {var:'content_sat_4', 영역:'교육내용', 지표:'난이도 적절성',       내용:'교육 내용의 난이도는 본 과정 수강생에게 적절하였습니다.',                유형:'Likert 5점', 척도:'등간'},
+  {var:'content_sat_5', 영역:'교육내용', 지표:'NCS 기준 부합성',     내용:'교육 내용은 NCS에서 요구하는 지식과 기술을 충실히 다루었습니다.',        유형:'Likert 5점', 척도:'등간'},
+  {var:'prof_sat_1',    영역:'강사',    지표:'전문성',              내용:'강사는 AI 서비스 활용 기획 분야에 충분한 전문 지식을 갖추고 있었습니다.',  유형:'Likert 5점', 척도:'등간'},
+  {var:'prof_sat_2',    영역:'강사',    지표:'전달력',              내용:'강사는 교육 내용을 이해하기 쉽게 설명하였습니다.',                      유형:'Likert 5점', 척도:'등간'},
+  {var:'prof_sat_3',    영역:'강사',    지표:'교육 열정',           내용:'강사는 교육에 적극적인 태도로 임하였습니다.',                           유형:'Likert 5점', 척도:'등간'},
+  {var:'prof_sat_4',    영역:'강사',    지표:'상호작용 능력',       내용:'강사는 훈련생의 수준에 맞게 강의 속도와 설명 방식을 조절하였습니다.',     유형:'Likert 5점', 척도:'등간'},
+  {var:'prof_sat_5',    영역:'강사',    지표:'실무 경험',           내용:'강사는 실제 현장 경험을 바탕으로 구체적인 사례를 제시하였습니다.',        유형:'Likert 5점', 척도:'등간'},
+  {var:'fac_sat_1',     영역:'운영시설', 지표:'장비 최신성',        내용:'교육에 사용된 장비 및 소프트웨어는 실습 진행에 문제없이 작동하였습니다.',  유형:'Likert 5점', 척도:'등간'},
+  {var:'fac_sat_2',     영역:'운영시설', 지표:'쾌적성',             내용:'교육장의 온도·조명·소음 등 학습 환경은 쾌적하였습니다.',                유형:'Likert 5점', 척도:'등간'},
+  {var:'fac_sat_3',     영역:'운영시설', 지표:'행정지원 친절도',    내용:'행정 담당자는 수강 관련 문의 및 요청에 친절하게 응대하였습니다.',         유형:'Likert 5점', 척도:'등간'},
+  {var:'job_sat_1',     영역:'취업지원', 지표:'상담 충실도',        내용:'취업 관련 상담이 나의 상황과 목표에 맞게 충실하게 이루어졌습니다.',       유형:'Likert 5점', 척도:'등간'},
+  {var:'job_sat_2',     영역:'취업지원', 지표:'정보 제공 적정성',   내용:'취업 및 창업 관련 정보가 본 교육과정의 목적에 맞게 제공되었습니다.',      유형:'Likert 5점', 척도:'등간'},
+  {var:'overall_sat_1', 영역:'전반만족', 지표:'총체적 만족도',      내용:'본 교육과정 전반에 대해 만족하였습니다.',                               유형:'Likert 5점', 척도:'등간'},
+  {var:'overall_sat_2', 영역:'전반만족', 지표:'타인 추천 의향',     내용:'이 교육과정을 주변 지인에게 추천할 의향이 있습니다.',                    유형:'Likert 5점', 척도:'등간'},
+];
+
+// ── TABLES ───────────────────────────────────────────────────
+function populateItemCompare() {
+  const tbody = document.getElementById('compare-tbody');
+  if (!tbody) return;
+  const expectedRange = {하:'P ≥ 0.70', 중:'0.40 ≤ P < 0.70', 상:'P < 0.40'};
+  const diffBadge = {하:'b-green', 중:'b-yellow', 상:'b-red'};
+  let html = '';
+  ITEMS_DATA.forEach(it => {
+    const stat = CTT_STATS.find(s => s.id === it.id);
+    if (!stat) return;
+    const P = stat.P;
+    const pLabel = P >= 0.70 ? '쉬움' : P < 0.40 ? '어려움' : '보통';
+    const pColor = P < 0.40 ? '#b91c1c' : P >= 0.70 ? '#1d4ed8' : '#374151';
+    const pBadge = P < 0.40 ? 'b-red' : P >= 0.70 ? 'b-blue' : 'b-yellow';
+    let match, matchBadge, rowBg = '';
+    if (it.난이도 === '하') {
+      if (P >= 0.70) { match = '✓'; matchBadge = 'b-green'; }
+      else { match = '△'; matchBadge = 'b-yellow'; rowBg = 'background:#fefce8'; }
+    } else if (it.난이도 === '중') {
+      match = (P >= 0.40 && P < 0.70) ? '✓' : '△';
+      matchBadge = match === '✓' ? 'b-green' : 'b-yellow';
+      rowBg = match === '△' ? 'background:#fefce8' : '';
+    } else {
+      match = P < 0.40 ? '✓' : '✗';
+      matchBadge = match === '✓' ? 'b-green' : 'b-red';
+    }
+    html += `<tr style="${rowBg}">
+      <td style="font-family:monospace;font-size:10px">${it.id}</td>
+      <td><span class="badge ${diffBadge[it.난이도]}" style="font-size:10px">${it.난이도}</span></td>
+      <td style="font-size:10px;color:#6b7280">${expectedRange[it.난이도]}</td>
+      <td style="text-align:center;font-weight:700;color:${pColor}">${P.toFixed(3)}</td>
+      <td><span class="badge ${pBadge}" style="font-size:10px">${pLabel}</span></td>
+      <td style="text-align:center"><span class="badge ${matchBadge}" style="font-size:11px">${match}</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function populateSurvey() {
+  const domainColor = {
+    '인구통계':'b-gray','교육내용':'b-blue','강사':'b-green',
+    '운영시설':'b-yellow','취업지원':'b-red','전반만족':'b-purple'
+  };
+  const domainBg = {
+    '인구통계':'#f9fafb','교육내용':'#eff6ff','강사':'#f0fdf4',
+    '운영시설':'#fefce8','취업지원':'#fff1f2','전반만족':'#fdf4ff'
+  };
+  let prev = '', html = '';
+  SURVEY_ITEMS.forEach(it => {
+    const rowBg = it.영역 !== '인구통계' ? '' : `style="background:${domainBg[it.영역]}"`;
+    const unitCell = it.영역 !== prev
+      ? `<td style="background:${domainBg[it.영역]};vertical-align:middle"><span class="badge ${domainColor[it.영역]}">${it.영역}</span></td>`
+      : `<td style="background:${domainBg[it.영역]}"></td>`;
+    const typeColor = it.유형==='Likert 5점' ? 'b-blue' : 'b-gray';
+    const scaleColor = it.척도==='등간' ? 'b-green' : 'b-gray';
+    html += `<tr>
+      <td style="font-family:monospace;font-size:10px;color:#374151">${it.var}</td>
+      ${unitCell}
+      <td style="font-size:11px;font-weight:600">${it.지표}</td>
+      <td style="font-size:11px;color:#374151">${it.내용}</td>
+      <td style="font-size:11px"><span class="badge ${typeColor}">${it.유형}</span></td>
+      <td style="text-align:center"><span class="badge ${scaleColor}">${it.척도}</span></td>
+    </tr>`;
+    prev = it.영역;
+  });
+  const el = document.getElementById('survey-tbody');
+  if (el) el.innerHTML = html;
+}
+
+function populateTwoWay() {
+  const diffBadge = {하:'b-green',중:'b-yellow',상:'b-red'};
+  const bloomColor = {Remember:'#15803d',Understand:'#1d4ed8',Apply:'#991b1b'};
+  const unitBadge = {학습1:'b-blue',학습2:'b-green',학습3:'b-purple'};
+  let prev = '', html = '';
+  ITEMS_DATA.forEach(it => {
+    const showUnit = it.unit !== prev;
+    html += `<tr>
+      <td style="font-family:monospace;font-size:10px">${it.id}</td>
+      <td style="font-size:11px">${it.내용}</td>
+      <td style="font-size:11px">${it.행동}</td>
+      <td style="font-size:11px;color:${bloomColor[it.bloom]};font-weight:600">${it.bloom}</td>
+      <td><span class="badge ${it.인지==='적용'?'b-yellow':'b-blue'}" style="font-size:10px">${it.인지}</span></td>
+      <td style="text-align:center"><span class="badge ${diffBadge[it.난이도]}" style="font-size:10px">${it.난이도}</span></td>
+      <td style="text-align:center;font-weight:700">${it.배점}</td>
+      <td style="font-size:11px">${it.유형}</td>
+    </tr>`;
+    prev = it.unit;
+  });
+  document.getElementById('twoway-tbody').innerHTML = html;
+}
+
+function populateP() {
+  const diffLabel = {하:'<span class="badge b-green" style="font-size:10px">하</span>',중:'<span class="badge b-yellow" style="font-size:10px">중</span>',상:'<span class="badge b-red" style="font-size:10px">상</span>'};
+  let html = '';
+  CTT_STATS.forEach(it => {
+    const label = it.P>=0.70?'쉬움':it.P<0.40?'어려움':'보통';
+    const pc = it.P<0.40?'#b91c1c':it.P>=0.70?'#1d4ed8':'#374151';
+    const bg = it.P<0.40?'background:#fff1f2':'';
+    const item = ITEMS_DATA.find(d=>d.id===it.id);
+    html += `<tr style="${bg}">
+      <td style="font-family:monospace;font-size:10px">${it.id}</td>
+      <td style="text-align:center;color:${pc};font-weight:700">${it.P.toFixed(3)}</td>
+      <td>${label==='어려움'?'<span class="badge b-red">어려움</span>':label==='쉬움'?'<span class="badge b-blue">쉬움</span>':'<span class="badge b-yellow">보통</span>'}</td>
+      <td style="text-align:center">${item?diffLabel[item.난이도]:''}</td>
+    </tr>`;
+  });
+  const el = document.getElementById('p-tbody');
+  if (el) el.innerHTML = html;
+}
+
+function populateD() {
+  let html = '';
+  CTT_STATS.forEach(it => {
+    const label = it.D>=0.40?'변별력 높음':it.D>=0.30?'변별력 있음':it.D>=0.20?'다소 낮음':'낮음';
+    const dc = it.D>=0.40?'#15803d':it.D>=0.30?'#1d4ed8':'#b91c1c';
+    const badge = it.D>=0.40?'b-green':it.D>=0.30?'b-yellow':'b-red';
+    html += `<tr>
+      <td style="font-family:monospace;font-size:10px">${it.id}</td>
+      <td style="text-align:center;color:${dc};font-weight:700">${it.D.toFixed(3)}</td>
+      <td><span class="badge ${badge}" style="font-size:10px">${label}</span></td>
+    </tr>`;
+  });
+  const el = document.getElementById('d-tbody');
+  if (el) el.innerHTML = html;
+}
+
+// ── CHARTS ───────────────────────────────────────────────────
+const FONT = {family:"'Noto Sans KR', sans-serif"};
+const commonOpts = {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:FONT,boxWidth:12}}}};
+
+function mkChart(id, cfg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  new Chart(el, cfg);
+}
+
+function initCharts() {
+  // S3: 만족도 영역별 문항 수
+  mkChart('chart-s3',{type:'doughnut',data:{
+    labels:['교육내용 (5)','강사 (5)','운영시설 (3)','취업지원 (2)','전반만족 (2)'],
+    datasets:[{data:[5,5,3,2,2],backgroundColor:['#3b82f6','#22c55e','#eab308','#ef4444','#a855f7'],borderWidth:2,borderColor:'white'}]
+  },options:{...commonOpts,plugins:{legend:{position:'right',labels:{font:FONT,boxWidth:12}}}}});
+
+  // S4: Bloom × 난이도
+  mkChart('chart-s4',{type:'bar',data:{
+    labels:['Remember','Understand','Apply'],
+    datasets:[
+      {label:'난이도 하',data:[5,0,0],backgroundColor:'#22c55e'},
+      {label:'난이도 중',data:[0,10,2],backgroundColor:'#eab308'},
+      {label:'난이도 상',data:[0,0,4],backgroundColor:'#ef4444'},
+    ]
+  },options:{...commonOpts,scales:{x:{stacked:true,ticks:{font:FONT}},y:{stacked:true,ticks:{stepSize:2,font:FONT},title:{display:true,text:'문항 수',font:FONT}}},plugins:{legend:{labels:{font:FONT,boxWidth:12}}}}});
+
+  // S6: 문항 유형
+  mkChart('chart-s6',{type:'doughnut',data:{
+    labels:['선다형 (14)','진위형 (1)','연결형 (2)','완성형 (2)','서논술형 (2)'],
+    datasets:[{data:[14,1,2,2,2],backgroundColor:['#3b82f6','#22c55e','#eab308','#f97316','#a855f7'],borderWidth:2,borderColor:'white'}]
+  },options:{...commonOpts,plugins:{legend:{position:'right',labels:{font:FONT,boxWidth:12}}}}});
+
+  // S7: 단원별 난이도 배점
+  mkChart('chart-s7',{type:'bar',data:{
+    labels:['학습1 (39점)','학습2 (43점)','학습3 (38점)'],
+    datasets:[
+      {label:'하 (4점)×문항수',data:[4,8,8],backgroundColor:'#22c55e'},
+      {label:'중 (5점)×문항수',data:[25,15,20],backgroundColor:'#eab308'},
+      {label:'상 (10점)×문항수',data:[10,20,10],backgroundColor:'#ef4444'},
+    ]
+  },options:{...commonOpts,scales:{x:{stacked:true,ticks:{font:FONT}},y:{stacked:true,ticks:{font:FONT},title:{display:true,text:'배점 (점)',font:FONT}}},plugins:{legend:{labels:{font:FONT,boxWidth:12}}}}});
+
+  // S9: AI 경험별 인원 수
+  mkChart('chart-s9',{type:'bar',data:{
+    labels:['경험 없음','개인적 활용','업무 부분적용','업무 주도적'],
+    datasets:[{
+      label:'인원 수 (명)',
+      data:[80,140,120,60],
+      backgroundColor:['#ef4444','#eab308','#22c55e','#3b82f6'],
+    }]
+  },options:{...commonOpts,plugins:{legend:{display:false}},scales:{x:{ticks:{font:FONT}},y:{title:{display:true,text:'인원 수 (명)',font:FONT},ticks:{font:FONT}}}}});
+
+  // S10: 집단별 ability 조정값
+  mkChart('chart-s10',{type:'bar',data:{
+    labels:['취업/스펙업','직무능력향상(권고)','경험없음','업무주도적 사용','30대','20대'],
+    datasets:[{
+      label:'능력 조정값',
+      data:[0.20,-0.20,-0.25,0.20,0.15,-0.10],
+      backgroundColor:d=>d.raw>=0?'#22c55e':'#ef4444',
+    }]
+  },options:{...commonOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{font:FONT},title:{display:true,text:'조정값 (σ)',font:FONT}},y:{ticks:{font:FONT}}}}});
+
+  // S12: 영역별 α
+  mkChart('chart-s12',{type:'bar',data:{
+    labels:['교육내용','강사','운영시설','취업지원','전반만족'],
+    datasets:[{
+      label:'Cronbach α',
+      data:[0.864,0.860,0.797,0.707,0.767],
+      backgroundColor:v=>v.raw>=0.80?'#22c55e':'#f97316',
+    }]
+  },options:{...commonOpts,indexAxis:'y',plugins:{
+    legend:{display:false},
+    annotation:{annotations:{line1:{type:'line',xMin:0.70,xMax:0.70,borderColor:'#3b82f6',borderDash:[5,3],borderWidth:2}}}
+  },scales:{x:{min:0.60,max:1.0,ticks:{font:FONT}},y:{ticks:{font:FONT}}}}});
+
+  // chart-diff-compare: 예상 vs 실제 난이도 비교
+  mkChart('chart-diff-compare',{type:'bar',data:{
+    labels: ITEMS_DATA.map(it=>it.id),
+    datasets:[{
+      label:'실제 P값',
+      data: ITEMS_DATA.map(it=>{const s=CTT_STATS.find(s=>s.id===it.id);return s?s.P:0;}),
+      backgroundColor: ITEMS_DATA.map(it=>it.난이도==='하'?'rgba(34,197,94,0.8)':it.난이도==='중'?'rgba(234,179,8,0.8)':'rgba(239,68,68,0.8)'),
+    },{
+      label:'P=0.70 (쉬움 기준)',
+      data: ITEMS_DATA.map(()=>0.70),
+      type:'line',borderColor:'#3b82f6',borderDash:[5,3],borderWidth:1.5,pointRadius:0,fill:false,
+    },{
+      label:'P=0.40 (어려움 기준)',
+      data: ITEMS_DATA.map(()=>0.40),
+      type:'line',borderColor:'#ef4444',borderDash:[5,3],borderWidth:1.5,pointRadius:0,fill:false,
+    }]
+  },options:{...commonOpts,indexAxis:'y',
+    plugins:{legend:{labels:{font:FONT,boxWidth:12}}},
+    scales:{
+      x:{min:0.2,max:0.85,title:{display:true,text:'P 값',font:FONT},ticks:{font:FONT}},
+      y:{ticks:{font:{...FONT,size:9}}}
+    }
+  }});
+
+  // chart-p-hist: P값 분포 히스토그램
+  mkChart('chart-p-hist',{type:'bar',data:{
+    labels:['0.30~0.40\n(어려움)','0.40~0.50','0.50~0.60','0.60~0.70\n(하 설계)'],
+    datasets:[{
+      label:'문항 수',
+      data:[4,4,8,5],
+      backgroundColor:['rgba(239,68,68,0.75)','rgba(234,179,8,0.75)','rgba(234,179,8,0.75)','rgba(34,197,94,0.75)'],
+      borderColor:['#ef4444','#eab308','#eab308','#22c55e'],
+      borderWidth:1.5,
+    }]
+  },options:{...commonOpts,
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>`${ctx.raw}문항`}}
+    },
+    scales:{
+      x:{ticks:{font:FONT}},
+      y:{title:{display:true,text:'문항 수',font:FONT},ticks:{font:FONT,stepSize:2},min:0,max:10}
+    }
+  }});
+
+  // chart-p: 문항별 P 가로 막대
+  mkChart('chart-p',{type:'bar',data:{
+    labels: CTT_STATS.map(it=>it.id),
+    datasets:[{
+      label:'P (난이도)',
+      data: CTT_STATS.map(it=>it.P),
+      backgroundColor: CTT_STATS.map(it=>it.P<0.40?'#ef4444':'#eab308'),
+    }]
+  },options:{...commonOpts,indexAxis:'y',plugins:{
+    legend:{display:false},
+    tooltip:{callbacks:{label:ctx=>`P = ${ctx.raw.toFixed(3)}`}}
+  },scales:{
+    x:{min:0,max:0.9,ticks:{font:FONT},title:{display:true,text:'P 값',font:FONT}},
+    y:{ticks:{font:{...FONT,size:10}}}
+  }}});
+
+  // chart-d: 문항별 D 가로 막대
+  mkChart('chart-d',{type:'bar',data:{
+    labels: CTT_STATS.map(it=>it.id),
+    datasets:[{
+      label:'D (변별도)',
+      data: CTT_STATS.map(it=>it.D),
+      backgroundColor: CTT_STATS.map(it=>it.D>=0.40?'#22c55e':'#eab308'),
+    }]
+  },options:{...commonOpts,indexAxis:'y',plugins:{
+    legend:{display:false},
+    tooltip:{callbacks:{label:ctx=>`D = ${ctx.raw.toFixed(3)}`}}
+  },scales:{
+    x:{min:0,max:0.75,ticks:{font:FONT},title:{display:true,text:'D 값',font:FONT}},
+    y:{ticks:{font:{...FONT,size:10}}}
+  }}});
+
+  // S14: 집단별 평균 총점
+  mkChart('chart-s14',{type:'bar',data:{
+    labels:['취업/스펙업','이직','직무능력향상','경험없음','개인활용','업무부분','업무주도적'],
+    datasets:[
+      {label:'참여 목적',data:[60.92,58.31,52.77,null,null,null,null],backgroundColor:'#3b82f6'},
+      {label:'AI 경험',data:[null,null,null,49.28,59.65,57.13,64.86],backgroundColor:'#22c55e'},
+    ]
+  },options:{...commonOpts,scales:{x:{ticks:{font:FONT}},y:{min:40,title:{display:true,text:'평균 총점 (점)',font:FONT},ticks:{font:FONT}}},plugins:{legend:{labels:{font:FONT,boxWidth:12}}}}});
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  populateSurvey();
+  populateTwoWay();
+  populateItemCompare();
+  populateP();
+  populateD();
+  populateCorr();
+  populateLoadings();
+  buildWrightMap();
+  initCharts();
+  document.getElementById('progress').style.width = '0%';
+});
+</script>
+</body>
+</html>
