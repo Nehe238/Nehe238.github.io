@@ -59,4 +59,786 @@
   .tab-panel.active{display:block}
 
   /* HERO */
-  .hero{background:linear-gradient(135deg,#0F172A 0%,#1E3A5F 50%,#1D4ED8
+  .hero{background:linear-gradient(135deg,#0F172A 0%,#1E3A5F 50%,#1D4ED8 100%);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(245,158,11,.3),transparent)}
+  .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:.375rem 1rem;font-size:.8rem;font-weight:600;color:#FCD34D;letter-spacing:.05em;margin-bottom:1.5rem;font-family:'DM Mono',monospace}
+  .hero h1{font-size:clamp(1.5rem,4vw,2.5rem);font-weight:900;color:#fff;line-height:1.2;margin-bottom:.75rem;position:relative}
+  .hero-sub{font-size:clamp(.9rem,2vw,1.1rem);color:#93C5FD;margin-bottom:2rem;font-weight:400}
+  .hero-meta{display:inline-flex;align-items:center;gap:.75rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:.5rem 1.5rem;font-size:.875rem;color:#CBD5E1;margin-bottom:2rem}
+  .hero-meta strong{color:#fff;font-weight:600}
+  .hero-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;position:relative}
+  .hero-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;position:relative}
+  .hero-stat{text-align:center}
+  .hero-stat .num{font-family:'DM Mono',monospace;font-size:1.75rem;font-weight:500;color:#fff;line-height:1}
+  .hero-stat .lbl{font-size:.75rem;color:#93C5FD;margin-top:.25rem}
+  .hero-stat .sub{font-size:.7rem;color:#64748B;margin-top:.15rem}
+
+  /* CONTAINER */
+  .container{max-width:1080px;margin:0 auto;padding:3rem 2rem}
+  .section{margin-bottom:2.5rem}
+  .section-title{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  .section-title .icon{width:28px;height:28px;border-radius:8px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+
+  /* CARD */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem}
+  .card+.card{margin-top:1rem}
+  .card-title{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:.75rem 1rem;text-align:left;font-size:.875rem}
+  th{background:var(--bg);font-weight:600;color:var(--text-2);border-bottom:2px solid var(--border);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+  td{border-bottom:1px solid var(--border);color:var(--text)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--bg)}
+  .num-cell{font-family:'DM Mono',monospace;font-weight:500}
+  .good{color:var(--green);font-weight:700}
+  .warn{color:var(--orange);font-weight:700}
+  .bad{color:var(--red);font-weight:700}
+  .bold{font-weight:700}
+
+  /* STAT GRID */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  @media(max-width:768px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;text-align:center;box-shadow:var(--shadow)}
+  .stat-card .val{font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;color:var(--orange);line-height:1}
+  .stat-card .lab{font-size:.8rem;color:var(--text-2);margin-top:.375rem}
+  .stat-card .note{font-size:.7rem;color:var(--text-3);margin-top:.2rem}
+
+  /* ALPHA BAR */
+  .alpha-row{display:flex;align-items:center;gap:1rem;padding:.625rem 0;border-bottom:1px solid var(--border)}
+  .alpha-row:last-child{border-bottom:none}
+  .alpha-label{width:90px;font-size:.85rem;font-weight:600}
+  .alpha-bar-wrap{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+  .alpha-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--orange),#FCD34D);transition:width .8s ease}
+  .alpha-val{font-family:'DM Mono',monospace;font-size:.875rem;font-weight:500;color:var(--orange);width:46px;text-align:right}
+  .alpha-level{font-size:.75rem;color:var(--text-3);width:70px}
+
+  /* INFO BOX */
+  .info-box{background:linear-gradient(135deg,var(--blue-light),#EFF6FF);border:1px solid #BFDBFE;border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.5rem;font-size:.875rem;color:var(--blue-dark)}
+  .info-box.orange{background:linear-gradient(135deg,var(--orange-light),#FFFBEB);border-color:#FDE68A;color:#92400E}
+  .info-box.green{background:var(--green-light);border-color:#6EE7B7;color:#065F46}
+  .info-box.red{background:var(--red-light);border-color:#FCA5A5;color:#991B1B}
+  .info-box .ib-title{font-weight:700;margin-bottom:.375rem;display:flex;align-items:center;gap:.5rem}
+
+  /* CHART */
+  .chart-wrap{text-align:center;margin:1.5rem 0}
+  .chart-wrap img{max-width:100%;border-radius:10px;box-shadow:var(--shadow)}
+  .chart-caption{font-size:.8rem;color:var(--text-3);margin-top:.5rem;text-align:center}
+
+  /* GRID 2COL */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+  @media(max-width:768px){.grid3{grid-template-columns:1fr}}
+
+  /* TAG */
+  .tag{display:inline-block;padding:.2rem .6rem;border-radius:100px;font-size:.72rem;font-weight:700;letter-spacing:.03em}
+  .tag-blue{background:var(--blue-light);color:var(--blue)}
+  .tag-orange{background:var(--orange-light);color:#B45309}
+  .tag-green{background:var(--green-light);color:#065F46}
+  .tag-red{background:var(--red-light);color:#991B1B}
+  .tag-purple{background:var(--purple-light);color:var(--purple)}
+
+  /* FINDING CARD */
+  .finding{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:.75rem;border-left:4px solid var(--orange)}
+  .finding.blue{border-left-color:var(--blue)}
+  .finding.green{border-left-color:var(--green)}
+  .finding.red{border-left-color:var(--red)}
+  .finding.purple{border-left-color:var(--purple)}
+  .finding-num{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--text-3);margin-bottom:.375rem}
+  .finding-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+  .finding-body{font-size:.875rem;color:var(--text-2);line-height:1.65}
+
+  /* BADGE */
+  .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .7rem;border-radius:100px;font-size:.75rem;font-weight:600}
+  .badge-pass{background:#D1FAE5;color:#065F46}
+  .badge-warn{background:#FEF3C7;color:#92400E}
+  .badge-fail{background:#FEE2E2;color:#991B1B}
+
+  /* VULN BOX */
+  .vuln-box{background:linear-gradient(135deg,#FEF2F2,#FFF7ED);border:2px solid #FECACA;border-radius:var(--radius);padding:1.5rem;text-align:center}
+  .vuln-score{font-family:'DM Mono',monospace;font-size:2.5rem;font-weight:700;color:var(--red)}
+  .vuln-label{font-size:.875rem;color:#991B1B;margin-top:.25rem;font-weight:600}
+  .vuln-vs{font-size:.8rem;color:var(--text-3);margin-top:.375rem}
+
+  /* SECTION HEADER */
+  .sec-header{background:linear-gradient(90deg,var(--orange),#FCD34D);color:#fff;padding:.75rem 1.5rem;border-radius:10px;font-size:1rem;font-weight:700;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
+
+  /* IMPROVEMENT */
+  .improve-item{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+  .improve-item:last-child{border-bottom:none}
+  .improve-priority{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:.1rem}
+  .pri-high{background:#FEE2E2;color:#991B1B}
+  .pri-med{background:#FEF3C7;color:#92400E}
+  .improve-content .title{font-weight:700;font-size:.9rem;color:var(--text);margin-bottom:.25rem}
+  .improve-content .desc{font-size:.85rem;color:var(--text-2)}
+
+  footer{text-align:center;padding:3rem 2rem;font-size:.8rem;color:var(--text-3);border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">ASSESSMENT · 2수준</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('t0')">개요</button>
+    <button class="tab-btn" onclick="showTab('t1')">기술통계</button>
+    <button class="tab-btn" onclick="showTab('t2')">문항 분석</button>
+    <button class="tab-btn" onclick="showTab('t3')">오답·서술형</button>
+    <button class="tab-btn" onclick="showTab('t4')">집단 비교</button>
+    <button class="tab-btn" onclick="showTab('t5')">Wright Map</button>
+    <button class="tab-btn" onclick="showTab('t6')">종합 결론</button>
+  </div>
+  <a href="index.html" class="nav-home-link">홈으로</a>
+</nav>
+
+<main>
+
+<div id="t0" class="tab-panel active">
+  <div class="hero">
+    <div class="hero-badge">📋 Kirkpatrick 2수준 — 훈련성취도</div>
+    <h1>NCS 5수준 인공지능 서비스 활용 기획<br>훈련성취도 평가 분석 보고서</h1>
+    <p class="hero-sub">고전검사이론(CTT) 기반 문항 분석 · 집단 비교 · Wright Map</p>
+    <div class="hero-meta">
+      <strong>평가일:</strong> 2026-05-20 &nbsp;|&nbsp;
+      <strong>응답자:</strong> n = 400명 &nbsp;|&nbsp;
+      <strong>문항:</strong> 21문항 120점 (객관식 100 + 주관식 20)
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">57.3</div><div class="lbl">평균 총점</div><div class="sub">/ 120점</div></div>
+      <div class="hero-stat"><div class="num">21</div><div class="lbl">총 문항 수</div><div class="sub">객관식18 + 주관식3</div></div>
+      <div class="hero-stat"><div class="num">0.77</div><div class="lbl">Cronbach α</div><div class="sub">신뢰도 수용 가능</div></div>
+      <div class="hero-stat"><div class="num">47.0%</div><div class="lbl">60점 이상</div><div class="sub">만점 50% 달성</div></div>
+      <div class="hero-stat"><div class="num">400</div><div class="lbl">응답자</div><div class="sub">n=400 seed=42</div></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="section-title"><div class="icon">📌</div>평가 설계</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">평가 목적</div>
+          <p style="font-size:.9rem;color:var(--text-2);line-height:1.8">
+            NCS 5수준 「인공지능 서비스 활용 기획」(LM2001070206_18v1) 교육과정 이수자를 대상으로
+            <strong>Kirkpatrick 2수준(학습)</strong> 훈련성취도를 측정하고, 교육과정 개선을 위한
+            근거 자료를 확보한다.
+          </p>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>항목</th><th>내용</th></tr></thead>
+            <tbody>
+              <tr><td>평가 유형</td><td>총괄평가 (훈련 종료 후 1회)</td></tr>
+              <tr><td>분석 이론</td><td>고전검사이론 (CTT)</td></tr>
+              <tr><td>총 문항</td><td class="num-cell bold">21문항</td></tr>
+              <tr><td>총 배점</td><td class="num-cell bold">120점 (객관식 100 + 주관식 20)</td></tr>
+              <tr><td>분석 도구</td><td>Python (numpy · pandas · scipy)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📐</div>평가 도구 구성</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>능력단위 요소</th><th>코드</th><th>문항 수</th><th>배점</th></tr></thead>
+          <tbody>
+            <tr><td>인공지능 서비스 활용 방안 분석하기</td><td class="num-cell">2001070206_18v1.1</td><td class="num-cell bold">7문항</td><td class="num-cell bold">39점</td></tr>
+            <tr><td>인공지능 서비스 비즈니스 모델 활용 기획하기</td><td class="num-cell">2001070206_18v1.2</td><td class="num-cell bold">7문항</td><td class="num-cell bold">43점</td></tr>
+            <tr><td>인공지능 서비스 상품화 기획하기</td><td class="num-cell">2001070206_18v1.3</td><td class="num-cell bold">7문항</td><td class="num-cell bold">38점</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="grid3" style="margin-top:1rem">
+        <div class="card">
+          <div class="card-title">인지적 영역</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:.875rem">지식/이해</span><div style="display:flex;align-items:center;gap:.5rem"><div style="width:80px;height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:71.4%;height:100%;background:var(--blue);border-radius:4px"></div></div><span class="num-cell" style="font-size:.8rem">15문항</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:.875rem">적용</span><div style="display:flex;align-items:center;gap:.5rem"><div style="width:80px;height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:28.6%;height:100%;background:var(--orange);border-radius:4px"></div></div><span class="num-cell" style="font-size:.8rem">6문항</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">문항 유형</div>
+          <div style="display:flex;flex-direction:column;gap:.375rem;font-size:.875rem">
+            <div style="display:flex;justify-content:space-between"><span>선다형</span><span class="num-cell tag tag-blue">14개</span></div>
+            <div style="display:flex;justify-content:space-between"><span>연결형</span><span class="num-cell tag tag-orange">2개</span></div>
+            <div style="display:flex;justify-content:space-between"><span>단답/완성형</span><span class="num-cell tag tag-green">2개</span></div>
+            <div style="display:flex;justify-content:space-between"><span>진위형</span><span class="num-cell tag tag-purple">1개</span></div>
+            <div style="display:flex;justify-content:space-between"><span><strong>서술형 (신규)</strong></span><span class="num-cell tag tag-red">2개</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">난이도 분포</div>
+          <div style="display:flex;flex-direction:column;gap:.375rem;font-size:.875rem">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span>하 (70~85%)</span><span class="num-cell">5문항 · 20점</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span>중 (40~70%)</span><span class="num-cell">12문항 · 60점</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><span>상 (20~40%)</span><span class="num-cell bold" style="color:var(--red)">4문항 · 40점</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🔍</div>분석 방법 체계</div>
+      <div class="chart-wrap">
+        <img src="image/analysis_summary.png" alt="분석 방법 요약">
+        <div class="chart-caption">그림 1. CTT 기반 훈련성취도 분석 방법별 요약</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="t1" class="tab-panel">
+  <div class="container">
+
+    <div class="section">
+      <div class="sec-header">📊 기술통계 — 총점 분포 및 단원별 성취</div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="val">57.3</div><div class="lab">평균 총점</div><div class="note">/ 120점</div></div>
+        <div class="stat-card"><div class="val">26.0</div><div class="lab">표준편차(SD)</div><div class="note">점수 편차 큼</div></div>
+        <div class="stat-card"><div class="val">47.0%</div><div class="lab">60점 이상</div><div class="note">만점 50% 기준</div></div>
+        <div class="stat-card"><div class="val">34.8%</div><div class="lab">70점 이상</div><div class="note">만점 58% 기준</div></div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">상세 기술통계</div>
+        <table>
+          <thead><tr><th>통계량</th><th>값</th><th>설명</th></tr></thead>
+          <tbody>
+            <tr><td>응답자 수(N)</td><td class="num-cell">400명</td><td>시뮬레이션 더미데이터</td></tr>
+            <tr><td class="bold">평균(Mean)</td><td class="num-cell bold" style="color:var(--orange)">57.27점</td><td>전체 평균</td></tr>
+            <tr><td>중앙값(Median)</td><td class="num-cell">56.0점</td><td>정중앙 점수 (평균과 근접 → 대칭 분포)</td></tr>
+            <tr><td>표준편차(SD)</td><td class="num-cell">26.02점</td><td>만점 대비 약 22% — 개인차 큼</td></tr>
+            <tr><td>최솟값 / 최댓값</td><td class="num-cell">0점 / 120점</td><td>전 범위 사용</td></tr>
+            <tr><td>Q1 / Q3 / IQR</td><td class="num-cell">37.0 / 76.25 / 39.25</td><td>중간 50% 학생의 점수 폭</td></tr>
+            <tr><td>왜도(Skewness)</td><td class="num-cell">0.103</td><td>0에 가까움 → 정규분포에 가까운 대칭</td></tr>
+            <tr><td>첨도(Kurtosis)</td><td class="num-cell">–0.684</td><td>음수 → 정규보다 납작 (응답자 고루 분포)</td></tr>
+            <tr><td class="bold">60점 이상 비율</td><td class="num-cell bold" style="color:var(--green)">47.0%</td><td>만점(120점)의 50% 이상 달성</td></tr>
+            <tr><td>70점 이상 비율</td><td class="num-cell">34.75%</td><td>만점의 약 58% 이상 달성</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📈</div>총점 분포 차트</div>
+      <div class="chart-wrap">
+        <img src="image/score_dist.png" alt="총점 기술통계">
+        <div class="chart-caption">그림 2. 총점 분포 (히스토그램 + 정규분포) 및 점수 구간별 분포</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📚</div>점수 구간 및 단원별 성취</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">점수 구간별 분포</div>
+          <table>
+            <thead><tr><th>점수 구간</th><th>인원</th><th>비율</th></tr></thead>
+            <tbody>
+              <tr><td>0~20점</td><td class="num-cell">31명</td><td class="num-cell bad">7.8%</td></tr>
+              <tr><td>21~40점</td><td class="num-cell">78명</td><td class="num-cell warn">19.5%</td></tr>
+              <tr><td>41~60점</td><td class="num-cell">108명</td><td class="num-cell">27.0%</td></tr>
+              <tr><td>61~80점</td><td class="num-cell">95명</td><td class="num-cell">23.8%</td></tr>
+              <tr><td>81~100점</td><td class="num-cell">72명</td><td class="num-cell good">18.0%</td></tr>
+              <tr><td>101~120점</td><td class="num-cell">16명</td><td class="num-cell good">4.0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">능력단위별 성취</div>
+          <table>
+            <thead><tr><th>능력단위</th><th>만점</th><th>평균</th><th>정답률</th><th>60% 달성</th></tr></thead>
+            <tbody>
+              <tr><td>학습 1</td><td class="num-cell">39점</td><td class="num-cell">18.86</td><td class="num-cell">48.4%</td><td class="num-cell warn">39.5%</td></tr>
+              <tr><td>학습 2</td><td class="num-cell">43점</td><td class="num-cell">19.93</td><td class="num-cell">46.3%</td><td class="num-cell bad">32.3%</td></tr>
+              <tr><td>학습 3</td><td class="num-cell">38점</td><td class="num-cell">18.49</td><td class="num-cell">48.7%</td><td class="num-cell warn">39.0%</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.8rem;color:var(--text-3);margin-top:.75rem">※ 학습 2의 60% 달성률이 가장 낮은 이유: 상 난이도 서술형(item_2_07, 10점) 포함</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="t2" class="tab-panel">
+  <div class="container">
+
+    <div class="section">
+      <div class="sec-header">🔬 문항 분석 — P·D·Cronbach α</div>
+      <div class="info-box">
+        <div class="ib-title">💡 용어 안내</div>
+        <strong>P(난이도)</strong>: 정답자 비율 (허용 0.20~0.85) &nbsp;|&nbsp;
+        <strong>D(변별도)</strong>: 상위·하위 집단 정답률 차이 (기준 ≥0.20) &nbsp;|&nbsp;
+        <strong>r_pb</strong>: 문항-총점 상관 &nbsp;|&nbsp;
+        <strong>Cronbach α</strong>: 검사 도구 일관성 (≥0.70 수용)
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="val" style="color:var(--green)">0.7661</div><div class="lab">Cronbach α</div><div class="note">수용 가능 (18문항 대비 +0.025)</div></div>
+        <div class="stat-card"><div class="val">21</div><div class="lab">전 문항 P 범위 내</div><div class="note">0.340 ~ 0.682</div></div>
+        <div class="stat-card"><div class="val" style="color:var(--green)">20/21</div><div class="lab">D≥0.40 변별력 높음</div><div class="note">item_1_01만 0.370 (있음)</div></div>
+        <div class="stat-card"><div class="val">3</div><div class="lab">신규 주관식 문항</div><div class="note">서술형2 · 완성형1 추가</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📊</div>P–D 산점도</div>
+      <div class="chart-wrap">
+        <img src="image/pd_scatter.png" alt="P-D 산점도">
+        <div class="chart-caption">그림 3. 문항 P–D 산점도 (21문항, Cronbach α=0.7661)</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📋</div>문항별 P · D · r_pb</div>
+      <div class="card">
+        <p style="font-size:.8rem;color:var(--text-3);margin-bottom:1rem">★ 신규 주관식 문항 (item_1_07 · item_2_07 · item_3_07)</p>
+        <table>
+          <thead><tr><th>문항</th><th>단원</th><th>유형</th><th>영역</th><th>P</th><th>D</th><th>r_pb</th><th>판정</th></tr></thead>
+          <tbody>
+            <tr><td>item_1_01</td><td>학습1</td><td><span class="tag tag-purple">진위형</span></td><td>지식/이해</td><td class="num-cell">0.682</td><td class="num-cell warn">0.370</td><td class="num-cell">0.284</td><td><span class="badge badge-warn">변별력 있음</span></td></tr>
+            <tr><td>item_1_02</td><td>학습1</td><td><span class="tag tag-orange">연결형</span></td><td>지식/이해</td><td class="num-cell">0.480</td><td class="num-cell good">0.556</td><td class="num-cell">0.367</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_1_03</td><td>학습1</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.495</td><td class="num-cell good">0.565</td><td class="num-cell">0.381</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_1_04</td><td>학습1</td><td><span class="tag tag-blue">선다형</span></td><td>적용</td><td class="num-cell bad">0.343</td><td class="num-cell good">0.565</td><td class="num-cell">0.328</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_1_05</td><td>학습1</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.507</td><td class="num-cell good">0.537</td><td class="num-cell">0.333</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_1_06</td><td>학습1</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.555</td><td class="num-cell good">0.519</td><td class="num-cell">0.328</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr style="background:#FFFBEB"><td><strong>item_1_07 ★</strong></td><td>학습1</td><td><span class="tag tag-red">서술형</span></td><td>적용</td><td class="num-cell">0.503</td><td class="num-cell good">0.463</td><td class="num-cell">0.314</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_01</td><td>학습2</td><td><span class="tag tag-green">완성형</span></td><td>지식/이해</td><td class="num-cell">0.677</td><td class="num-cell good">0.426</td><td class="num-cell">0.281</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_02</td><td>학습2</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.497</td><td class="num-cell good" style="font-weight:900">0.630</td><td class="num-cell">0.383</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_03</td><td>학습2</td><td><span class="tag tag-blue">선다형</span></td><td>적용</td><td class="num-cell bad">0.340</td><td class="num-cell good">0.602</td><td class="num-cell">0.330</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_04</td><td>학습2</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.517</td><td class="num-cell good">0.565</td><td class="num-cell">0.338</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_05</td><td>학습2</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.515</td><td class="num-cell good">0.528</td><td class="num-cell">0.326</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_2_06</td><td>학습2</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.672</td><td class="num-cell good">0.444</td><td class="num-cell">0.316</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr style="background:#FFFBEB"><td><strong>item_2_07 ★</strong></td><td>학습2</td><td><span class="tag tag-red">서술형</span></td><td>적용</td><td class="num-cell bad">0.348</td><td class="num-cell good">0.593</td><td class="num-cell">0.328</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_01</td><td>학습3</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.675</td><td class="num-cell good">0.472</td><td class="num-cell">0.337</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_02</td><td>학습3</td><td><span class="tag tag-orange">연결형</span></td><td>지식/이해</td><td class="num-cell">0.500</td><td class="num-cell good">0.500</td><td class="num-cell">0.307</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_03</td><td>학습3</td><td><span class="tag tag-blue">선다형</span></td><td>적용</td><td class="num-cell bad">0.345</td><td class="num-cell good">0.602</td><td class="num-cell">0.353</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_04</td><td>학습3</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.465</td><td class="num-cell good">0.565</td><td class="num-cell">0.355</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_05</td><td>학습3</td><td><span class="tag tag-blue">선다형</span></td><td>적용</td><td class="num-cell">0.475</td><td class="num-cell good">0.546</td><td class="num-cell">0.379</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr><td>item_3_06</td><td>학습3</td><td><span class="tag tag-blue">선다형</span></td><td>지식/이해</td><td class="num-cell">0.670</td><td class="num-cell good">0.444</td><td class="num-cell">0.352</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+            <tr style="background:#FFFBEB"><td><strong>item_3_07 ★</strong></td><td>학습3</td><td><span class="tag tag-green">완성형</span></td><td>지식/이해</td><td class="num-cell">0.493</td><td class="num-cell good">0.565</td><td class="num-cell">0.347</td><td><span class="badge badge-pass">변별력 높음</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:.8rem;color:var(--text-3);margin-top:.5rem">※ D 기준 (Ebel, 1965): 0.40 이상=높음 / 0.30~0.39=있음 / 0.20~0.29=다소 낮음</p>
+    </div>
+  </div>
+</div>
+
+<div id="t3" class="tab-panel">
+  <div class="container">
+
+    <div class="section">
+      <div class="sec-header">📝 오답 매력도 분석 (선다형 14문항)</div>
+      <div class="info-box">
+        <div class="ib-title">💡 오답 매력도란?</div>
+        틀린 학생들이 어떤 오답을 선택했는지 분석한다. 특정 오답이 많이 선택되면
+        그 개념에서 혼동이 발생하고 있다는 신호다. 비선다형 7개 문항(item_1_01·1_02·2_01·3_02·1_07·2_07·3_07)은 분석 제외.
+      </div>
+      <div class="chart-wrap">
+        <img src="image/distractor_chart.png" alt="오답 매력도 히트맵">
+        <div class="chart-caption">그림 4. 오답 매력도 히트맵 — ★=정답, 테두리=정답 열 (선다형 14문항)</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">⚠️</div>주요 혼동 유발 문항</div>
+      <div class="finding red">
+        <div class="finding-num">item_1_04</div>
+        <div class="finding-title">PEST 분석 vs STP 전략 혼동 — 정답 34.3% · 오답③(STP) 51.5%</div>
+        <div class="finding-body">외부 환경(정치·경제·사회·기술) 분석 도구인 PEST 대신 STP 전략을 51.5%가 선택했다.
+        시장분석 프로세스(PEST→3C→SWOT→STP→4C)에서 각 방법론의 목적과 적용 시점을 구분하지 못한 결과다.
+        서술형 item_1_07의 낮은 정답률과도 연결된다.</div>
+      </div>
+      <div class="finding red">
+        <div class="finding-num">item_2_03</div>
+        <div class="finding-title">STP Targeting vs Segmentation 혼동 — 정답 34.0% · 오답②(Segmentation) 57.0%</div>
+        <div class="finding-body">STP의 두 번째 단계인 Targeting(목표 집단 선택) 활동을 묻는 문항에서 첫 번째 단계
+        Segmentation(집단 나누기)을 57.0%가 선택했다. STP 3단계의 순서와 각 단계 활동에 대한 혼동이 뚜렷하다.</div>
+      </div>
+      <div class="finding red">
+        <div class="finding-num">item_3_03</div>
+        <div class="finding-title">상품화계획 판단 기준 혼동 — 정답 34.5% · 오답①(기술구현 가능성) 53.0%</div>
+        <div class="finding-body">'가장 적절하지 않은 항목'을 고르는 문항에서 실제로 검토해야 할 '기술 구현 가능성'을
+        53.0%가 불필요한 항목으로 선택했다. 상품화계획 필수 검토 항목과 불필요 항목의 구분 능력이 취약하다.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="sec-header">✍️ 신규 서술형 문항 분석</div>
+      <div class="grid2">
+        <div class="card">
+          <div class="card-title">item_1_07 — 응용 범위 식별 및 필요 요소 도출 (서술형, 중, 5점)</div>
+          <div style="margin-bottom:1rem">
+            <span class="tag tag-orange">P = 0.503</span>&nbsp;
+            <span class="tag tag-green">D = 0.463</span>&nbsp;
+            <span class="badge badge-pass">변별력 높음</span>
+          </div>
+          <p style="font-size:.875rem;color:var(--text-2);line-height:1.65"><strong>채점 기준:</strong> ①응용 범위 식별 방법(2점) ②필요 요소 도출 근거(2점) ③활용 방안 연계(1점)</p>
+          <p style="font-size:.85rem;color:var(--text-3);margin-top:.5rem">P=0.503으로 중간 수준. 절반 가량이 서술 기준을 충족함.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">item_2_07 — 비즈니스 모델 전략 + 중장기 기획 (서술형, 상, 10점)</div>
+          <div style="margin-bottom:1rem">
+            <span class="tag tag-red">P = 0.348</span>&nbsp;
+            <span class="tag tag-green">D = 0.593</span>&nbsp;
+            <span class="badge badge-pass">변별력 높음</span>
+          </div>
+          <p style="font-size:.875rem;color:var(--text-2);line-height:1.65"><strong>채점 기준:</strong> ①목표 시장 분석 내용(4점) ②전략 수립 방향(3점) ③중장기 확대 방안(3점)</p>
+          <p style="font-size:.85rem;color:var(--text-3);margin-top:.5rem">P=0.348로 어려운 문항. D=0.593으로 높은 변별력 — 우수 학습자 식별에 기여.</p>
+        </div>
+      </div>
+      <div class="info-box orange" style="margin-top:1rem">
+        <div class="ib-title">⚠️ 서술형 채점 한계</div>
+        본 분석에서 서술형 2문항은 이분 채점(0/1) 시뮬레이션으로 처리되었다.
+        실제 운영 시에는 루브릭 기반 부분점수 채점이 필요하며,
+        <strong>채점자 간 신뢰도(Cohen's κ ≥ 0.70)</strong>를 반드시 검증해야 한다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="t4" class="tab-panel">
+  <div class="container">
+    <div class="section">
+      <div class="sec-header">👥 집단별 성취도 비교 (ANOVA + 교차 분석)</div>
+      <div class="info-box">
+        <div class="ib-title">💡 ANOVA · p값 · η² 안내</div>
+        <strong>p값 &lt; 0.05</strong>: 집단 간 차이가 우연이 아닐 가능성 95% 이상 →"통계적으로 유의미"&nbsp;|&nbsp;
+        <strong>η²(에타제곱)</strong>: 효과 크기 — 0.01~0.06=소 / 0.06~0.14=중 / ≥0.14=대&nbsp;|&nbsp;
+        <strong>Tukey HSD</strong>: 어느 두 집단 간 차이인지 확인
+      </div>
+      <div class="chart-wrap">
+        <img src="image/group_score_chart.png" alt="집단별 총점 비교">
+        <div class="chart-caption">그림 5. 집단별 총점 비교 (Point Plot + 95% CI)</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🎯</div>참여 목적별 ANOVA</div>
+      <div class="grid2">
+        <div class="card">
+          <table>
+            <thead><tr><th>집단</th><th>n</th><th>평균</th><th>SD</th></tr></thead>
+            <tbody>
+              <tr><td class="bold" style="color:var(--green)">취업/스펙업</td><td class="num-cell">140</td><td class="num-cell bold">60.92점</td><td class="num-cell">22.55</td></tr>
+              <tr><td>이직</td><td class="num-cell">119</td><td class="num-cell">58.31점</td><td class="num-cell">27.59</td></tr>
+              <tr><td class="bold" style="color:var(--red)">직무능력향상(의무)</td><td class="num-cell">141</td><td class="num-cell bad">52.77점</td><td class="num-cell">27.36</td></tr>
+            </tbody>
+          </table>
+          <div class="info-box" style="margin-top:.75rem;padding:.75rem 1rem">
+            F(2,397)=3.626, p=.028, η²=0.018(소효과)
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Tukey HSD 사후 검증</div>
+          <table>
+            <thead><tr><th>비교</th><th>차이</th><th>유의</th></tr></thead>
+            <tbody>
+              <tr><td>취업/스펙업 vs 직무능력향상</td><td class="num-cell">+8.2점</td><td><span class="badge badge-fail">***</span></td></tr>
+              <tr><td>이직 vs 직무능력향상</td><td class="num-cell">+5.5점</td><td><span class="badge badge-fail">**</span></td></tr>
+              <tr><td>취업/스펙업 vs 이직</td><td class="num-cell">+2.6점</td><td><span class="badge badge-pass">ns</span></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.8rem;color:var(--text-3);margin-top:.5rem">의무 이수 집단의 학습 동기 부여 전략이 필요하다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">💻</div>AI 경험별 ANOVA</div>
+      <div class="grid2">
+        <div class="card">
+          <table>
+            <thead><tr><th>집단</th><th>n</th><th>평균</th></tr></thead>
+            <tbody>
+              <tr><td class="bold" style="color:var(--green)">업무 주도적 사용</td><td class="num-cell">50</td><td class="num-cell bold">64.86점</td></tr>
+              <tr><td>개인적 활용</td><td class="num-cell">134</td><td class="num-cell">59.65점</td></tr>
+              <tr><td>업무 부분 적용</td><td class="num-cell">131</td><td class="num-cell">57.13점</td></tr>
+              <tr><td class="bold" style="color:var(--red)">경험 없음/미사용</td><td class="num-cell">85</td><td class="num-cell bad">49.28점</td></tr>
+            </tbody>
+          </table>
+          <div class="info-box" style="margin-top:.75rem;padding:.75rem 1rem">
+            F(3,396)=4.583, p=.004, η²=0.034(소효과)<br>
+            <small>21문항 기준 η²이 0.028→0.034로 증가 — 주관식 추가 후 차이 확대</small>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Tukey HSD 사후 검증</div>
+          <table>
+            <thead><tr><th>비교</th><th>차이</th><th>유의</th></tr></thead>
+            <tbody>
+              <tr><td>업무주도 vs 경험없음</td><td class="num-cell bold">+15.6점</td><td><span class="badge badge-fail">***</span></td></tr>
+              <tr><td>개인활용 vs 경험없음</td><td class="num-cell">+10.4점</td><td><span class="badge badge-fail">***</span></td></tr>
+              <tr><td>업무부분 vs 경험없음</td><td class="num-cell">+7.8점</td><td><span class="badge badge-fail">***</span></td></tr>
+              <tr><td>업무주도 vs 업무부분</td><td class="num-cell">+7.7점</td><td><span class="badge badge-fail">**</span></td></tr>
+              <tr><td>개인활용 vs 업무부분</td><td class="num-cell">+2.5점</td><td><span class="badge badge-pass">ns</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🎂</div>연령별 ANOVA</div>
+      <div class="grid2">
+        <div class="card">
+          <table>
+            <thead><tr><th>집단</th><th>n</th><th>평균</th></tr></thead>
+            <tbody>
+              <tr><td class="bold" style="color:var(--green)">20대</td><td class="num-cell">105</td><td class="num-cell bold">62.42점</td></tr>
+              <tr><td style="color:var(--orange)">50대 이상</td><td class="num-cell">66</td><td class="num-cell">60.45점</td></tr>
+              <tr><td>30대</td><td class="num-cell">139</td><td class="num-cell">55.97점</td></tr>
+              <tr><td class="bold" style="color:var(--red)">40대</td><td class="num-cell">90</td><td class="num-cell bad">50.94점</td></tr>
+            </tbody>
+          </table>
+          <div class="info-box" style="margin-top:.75rem;padding:.75rem 1rem">
+            F(3,396)=3.660, p=.013, η²=0.027(소효과)<br>
+            <small>21문항 기준: 30대 vs 40대 쌍도 새롭게 유의</small>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">비단조적 패턴 — 20대·50대 높음, 40대 낮음</div>
+          <div style="background:var(--bg);border-radius:8px;padding:1rem;font-size:.875rem;color:var(--text-2);line-height:1.7">
+            20대(62.4)→30대(56.0)→40대(50.9) 감소 후<br>50대 이상(60.5)에서 반등하는 <strong>비단조적 패턴</strong>.
+            <br><br>40대 저성취는 업무 부담·학습 시간 부족 반영 가능.
+            50대 이상 반등은 자발적 고동기 시니어 편의 가능성.
+            <br><br>⚠️ η²=0.027(소효과) — AI 경험(η²=0.034)보다 약한 효과.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🔄</div>집단 변수 간 교차 분석</div>
+      <div class="chart-wrap">
+        <img src="image/group_crosstab.png" alt="집단 변수 간 교차 분석">
+        <div class="chart-caption">그림 6. 집단 변수 간 교차 분석 — 조합별 평균 총점 히트맵 / 응답자 구성 비율</div>
+      </div>
+
+      <div class="grid2" style="margin-top:1rem">
+        <div class="card">
+          <div class="card-title">변수 간 연관성 (Cramér's V)</div>
+          <table>
+            <thead><tr><th>비교 쌍</th><th>Cramér's V</th><th>p값</th><th>결론</th></tr></thead>
+            <tbody>
+              <tr><td>참여 목적 × AI 경험</td><td class="num-cell">0.094</td><td class="num-cell">.318</td><td><span class="badge badge-pass">독립적</span></td></tr>
+              <tr><td>참여 목적 × 연령대</td><td class="num-cell">0.057</td><td class="num-cell">.861</td><td><span class="badge badge-pass">독립적</span></td></tr>
+              <tr><td>AI 경험 × 연령대</td><td class="num-cell">0.134</td><td class="num-cell">.071</td><td><span class="badge badge-pass">독립적</span></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:.8rem;color:var(--text-3);margin-top:.5rem">세 변수가 서로 독립적 → 각 변수의 효과를 별도로 해석 가능</p>
+        </div>
+        <div class="card">
+          <div class="card-title">⚠️ 최취약 복합 집단</div>
+          <div class="vuln-box">
+            <div class="vuln-score">39.8점</div>
+            <div class="vuln-label">직무능력향상(의무) + AI 경험없음</div>
+            <div class="vuln-vs">전체 평균(57.3점) 대비 <strong>–17.5점</strong></div>
+          </div>
+          <p style="font-size:.85rem;color:var(--text-2);margin-top:1rem;line-height:1.65">
+            의무 참여인데 AI를 한 번도 써본 적 없는 집단이 가장 취약하다.
+            학습 동기와 사전 지식이 모두 부족한 이 집단에 복합 맞춤 지원 전략이 필요하다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="t5" class="tab-panel">
+  <div class="container">
+    <div class="section">
+      <div class="sec-header">🗺️ Wright Map — 피험자 역량 × 문항 난이도</div>
+      <div class="info-box">
+        <div class="ib-title">💡 Wright Map이란?</div>
+        학생의 능력 수준과 문항 난이도를 같은 척도(로짓)로 비교하는 그래프다.
+        <strong>로짓 0 = 정답 확률 50%</strong> (평균 수준).
+        피험자 역량 분포와 문항 난이도 위치가 잘 겹쳐야 효과적으로 실력을 측정할 수 있다.
+      </div>
+      <div class="chart-wrap">
+        <img src="image/wright_map.png" alt="Wright Map">
+        <div class="chart-caption">그림 7. Wright Map — 피험자 역량 분포 × 문항 난이도 (21문항)</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">📍</div>문항 난이도 분포 (로짓)</div>
+      <div class="card">
+        <table>
+          <thead><tr><th>구간</th><th>해당 문항</th><th>로짓 범위</th><th>특징</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag tag-red">상 (어려움)</span></td><td class="num-cell">item_2_03, item_1_04, item_3_03, <strong>item_2_07</strong></td><td class="num-cell">+0.641 ~ +0.669</td><td>적용 수준 4문항 — 서술형 포함</td></tr>
+            <tr><td><span class="tag tag-orange">중 (보통)</span></td><td style="font-size:.8rem">item_3_04, item_3_05, item_1_02, item_1_03,<br>item_2_02, item_3_02, item_1_05, item_2_04,<br>item_2_05, item_1_06, item_1_07, item_3_07</td><td class="num-cell">–0.261 ~ +0.140</td><td>12문항 집중 — 서술형/완성형 포함</td></tr>
+            <tr><td><span class="tag tag-green">하 (쉬움)</span></td><td class="num-cell">item_3_06, item_2_06, item_3_01, item_2_01, item_1_01</td><td class="num-cell">–0.742 ~ –0.708</td><td>기초 지식 확인용 5문항</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">✅</div>측정 적합도 해석</div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <div class="finding blue">
+          <div class="finding-title">전체 적합도 — 양호</div>
+          <div class="finding-body">피험자 역량 분포 중앙(로짓 0)이 중 난이도 문항 집단(–0.26~+0.14)과 잘 맞닿아 있다.
+          평균 수준의 수강생을 가장 정밀하게 측정하도록 설계된 검사다.</div>
+        </div>
+        <div class="finding green">
+          <div class="finding-title">상 구간 4문항 — 우수 수강생 변별 강화 (18→21문항 개선)</div>
+          <div class="finding-body">신규 서술형 item_2_07이 상 구간(로짓 +0.669)에 추가되어 기존 3문항 → 4문항으로 강화.
+          고역량 수강생 변별력이 향상됐다.</div>
+        </div>
+        <div class="finding warn">
+          <div class="finding-title">측정 공백 — 로짓 +0.14 ~ +0.64 구간 (중상 난이도)</div>
+          <div class="finding-body">이 역량 범위의 수강생(전체 중 상위권 경계)을 정밀하게 구분하기 어렵다.
+          이 구간을 보완하는 중상 난이도 문항 2~3개 추가가 권고된다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="t6" class="tab-panel">
+  <div class="container">
+    <div class="section">
+      <div class="section-title"><div class="icon">📑</div>종합 결론 및 교육적 시사점</div>
+      <div class="card">
+        <div class="card-title">Kirkpatrick 2수준 성과 종합</div>
+        <table>
+          <thead><tr><th>평가 영역</th><th>결과</th><th>판정</th></tr></thead>
+          <tbody>
+            <tr><td>전체 평균 성취도</td><td class="num-cell">57.27점 / 120점 (60점 이상 47.0%)</td><td><span class="badge badge-warn">보통</span></td></tr>
+            <tr><td>검사 도구 신뢰도</td><td class="num-cell">Cronbach α = 0.7661</td><td><span class="badge badge-pass">수용 가능</span></td></tr>
+            <tr><td>문항 질적 수준</td><td>전 21문항 D≥0.37, P 허용 범위 내</td><td><span class="badge badge-pass">양호</span></td></tr>
+            <tr><td>주관식 문항 기능</td><td>서술형 2개 P·D 허용 기준 충족</td><td><span class="badge badge-pass">적절</span></td></tr>
+            <tr><td>단원별 성취 균형</td><td>학습 1·2·3 모두 46~49%</td><td><span class="badge badge-pass">균형적</span></td></tr>
+            <tr><td>집단 간 차이</td><td>참여 동기·AI 경험·연령별 유의 차이</td><td><span class="badge badge-fail">지원 필요</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">💡</div>주요 교육적 시사점</div>
+      <div class="finding red">
+        <div class="finding-num">시사점 ①</div>
+        <div class="finding-title">전체 성취 수준 — 심화 역량 보완 필요</div>
+        <div class="finding-body">만점의 50% 이상 달성률 47.0%는 교육 목표 달성이 부분적으로 이루어졌음을 나타낸다.
+        상 난이도 4문항(PEST·STP·상품화계획·비즈니스 모델 서술)의 정답률이 34~35%로 낮아,
+        지식을 실제 상황에 적용하고 서술하는 역량이 가장 취약하다.</div>
+      </div>
+      <div class="finding orange">
+        <div class="finding-num">시사점 ②</div>
+        <div class="finding-title">서술형 추가의 진단적 가치 확인</div>
+        <div class="finding-body">서술형 item_1_07·item_2_07이 각각 D=0.463·0.593으로 객관식과 동등한 변별력을 확인했다.
+        특히 item_2_07(P=0.348)의 낮은 정답률은 비즈니스 모델 전략·중장기 기획 역량의 통합적 서술 능력이
+        부족함을 보다 입체적으로 드러낸다.</div>
+      </div>
+      <div class="finding red">
+        <div class="finding-num">시사점 ③</div>
+        <div class="finding-title">AI 비경험자 저성취 — 사전 학습 지원 필수</div>
+        <div class="finding-body">AI 경험 없음 집단(49.3점)이 경험 있는 집단보다 최대 15.6점 낮다.
+        21문항 기준 η²이 0.028→0.034로 커져 주관식 문항에서도 AI 경험 격차가 확인된다.
+        AI 서비스 사전 체험 모듈 또는 기초반 분리 운영이 효과적이다.</div>
+      </div>
+      <div class="finding red">
+        <div class="finding-num">시사점 ④ — 최우선 대응</div>
+        <div class="finding-title">의무 이수 + AI 비경험 복합 집단 (39.8점) — 전체 평균 대비 –17.5점</div>
+        <div class="finding-body">교차 분석에서 발견된 최취약 집단으로, 학습 동기와 사전 지식이 모두 부족하다.
+        수강 전 사전 진단으로 조기 식별하고, AI 경험·참여 동기를 고려한 맞춤형 복합 지원 경로를 설계해야 한다.</div>
+      </div>
+      <div class="finding blue">
+        <div class="finding-num">시사점 ⑤</div>
+        <div class="finding-title">시장분석 방법론 혼동 — 사례 중심 교수 강화</div>
+        <div class="finding-body">오답 매력도 분석에서 PEST·STP 등 방법론 간 혼동이 반복 확인됐다.
+        서술형 문항 추가가 이 취약 영역을 더 입체적으로 드러낸다.
+        각 방법론을 실제 AI 서비스 사례에 적용하는 실습 위주 교육이 권고된다.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title"><div class="icon">🔧</div>평가 도구 개선 방향</div>
+      <div class="card">
+        <div class="improve-item">
+          <div class="improve-priority pri-high">상</div>
+          <div class="improve-content">
+            <div class="title">중상 난이도 구간 문항 추가</div>
+            <div class="desc">Wright Map 로짓 +0.14~+0.64 구간 공백 — 이 범위 문항 2~3개 추가로 상위권 측정 정밀도 향상</div>
+          </div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-priority pri-high">상</div>
+          <div class="improve-content">
+            <div class="title">서술형 루브릭 채점 체계 수립 + 채점자 간 신뢰도 검증</div>
+            <div class="desc">2인 이상 독립 채점 후 Cohen's κ ≥ 0.70 기준 충족 확인 필수</div>
+          </div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-priority pri-med">중</div>
+          <div class="improve-content">
+            <div class="title">신뢰도 제고 (α=0.77 → α≥0.80)</div>
+            <div class="desc">동질성 높은 문항 2~3개 추가 권고</div>
+          </div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-priority pri-med">중</div>
+          <div class="improve-content">
+            <div class="title">합격 기준 명문화</div>
+            <div class="desc">만점 120점 기준 합격 점수(예: 72점=60%)를 수강 전 고지</div>
+          </div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-priority pri-high">상</div>
+          <div class="improve-content">
+            <div class="title">AI 비경험자 사전 학습 지원</div>
+            <div class="desc">수강 전 AI 기초 체험 모듈 제공 또는 기초반 분리 운영</div>
+          </div>
+        </div>
+        <div class="improve-item">
+          <div class="improve-priority pri-med">중</div>
+          <div class="improve-content">
+            <div class="title">시장분석 방법론 실습 강화</div>
+            <div class="desc">PEST·3C·SWOT·STP를 실제 AI 서비스 사례에 적용하는 실습 확대</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="info-box orange">
+        <div class="ib-title">⚠️ 데이터 한계</div>
+        본 분석은 실제 수강생 응답이 아닌 통계적으로 시뮬레이션된 더미데이터(n=400, seed=42, 응답률 100% 가정)를
+        사용하였다. 실제 운영 시에는 결측치 처리, 응답 편향 보정, 서술형 채점자 훈련 등 추가 절차가 필요하다.
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>NCS 5수준 인공지능 서비스 활용 기획 — 훈련성취도 평가 분석 보고서 (21문항 버전)</p>
+  <p style="margin-top:.375rem">Kirkpatrick 2수준 · CTT 기반 · n=400 · 2026-05-20</p>
+</footer>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx = ['t0','t1','t2','t3','t4','t5','t6'].indexOf(id);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
