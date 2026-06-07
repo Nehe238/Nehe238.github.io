@@ -1,584 +1,109 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>운영체제 기말고사 완벽 대비 요점정리 & 기출문제집</title>
-    <style>
-        :root {
-            --primary-color: #1e3a8a;
-            --secondary-color: #2563eb;
-            --accent-color: #dc2626;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-color: #334155;
-            --border-color: #e2e8f0;
-        }
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>운영체제 요점정리+암기 8~11장</title>
+<style>
+:root{--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--bg:#f1f5f9;--card:#fff}
+*{box-sizing:border-box;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',system-ui,sans-serif;
+  line-height:1.65;font-size:15px}
+.wrap{max-width:820px;margin:0 auto;padding:0 14px 60px}
+header{text-align:center;padding:24px 14px 10px}
+header h1{margin:0;font-size:20px;letter-spacing:-.3px}
+header p{margin:4px 0 0;color:var(--mut);font-size:12px}
+nav{position:sticky;top:0;z-index:20;background:rgba(241,245,249,.94);
+  backdrop-filter:blur(6px);padding:8px 0;display:flex;gap:7px;
+  justify-content:center;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tab{border:1.5px solid var(--line);background:#fff;color:var(--mut);font:inherit;
+  font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer;transition:.15s;font-size:13.5px}
+.tab:hover{border-color:var(--c);color:var(--c)}
+.tab.active{background:var(--c);border-color:var(--c);color:#fff;box-shadow:0 3px 10px -3px var(--c)}
+.chapter{margin-top:16px}
+.chead{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;
+  color:#fff;background:linear-gradient(135deg,var(--c),var(--c2))}
+.cnum{font-size:26px;font-weight:800;opacity:.9}
+.chead h2{margin:0;font-size:18px} .chead p{margin:1px 0 0;font-size:11px;opacity:.85}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:15px 17px;margin-top:11px;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.mh{font-weight:800;color:var(--c);margin:16px 0 6px;font-size:13.5px;
+  border-bottom:2px solid var(--cl);padding-bottom:3px}
+.card>.mh:first-child{margin-top:0}
+.p{margin:5px 0}
+.dfn{padding:7px 0;border-bottom:1px dashed var(--line)}
+.dfn:last-of-type{border-bottom:none}
+.dfn b{color:var(--ink);margin-right:3px} .dfn span{color:#334155}
+table{width:100%;border-collapse:collapse;margin:6px 0 3px;font-size:13px}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+thead th{background:#f8fafc;color:#334155;font-size:12.5px}
+td:first-child{font-weight:700;color:#0b2447;white-space:nowrap}
+b{color:#0b2447}
+.hint-box{background:#fffbeb;border:1.5px solid #fcd34d;border-radius:10px;
+  padding:10px 13px;margin-top:14px}
+.hint-ttl{font-weight:800;font-size:13px;color:#92400e;display:block;margin-bottom:5px}
+.hint-box ul{margin:0;padding-left:16px} .hint-box li{margin:3px 0;font-size:13px;color:#1c1917}
+.mdef{background:#f0fdf4;border-left:4px solid var(--c);border-radius:0 8px 8px 0;
+  padding:10px 13px;margin:6px 0;break-inside:avoid}
+.mdef-label{font-size:11.5px;font-weight:800;color:var(--c);margin-bottom:3px}
+.mdef-txt{font-size:13.5px;color:#1e293b;font-style:italic;line-height:1.55}
+.ml-title{font-weight:800;font-size:13px;color:#334155;margin:14px 0 3px}
+.cnt{display:inline-block;background:var(--c);color:#fff;font-size:11px;
+  padding:1px 8px;border-radius:999px;margin-left:5px;font-weight:700}
+footer{text-align:center;color:var(--mut);font-size:11px;margin-top:28px}
+@media(max-width:480px){
+  body{font-size:14px} .chead h2{font-size:16px}
+  td:first-child{white-space:normal} }
+@media print{
+  @page{margin:1.5cm 1.8cm}
+  nav,footer{display:none!important}
+  .chapter{display:block!important;page-break-before:always}
+  .chapter:first-of-type{page-break-before:auto}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:auto}
+  .hint-box,.mdef,.dfn,tr{break-inside:avoid}
+  thead{display:table-header-group}
+  .chead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hint-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .mdef{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .tab.active{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-size:12px} .card{padding:10px 12px}
+}
+</style></head>
+<body><div class="wrap">
+<header><h1>운영체제 요점정리 + 암기 · 8~11장</h1>
+<p>PPT 기준 · 슬라이드 용어 그대로 · 인쇄 지원</p></header>
+<nav><button class="tab" data-ch="ch8" style="--c:#2563eb;--c2:#1b46b0;--cl:#d3def9">8장</button><button class="tab" data-ch="ch9" style="--c:#0f9d6e;--c2:#0b6f4e;--cl:#c7ead9">9장</button><button class="tab" data-ch="ch10" style="--c:#d97706;--c2:#a85c05;--cl:#f5e1c4">10장</button><button class="tab" data-ch="ch11" style="--c:#7c3aed;--c2:#5b21b6;--cl:#e0d6f7">11장</button><button class="tab" data-ch="memo" style="--c:#dc2626;--c2:#991b1b;--cl:#fee2e2">★ 암기</button></nav>
 
-        body {
-            font-family: 'Segoe UI', AppleSDGothicNeo-Medium, 'Noto Sans KR', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.7;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        header p {
-            margin: 10px 0 0 0;
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* 네비게이션 탭 */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background-color: #cbd5e1;
-            color: #475569;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        /* 섹션 공통 스타일 */
-        .section-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 35px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        h2 {
-            color: var(--primary-color);
-            border-left: 5px solid var(--secondary-color);
-            padding-left: 15px;
-            margin-top: 0;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-        }
-
-        h3 {
-            color: var(--secondary-color);
-            font-size: 1.3rem;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* 요약 포인트 스타일 */
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
-        }
-
-        strong {
-            color: #0f172a;
-            background-color: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .highlight-box {
-            background-color: #f0fdf4;
-            border-left: 4px solid #16a34a;
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
-        }
-
-        .warning-box {
-            background-color: #fef2f2;
-            border-left: 4px solid #dc2626;
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
-        }
-
-        /* 문제집 템플릿 */
-        .question-block {
-            background-color: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .question-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1e293b;
-            margin-bottom: 12px;
-        }
-
-        .question-badge {
-            display: inline-block;
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-
-        .answer-btn {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        .answer-btn:hover {
-            background-color: #e2e8f0;
-        }
-
-        .answer-content {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #fff;
-            border-left: 3px solid #64748b;
-            border-radius: 0 6px 6px 0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        /* 코드 스타일 */
-        pre {
-            background-color: #1e1e2e;
-            color: #cdd6f4;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 0.95rem;
-            margin: 15px 0;
-        }
-
-        .code-keyword { color: #cba6f7; }
-        .code-type { color: #f9e2af; }
-        .code-blank { background-color: #f38ba8; color: #11111b; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-
-        /* 아키텍처 다이어그램 그리기 툴용 CSS */
-        .diagram-container {
-            border: 2px dashed #cbd5e1;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .diagram-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            width: 100%;
-        }
-
-        .diagram-box {
-            border: 2px solid var(--primary-color);
-            padding: 10px 15px;
-            border-radius: 6px;
-            background-color: #f0f4ff;
-            font-weight: bold;
-            text-align: center;
-            min-width: 100px;
-        }
-
-        .diagram-arrow {
-            font-size: 1.5rem;
-            color: var(--secondary-color);
-            font-weight: bold;
-        }
-
-        .diagram-table {
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-        .diagram-table th, .diagram-table td {
-            border: 1px solid #94a3b8;
-            padding: 6px 12px;
-            text-align: center;
-        }
-        .diagram-table th { background-color: #e2e8f0; }
-
-        /* 하단 유의사항 */
-        .footer-note {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #64748b;
-            border-top: 1px solid var(--border-color);
-        }
-
-        @media print {
-            .nav-tabs, .answer-btn { display: none !important; }
-            .answer-content { display: block !important; }
-            .section-card { box-shadow: none; border: none; padding: 0; margin-bottom: 50px; }
-            body { background-color: white; }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>Operating System Final Exam Study Guide</h1>
-        <p>운영체제 기말고사 요점정리 및 서술형 기출문제집 (Ch.8 ~ Ch.11)</p>
-    </header>
-
-    <div class="container">
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="showSection('all')">전체 보기</button>
-            <button class="tab-btn" onclick="showSection('ch8')">Chapter 8. 교착상태</button>
-            <button class="tab-btn" onclick="showSection('ch9')">Chapter 9. 주기억장치 관리</button>
-            <button class="tab-btn" onclick="showSection('ch10')">Chapter 10. 가상기억장치 구현</button>
-            <button class="tab-btn" onclick="showSection('ch11')">Chapter 11. 가상기억장치 관리</button>
-            <button class="tab-btn" onclick="showSection('exams')">🔥 통합 기출/예상 문제집</button>
-        </div>
-
-        <div id="ch8" class="section-card">
-            <h2>Chapter 8. 교착상태 (Deadlock) 핵심 요약</h2>
-            
-            <h3>1. 교착상태의 정의</h3>
-            <p>다중 프로그래밍 시스템에서 둘 이상의 프로세스가 서로가 가진 자원을 대기하며 영원히 진행이 멈춰버리는 현상.</p>
-
-            <h3>2. 교착상태 발생의 4가지 필요조건 (★ 무조건 암기, PPT 용어 고수)</h3>
-            <ul>
-                <li><strong>상호배제 (Mutual Exclusion)</strong>: 한 번에 한 프로세스만 자원을 점유할 수 있음.</li>
-                <li><strong>점유와 대기 (Hold and Wait)</strong>: 최소한 하나의 자원을 점유한 채, 다른 프로세스에 할당되어 있는 자원을 추가로 요구하며 대기함.</li>
-                <li><strong>비선점 (No Preemption)</strong>: 다른 프로세스에 할당된 자원은 끝날 때까지 강제로 빼앗을 수 없음.</li>
-                <li><strong>환형대기 (Circular Wait)</strong>: 대기 프로세스 집합 {P<sub>0</sub>, P<sub>1</sub>, ..., P<sub>n</sub>}에서 P<sub>0</sub>는 P<sub>1</sub>을, P<sub>1</sub>은 P<sub>2</sub>를, P<sub>n</sub>은 P<sub>0</sub>를 기다리는 원형 궤도를 구성함.</li>
-            </ul>
-            <div class="warning-box">
-                <strong>주의:</strong> 이 4가지 조건이 <strong>동시에 만족</strong>해야만 교착상태가 발생합니다. 하나라도 파괴하면 예방할 수 있습니다.
-            </div>
-
-            <h3>3. 교착상태 해결 기법 비교</h3>
-            <ul>
-                <li><strong>예방 (Prevention)</strong>: 발생 조건 4가지 중 하나를 제거함. (자원 효율성이 매우 저하됨)
-                    <ul>
-                        <li>환형대기 제거: 모든 자원에 <strong>고유 번호(순서)를 부여</strong>하고 순서대로만 요청하게 함. (단점: 자원 유연성 저하, 자원 낭비)</li>
-                    </ul>
-                </li>
-                <li><strong>회피 (Avoidance)</strong>: 자원 요청 시 시스템이 안전 상태를 유지할 수 있을 때만 자원을 할당함.
-                    <ul>
-                        <li>대표 알고리즘: <strong>은행원 알고리즘 (Banker's Algorithm)</strong></li>
-                    </ul>
-                </li>
-                <li><strong>검출 및 복구 (Detection and Recovery)</strong>: 교착상태 발생을 허용하되 주기적으로 검출 알고리즘을 수행하여 발견 시 복구(프로세스 강제 종료 또는 자원 선점)함.</li>
-            </ul>
-        </div>
-
-        <div id="ch9" class="section-card">
-            <h2>Chapter 9. 주기억장치 관리 핵심 요약</h2>
-            
-            <h3>1. 기억장치 배치 전략 (Placement Strategy)</h3>
-            <p>새로운 프로그램이나 데이터를 주기억장치의 어디에 위치시킬 것인가에 대한 전략.</p>
-            <ul>
-                <li><strong>최초 적합 (First-fit)</strong>: 가용 공간 리스트의 처음부터 탐색하여 <strong>첫 번째로 발견된 충분한 크기의 빈 공간</strong>에 할당. (가장 빠름)</li>
-                <li><strong>최적 적합 (Best-fit)</strong>: 가용 공간 전체를 탐색하여 요구하는 크기와 <strong>가장 차이가 적은(작은 여유 공간을 남기는) 빈 공간</strong>에 할당. (단점: 매우 작은 쓰레기 공간이 다수 발생)</li>
-                <li><strong>최악 적합 (Worst-fit)</strong>: 가용 공간 전체를 탐색하여 <strong>가장 큰 빈 공간</strong>에 할당. (남는 공간이 커서 다른 프로세스가 재활용하기 좋음)</li>
-            </ul>
-
-            <h3>2. 단편화 (Fragmentation) 현상</h3>
-            <ul>
-                <li><strong>내부 단편화 (Internal Fragmentation)</strong>: 고정 분할 구조에서, 할당된 작업의 크기가 분할 영역 크기보다 작아서 <strong>해당 분할 내부에 사용되지 못하고 낭비되는 빈 공간</strong>.</li>
-                <li><strong>외부 단편화 (External Fragmentation)</strong>: 가변 분할 구조에서, 대기 중인 작업보다 가용 공간 총량은 충분하지만, 공간들이 <strong>잘게 조각나 분산되어 있어 할당하지 못하는 현상</strong>.</li>
-            </ul>
-            <div class="highlight-box">
-                <strong>해결책:</strong> 외부 단편화는 조각난 빈 공간을 하나로 모으는 <strong>통합(Compaction)</strong> 또는 <strong>압축(Garbage Collection)</strong> 기법으로 해결할 수 있습니다.
-            </div>
-        </div>
-
-        <div id="ch10" class="section-card">
-            <h2>Chapter 10. 가상기억장치 구현 (Paging & Segmentation)</h2>
-            
-            <h3>1. 페이징 (Paging) 시스템</h3>
-            <ul>
-                <li>가상기억장치(프로그램)를 <strong>고정된 크기인 페이지(Page)</strong>로 분할하고, 주기억장치도 동등한 크기인 <strong>페이지 프레임(Page Frame)</strong>으로 분할하여 관리.</li>
-                <li><strong>특징:</strong> 외부 단편화는 전혀 발생하지 않으나, 마지막 페이지에서 <strong>내부 단편화가 발생할 수 있음</strong>.</li>
-                <li>가상 주소 구조: <strong>v = (p, d)</strong> (p: 페이지 번호, d: 변위/디스플레이스먼트)</li>
-                <li><strong>주소 사상 기법(Address Mapping)</strong>: <strong>PMT (Page Map Table, 페이지 사상 테이블)</strong>를 참조하여 가상 주소 p를 물리적 프레임 주소 p'로 변환.
-                    <ul>
-                        <li><strong>직접 사상 (Direct Mapping)</strong>: PMT가 주기억장치에 존재함. 주소 변환을 위해 주기억장치에 2번 접근하므로 속도가 느림.</li>
-                        <li><strong>연관 사상 (Associative Mapping)</strong>: 고속 캐시 메모리인 <strong>TLB (Translation Lookaside Buffer)</strong>라는 전용 하드웨어 연관 기억장치에 PMT를 저장하여 병렬 탐색하므로 매우 빠름.</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>2. 세그먼테이션 (Segmentation) 시스템</h3>
-            <ul>
-                <li>가상기억장치를 논리적 의미 단위인 <strong>가변 크기의 세그먼트(Segment)</strong>(예: Main 함수, Subroutine, Stack 등)로 분할.</li>
-                <li><strong>특징:</strong> 논리적 단위이므로 <strong>공유(Sharing) 및 보안/보호(Protection)에 매우 유리</strong>함. 내부 단편화는 발생하지 않으나 주기억장치 배치 해제 과정에서 <strong>외부 단편화가 발생함</strong>.</li>
-                <li>가상 주소 구조: <strong>v = (s, d)</strong> (s: 세그먼트 번호, d: 변위)</li>
-                <li><strong>SMT (Segment Map Table)</strong>: 각 세그먼트의 주기억장치 상 <strong>시작 주소(Base)</strong>와 크기인 <strong>한계치(Limit)</strong> 정보를 관리함.</li>
-            </ul>
-        </div>
-
-        <div id="ch11" class="section-card">
-            <h2>Chapter 11. 가상기억장치 관리 핵심 요약</h2>
-            
-            <h3>1. 페이지 교체 알고리즘 (Page Replacement Algorithm)</h3>
-            <p>주기억장치의 모든 프레임이 사용 중일 때, 새로운 페이지를 적재하기 위해 어떤 페이지를 교체(Victim)할 것인가 결정하는 전략.</p>
-            <ul>
-                <li><strong>FIFO (First-In-First-Out)</strong>: 주기억장치 내에 <strong>가장 오래 머물렀던 페이지</strong>를 먼저 교체.
-                    <ul>
-                        <li><strong>Belady's Anomaly 현상</strong>: 프레임 수를 늘려주었는데도 오히려 페이지 부재(Page Fault) 횟수가 증가하는 모순적 현상 발생.</li>
-                    </ul>
-                </li>
-                <li><strong>LRU (Least Recently Used)</strong>: <strong>최근에 가장 오랫동안 사용되지 않은 페이지</strong>를 교체. (시간적 지역성 활용, 성능 우수, 실제 널리 쓰임)</li>
-                <li><strong>LFU (Least Frequently Used)</strong>: <strong>방문/참조 횟수가 가장 적은 페이지</strong>를 교체.</li>
-                <li><strong>NUR (Not Used Recently)</strong>: 최근 미사용 페이지 교체 알고리즘. LRU의 오버헤드를 보완하기 위해 <strong>참조 비트(R)와 변형/갱신 비트(M)</strong> 2비트 조합으로 교체 우선순위를 결정함.
-                    <ul>
-                        <li>우선순위 순서 (빨리 교체되는 순서): (R=0, M=0) &rarr; (R=0, M=1) &rarr; (R=1, M=0) &rarr; (R=1, M=1)</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h3>2. 스래싱 (Thrashing) 현상과 방지 대책</h3>
-            <ul>
-                <li><strong>스래싱의 정의:</strong> 프로세스가 실행되는 시간보다 <strong>페이지 부재(Page Fault)가 발생하여 페이지를 교체하는 시간이 더 많아져서 CPU 이용률(Utilization)이 급격히 떨어지는 현상</strong>.</li>
-                <li><strong>워킹셋 (Working Set) 알고리즘</strong>: 프로세스가 일정 시간 동안 <strong>자주 참조하는 페이지들의 집합</strong>을 주기억장치에 항상 상주시켜 스래싱을 방지함.</li>
-                <li><strong>PFF (Page Fault Frequency) 알고리즘</strong>: 페이지 부재율의 <strong>상한(Upper Bound)과 하한(Lower Bound)</strong>을 설정하여, 상한을 넘으면 프레임을 추가 할당하고, 하한 미만으로 떨어지면 프레임을 회수하는 기법.</li>
-            </ul>
-        </div>
-
-        <div id="exams" class="section-card">
-            <h2>🔥 서술형 기출 및 시험 적중 예상 문제집 (통합 버전)</h2>
-            <p style="color: #64748b; margin-bottom: 30px;">※ 모든 문항은 실제 시험에 출제된 서술형, 그림 구현, 소스코드 빈칸 유형으로 구성되었습니다. 버튼을 누르면 모범 답안과 상세 해설이 열립니다.</p>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 8</span>[서술형] 교착상태(Deadlock)가 발생하기 위해 동시 만족해야 하는 필요조건 4가지를 쓰고 각각 간략히 서술하시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans1')">정답 및 해설 보기</button>
-                <div id="ans1" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ol>
-                        <li><strong>상호배제(Mutual Exclusion)</strong>: 한 자원은 한 번에 한 프로세스만 사용할 수 있어야 한다.</li>
-                        <li><strong>점유와 대기(Hold and Wait)</strong>: 프로세스가 최소한 하나의 자원을 할당받은 상태에서 다른 프로세스가 사용 중인 자원을 추가로 요구하며 대기해야 한다.</li>
-                        <li><strong>비선점(No Preemption)</strong>: 다른 프로세스에 할당된 자원은 해당 프로세스가 자발적으로 반납하기 전까지 강제로 빼앗을 수 없다.</li>
-                        <li><strong>환형대기(Circular Wait)</strong>: 대기 상태인 프로세스들이 원형 고리 구조를 이루어 앞의 프로세스가 뒤의 프로세스의 자원을 대기하는 형태를 가져야 한다.</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 8</span>[서술형] 교착상태 예방(Prevention) 기법 중 "환형대기" 조건을 배제하는 구체적인 기법명과 이 기법이 초래할 수 있는 문제점(단점)에 대해 기술하시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans2')">정답 및 해설 보기</button>
-                <div id="ans2" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ul>
-                        <li><strong>구체적 기법:</strong> 시스템 내의 모든 자원에 고유한 선형 순서(번호)를 부여하고, 각 프로세스는 현재 점유한 자원보다 <strong>오직 높은 번호(순서)의 자원만을 요청할 수 있도록 제한</strong>하는 기법이다.</li>
-                        <li><strong>단점/문제점:</strong> 실제 프로그램 실행 중 자원이 필요한 시점과 상관없이 번호 순서대로만 자원을 획득해야 하므로 <strong>자원의 효율적 이용이 저하(자원 낭비)</strong>되며, 새로운 자원이 추가될 때 기존 자원들의 일련번호를 전면 재수정해야 하므로 <strong>유연성이 크게 떨어진다</strong>.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 9</span>[코드 완성] 최초 적합(First-fit) 메모리 할당 알고리즘을 구현한 아래 C언어 기반 수도코드에서 빈칸 (1)과 (2)에 들어갈 적절한 코드를 작성하시오.</div>
-                <pre>
-<span class="code-type">void</span> <span class="code-keyword">allocateFirstFit</span>(<span class="code-type">int</span> request_size) {
-    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = 0; i &lt; block_count; i++) {
-        <span class="code-keyword">if</span> (free_list[i].is_free == <span class="code-type">true</span> && free_list[i].size >= request_size) {
-            
-            <span class="comment">// (1) 선택된 메모리 블록에 프로세스 자원을 할당 및 남는 영역 처리 수행</span>
-            <span class="code-blank">      빈칸 (1)      </span>; 
-            
-            free_list[i].is_free = <span class="code-type">false</span>;
-            
-            <span class="comment">// (2) 첫 번째 적합한 블록을 찾았으므로 탐색 루프를 탈출해야 함</span>
-            <span class="code-blank">      빈칸 (2)      </span>; 
-        }
-    }
-}</pre>
-                <button class="answer-btn" onclick="toggleAnswer('ans3')">정답 및 해설 보기</button>
-                <div id="ans3" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ul>
-                        <li><strong>빈칸 (1):</strong> <code style="background:#f1f5f9; padding:2px 5px; color:#dc2626;">splitBlock(i, request_size)</code> 또는 <code style="background:#f1f5f9; padding:2px 5px; color:#dc2626;">free_list[i].size = request_size</code> (※ 메모리 분할 또는 할당 로직 명시)</li>
-                        <li><strong>빈칸 (2):</strong> <code style="background:#f1f5f9; padding:2px 5px; color:#dc2626;">break</code></li>
-                    </ul>
-                    <strong>해설:</strong> First-fit은 순차 검색을 하다가 요청한 크기(<code style="font-family:monospace;">request_size</code>)를 만족하는 <strong>최초의 블록</strong>을 찾으면 할당을 진행한 직후 바로 <code style="font-family:monospace;">break</code> 문을 통해 반복 루프를 빠져나와야 다음 블록들을 불필요하게 검사하지 않습니다.
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 9</span>[서술형] 메모리 단편화 현상 중 내부 단편화(Internal Fragmentation)와 외부 단편화(External Fragmentation)의 개념을 명확히 비교하여 서술하시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans4')">정답 및 해설 보기</button>
-                <div id="ans4" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ul>
-                        <li><strong>내부 단편화:</strong> 주기억장치를 고정 분할했을 때, 분할된 구역에 할당된 프로세스의 크기가 구역 크기보다 <strong>작아서</strong>, 해당 분할 영역 내부에서 사용되지 못하고 낭비되는 빈 메모리 공간이다.</li>
-                        <li><strong>外部 단편화:</strong> 주기억장치를 가변 분할했을 때, 메모리 상의 빈 공간들의 <strong>총합은 프로세스가 요구하는 크기보다 충분히 크지만</strong>, 빈 공간들이 여러 군데로 미세하게 조각나 분산되어 있어 프로세스를 적재하지 못하고 낭비되는 현상이다.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 10</span>[그림 구현 및 메커니즘] 세그먼테이션(Segmentation) 시스템에서 가상 주소 <strong>v = (s, d)</strong>가 SMT(세그먼트 사상 테이블)를 거쳐 실주소(물리 주소) <strong>r</strong>로 변환되는 주소 사상 과정을 논리적 흐름도 다이어그램으로 도식화하고 변환 원리를 설명하시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans5')">정답 및 해설 보기</button>
-                <div id="ans5" class="answer-content">
-                    <strong>1. 주소 사상 메커니즘 흐름도 (도식화 모델):</strong>
-                    <div class="diagram-container">
-                        <div class="diagram-row">
-                            <div class="diagram-box" style="background-color:#fee2e2;">가상주소 v = (s, d)<br><small>s: 세그먼트 번호 / d: 변위</small></div>
-                        </div>
-                        <div class="diagram-arrow">&darr;</div>
-                        <div class="diagram-row">
-                            <div><strong>SMT (세그먼트 테이블 인덱싱 s)</strong>
-                                <table class="diagram-table">
-                                    <tr><th>Segment (s)</th><th>변위 한계치 (Limit)</th><th>시작 주소 (Base)</th></tr>
-                                    <tr style="background-color:#f0fdf4;"><td>s</td><td>Segment Limit</td><td>Base Address (b)</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="diagram-arrow">&darr; [조건 검사: d &gt; Limit 이면 Trap 발생]</div>
-                        <div class="diagram-row">
-                            <div class="diagram-box" style="background-color:#e0f2fe;">연산기: Base (b) + 변위 (d)</div>
-                        </div>
-                        <div class="diagram-arrow">&darr;</div>
-                        <div class="diagram-row">
-                            <div class="diagram-box" style="background-color:#bbf7d0;">실주소 r = b + d</div>
-                        </div>
-                    </div>
-
-                    <strong style="display:inline-block; margin-top:15px;">2. 변환 원리 서술형 답안:</strong>
-                    <ol>
-                        <li>프로세스가 가상 주소 <strong>v = (s, d)</strong>를 참조하면 세그먼트 번호 <strong>s</strong>를 인덱스로 사용하여 SMT(세그먼트 사상 테이블)로 이동한다.</li>
-                        <li>SMT에서 해당 세그먼트의 <strong>시작 주소(Base, b)</strong>와 <strong>한계치(Limit)</strong> 정보를 획득한다.</li>
-                        <li>변위 <strong>d</strong>가 한계치(Limit)를 초과하는지 검사하여, <span style="color:red; font-weight:bold;">d &gt; Limit</span>이면 한계 초과 에러 인터럽트(Trap)를 발생시키고 차단한다.</li>
-                        <li>검사를 통과하면 시작 주소 <strong>b</strong>에 변위 <strong>d</strong>를 더하여 실제 주기억장치 주소인 <span class="math" style="color:blue; font-weight:bold;">r = b + d</span>를 계산해 낸다.</li>
-                    </ol>
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 11</span>[서술형] 가상기억장치 관리 중 스래싱(Thrashing)의 정의를 명확히 내리고, 운영체제에서 이를 방지하기 위해 사용하는 대표적인 알고리즘인 워킹셋(Working Set) 기법의 작동 원리를 쓰시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans6')">정답 및 해설 보기</button>
-                <div id="ans6" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ul>
-                        <li><strong>스래싱(Thrashing)의 정의:</strong> 다중 프로그래밍 시스템에서 실행 중인 프로세스가 실행 시간보다 페이지 부재(Page Fault) 빈도가 과도하게 높아져 **새로운 페이지를 교체하고 적재하는 시간이 더 많아짐으로써 CPU 이용률이 급격히 저하되는 현상**이다.</li>
-                        <li><strong>워킹셋(Working Set) 작동 원리:</strong> 지역성(Locality) 이론을 바탕으로, 프로세스가 일정 시간(윈도우 크기 &Delta;) 동안 **자주 집중적으로 참조하는 페이지들의 집합(Working Set)을 식별하고 이들을 주기억장치에 동시에 상주**시킴으로써 페이지 부재를 최소화하고 스래싱을 예방한다.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="question-block">
-                <div class="question-title"><span class="question-badge">Chapter 11</span>[서술형] 페이지 교체 알고리즘 중 NUR(Not Used Recently)의 핵심 원리와 교체 우선순위를 결정하기 위해 사용되는 비트들의 종류 및 역할을 설명하시오.</div>
-                <button class="answer-btn" onclick="toggleAnswer('ans7')">정답 및 해설 보기</button>
-                <div id="ans7" class="answer-content">
-                    <strong>모범 답안:</strong>
-                    <ul>
-                        <li><strong>핵심 원리:</strong> LRU 알고리즘의 단점인 시간 기록 오버헤드를 줄이기 위해 하드웨어적인 비트만을 이용하여 최근에 사용되지 않은 페이지를 대상(Victim)으로 선택하는 효율적 기법이다.</li>
-                        <li><strong>사용 비트 종류 및 역할:</strong>
-                            <ol>
-                                <li><strong>참조 비트 (Reference Bit, R):</strong> 페이지가 참조(읽기/쓰기)될 때 하드웨어에 의해 1로 세팅된다.</li>
-                                <li><strong>변형 비트 (Modified Bit, M):</strong> 페이지의 내용이 수정(Write)되었을 때 1로 세팅된다.</li>
-                            </ol>
-                        </li>
-                        <li><strong>교체 우선순위:</strong> 참조 비트가 0인 것이 우선 교체되며, 둘 다 같으면 변형 비트가 0인 것(디스크에 다시 쓸 필요가 없는 페이지)이 먼저 교체된다. 순서는 <span style="font-weight:bold; color:red;">(R=0, M=0) &rarr; (R=0, M=1) &rarr; (R=1, M=0) &rarr; (R=1, M=1)</span> 이다.</li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="footer-note">
-            <p>※ 용어 및 정의는 강의 교재 및 핵심 PPT 표준 가이드를 100% 반영하였습니다.</p>
-            <p style="font-weight: bold; color: var(--primary-color);">기말고사 전 서술형 키워드를 완벽 체크하여 A+를 쟁취하세요!</p>
-        </div>
-    </div>
-
-    <script>
-        function showSection(sectionId) {
-            const cards = document.querySelectorAll('.section-card');
-            const buttons = document.querySelectorAll('.tab-btn');
-            
-            // 모든 섹션 보이기 혹은 숨기기 조절
-            cards.forEach(card => {
-                if (sectionId === 'all') {
-                    card.style.display = 'block';
-                } else {
-                    if (card.id === sectionId) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                }
-            });
-
-            // 액티브 버튼 스타일 토글
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (sectionId === 'all' && btn.textContent.includes('전체')) btn.classList.add('active');
-                else if (sectionId === 'ch8' && btn.textContent.includes('8')) btn.classList.add('active');
-                else if (sectionId === 'ch9' && btn.textContent.includes('9')) btn.classList.add('active');
-                else if (sectionId === 'ch10' && btn.textContent.includes('10')) btn.classList.add('active');
-                else if (sectionId === 'ch11' && btn.textContent.includes('11')) btn.classList.add('active');
-                else if (sectionId === 'exams' && btn.textContent.includes('통합')) btn.classList.add('active');
-            });
-        }
-
-        function toggleAnswer(answerId) {
-            const ansContent = document.getElementById(answerId);
-            if (ansContent.style.display === 'block') {
-                ansContent.style.display = 'none';
-            } else {
-                ansContent.style.display = 'block';
-            }
-        }
-    </script>
-</body>
-</html>
+<section class="chapter" id="ch8" style="--c:#2563eb;--c2:#1b46b0;--cl:#d3def9">
+  <div class="chead"><span class="cnum">8장</span><div><h2>교착상태</h2><p>Deadlock</p></div></div>
+  <div class="card"><p class="mh">교착상태의 의미</p><div class="dfn"><b>교착상태(deadlock state)</b><span>프로세스가 전혀 발생할 가능성이 없는 사건을 기다리는 경우, 그 프로세스는 교착상태에 놓여 있다고 한다. 교착상태에 놓인 프로세스가 하나 이상 있으면 그 시스템은 교착상태에 있다고 한다.</span></div><p class="p">→ <b>무기한 연기(indefinite postponement)</b> 상태와 구분: 무기한 연기는 자원이 할당될 수는 있으나 계속 밀리는 것, 교착은 외부 개입 없이 절대 풀리지 않음.</p><p class="mh">자원의 분류</p><table><thead><tr><th>분류 기준</th><th>종류</th></tr></thead><tbody><tr><td>선점 가능성</td><td>선점가능 자원 / <b>선점불가능 자원</b></td></tr><tr><td>할당 방식</td><td>전체 할당식 자원 / 분할 할당식 자원</td></tr><tr><td>할당 형태</td><td><b>배타적 할당 자원</b> / 공유식 할당 자원</td></tr><tr><td>자원의 속성</td><td><b>순차적 재사용(SR) 자원</b> / 소비성(CR) 자원</td></tr></tbody></table><p class="p">SR(Serially Reusable) = 없어지지 않고 영구히 존재 (프로세서·메모리·버퍼·테이프·프로그램) &nbsp; CR(Consumable) = 사용 후 사라짐 (시그널·메시지).</p><p class="p">교착상태 모델 대상 자원 = <b>선점불가능 · 배타적 할당 · 순차적 재사용</b>. (소비성 자원 대상 모델도 별도 존재)</p><p class="mh">자원할당 그래프 모형</p><p class="p">프로세스 노드 Pi &nbsp;·&nbsp; 자원 노드 Rj</p><table><thead><tr><th>에지</th><th>의미</th></tr></thead><tbody><tr><td>Rj → Pi</td><td>해당 자원이 프로세스에게 <b>할당됨</b></td></tr><tr><td>Pi → Rj</td><td>프로세스가 해당 자원을 <b>요청, 대기중</b></td></tr></tbody></table><p class="mh">교착상태 발생의 4가지 필요조건 (necessary conditions)</p><p class="p">다음 4가지 조건이 <b>모두 만족</b>될 때 교착 발생.</p><table><thead><tr><th>#</th><th>필요조건</th></tr></thead><tbody><tr><td>①</td><td>자원에 대한 배타적 사용 (exclusive use)</td></tr><tr><td>②</td><td>선점불가능 자원(nonpreemptible resources)의 존재</td></tr><tr><td>③</td><td>프로세스에 대한 자원의 부분 할당 (partial allocation)</td></tr><tr><td>④</td><td>환형대기 상태(circular wait condition)의 발생</td></tr></tbody></table><p class="mh">교착상태 해결 기법</p><table><thead><tr><th>기법</th><th>내용</th></tr></thead><tbody><tr><td>예방(prevention)</td><td>4가지 필요조건 중 하나를 제거 — 배타적 사용 배제(공유) / 선점 기능 지원 / 자원의 전체 할당 / 환형 대기 제거. 자원의 심각한 낭비, 현실적으로 어려움</td></tr><tr><td>회피(avoidance)</td><td>시스템을 항상 <b>안전상태</b>로만 유지 — Dijkstra's Banker's algorithm, Habermann's algorithm</td></tr><tr><td>검출(detection)</td><td>발생을 허용하되 그래프 단순화로 탐지</td></tr><tr><td>복구(recovery)</td><td>탐지 후 <b>프로세스 종료</b> 또는 <b>자원 선점</b></td></tr></tbody></table><div class="dfn"><b>안전상태(safe state)</b><span>안전 순서(safe sequence)가 하나 이상 존재하는 상태. 존재하지 않으면 비안전 상태(unsafe state).</span></div><div class="hint-box"><span class="hint-ttl">📌 핵심 암기</span><ul><li>정의: &ldquo;전혀 발생할 가능성이 없는 사건을 기다리는 경우&rdquo;</li><li>4조건 ①배타적 사용 ②선점불가능 자원의 존재 ③부분 할당 ④환형대기 상태</li><li>자원 분류 기준 4: 선점 가능성 · 할당 방식 · 할당 형태 · <b>자원의 속성(SR/CR)</b></li><li>해결 4기법: 예방 · 회피(은행원·Habermann) · 검출 · 복구(종료/선점)</li><li>안전상태: &ldquo;안전 순서가 하나 이상 존재&rdquo;</li></ul></div></div>
+</section>
+<section class="chapter" id="ch9" style="--c:#0f9d6e;--c2:#0b6f4e;--cl:#c7ead9">
+  <div class="chead"><span class="cnum">9장</span><div><h2>주기억장치 관리</h2><p>Main Memory Management</p></div></div>
+  <div class="card"><p class="mh">주기억장치 구성 정책이 정하는 것</p><p class="p">동시에 할당받을 수 있는 프로세스의 수 · 각 프로세스에게 할당되는 양 · <b>분할 방법</b> · 분할영역의 교체 가능성 · 할당 영역의 연속성.</p><p class="mh">분할 방법</p><table><thead><tr><th>분할</th><th>설명</th><th>단편화</th></tr></thead><tbody><tr><td>고정 분할(정적 분할)</td><td>초기의 분할 형태를 이후 변형하지 않음</td><td><b>내부</b> 단편화</td></tr><tr><td>가변 분할(동적 분할)</td><td>초기의 분할 형태를 필요에 따라 변형시킴</td><td><b>외부</b> 단편화</td></tr></tbody></table><p class="p">교체 가능 정책 = <b>기억장소 교체(storage swapping)</b>. 사용 시 코드가 <b>재배치 가능(relocatable)</b>해야 함. &nbsp; 할당 영역: 연속 / 비연속.</p><p class="mh">주기억장치 관리 기법 (4)</p><table><thead><tr><th>기법</th><th>결정 사항</th></tr></thead><tbody><tr><td>호출 기법(fetch strategy)</td><td>새 프로세스에 대한 주기억장치 할당 시기 결정</td></tr><tr><td>배치 기법(placement strategy)</td><td>할당받을 프로세스에게 할당 공간의 위치 결정</td></tr><tr><td>교체 기법(replacement strategy)</td><td>공간 부족 시 어느 프로세스 공간을 선점할지 결정</td></tr><tr><td>할당 기법(allocation strategy)</td><td>새 프로세스에 대한 공간 할당량 결정</td></tr></tbody></table><p class="mh">고정 분할 / 가변 분할 다중프로그래밍</p><div class="dfn"><b>고정 분할 다중프로그래밍(FPM)</b><span>사용자 공간을 미리 여러 영역으로 분할, 영역당 하나의 프로그램 → <b>내부 단편화</b>. (재배치 번역 / 재배치 로더 사용)</span></div><div class="dfn"><b>가변 분할 다중프로그래밍(VPM)</b><span>프로세스 크기만큼 연속 공간 할당 → 영역 내 단편화 없음, <b>외부 단편화</b> 발생.</span></div><div class="dfn"><b>중첩 구조(overlay structure)</b><span>프로그램이 할당 영역보다 클 때 일부만 번갈아 적재.</span></div><div class="dfn"><b>경계 레지스터(boundary register)</b><span>커널·다른 영역 침범 방지를 위해 경계 주소 저장. 다중 분할은 여러 개 사용.</span></div><p class="mh">배치 전략 (가변 분할, 4가지)</p><table><thead><tr><th>전략</th><th>특징</th></tr></thead><tbody><tr><td>최초 적합(first-fit)</td><td>처음 발견한 충분한 공간에 배치</td></tr><tr><td>최적 적합(best-fit)</td><td>크기가 가장 근접한(작은) 공간 — 작은 조각 많이 남음</td></tr><tr><td>최악 적합(worst-fit)</td><td>가장 큰 공간 — 단편화 극소화 의도</td></tr><tr><td>순환 최초 적합(next-fit)</td><td>최초 적합과 유사, 직전 위치부터 탐색</td></tr></tbody></table><p class="mh">단편화 해결</p><div class="dfn"><b>내부 단편화(internal fragmentation)</b><span>할당된 영역 안에서 사용되지 않고 남는 공간.</span></div><div class="dfn"><b>외부 단편화(external fragmentation)</b><span>빈 공간이 흩어져 있어 연속 공간으로 활용하지 못하는 낭비.</span></div><div class="dfn"><b>인접 공간 통합(coalescing holes)</b><span>인접한 빈 분할 영역들을 하나로 통합.</span></div><div class="dfn"><b>기억장소 통합(storage compaction)</b><span>모든 빈 분할 영역들을 하나로 모아 큰 연속 공간 확보.</span></div><div class="hint-box"><span class="hint-ttl">📌 핵심 암기</span><ul><li>관리 기법 4: <b>호출 · 배치 · 교체 · 할당</b></li><li>배치 전략 4: 최초 · 최적 · 최악 · 순환 최초 적합</li><li>FPM → 내부 단편화 &nbsp;/&nbsp; VPM → 외부 단편화</li><li>인접 빈 공간 합침 → 인접 공간 통합(coalescing holes)</li><li>전체 빈 공간 모음 → 기억장소 통합(storage compaction)</li></ul></div></div>
+</section>
+<section class="chapter" id="ch10" style="--c:#d97706;--c2:#a85c05;--cl:#f5e1c4">
+  <div class="chead"><span class="cnum">10장</span><div><h2>가상기억장치 구성</h2><p>Virtual Memory Organization</p></div></div>
+  <div class="card"><p class="mh">프로그램의 블럭 분할 방식</p><table><thead><tr><th>분할 방식</th><th>시스템</th></tr></thead><tbody><tr><td>같은 크기의 블럭</td><td><b>페이징 시스템</b></td></tr><tr><td>다른 크기의 논리적 단위</td><td><b>세그먼테이션 시스템</b></td></tr><tr><td>둘의 합성</td><td><b>페이징/세그먼테이션 혼합</b></td></tr></tbody></table><p class="mh">주소 사상(address mapping)</p><div class="dfn"><b>주소 사상 함수 f()</b><span>가상 주소를 실 주소로 변환하는 작업을 실행 중에 동적으로 수행.</span></div><div class="dfn"><b>블럭 사상(block mapping)</b><span>블럭 단위로 사상 정보를 블럭 사상 테이블(BMT)에 기록·사용. 블럭이 클수록 테이블 작아지고 사상 빠름. <b>존재 비트 0 → page fault</b>.</span></div><p class="mh">페이징 시스템(paging system)</p><div class="dfn"><b>페이지 / 페이지 프레임</b><span>페이지 = 분할된 블럭. 페이지 프레임 = 주기억장치 분할 영역(페이지 크기와 동일).</span></div><p class="p">가상 주소 <b>v = (p, d)</b> &nbsp; 사상 테이블: <b>페이지 사상 테이블(PMT)</b> — 엔트리: <b>존재 비트 · 보조기억장치 주소 · 페이지 프레임 번호</b>.</p><p class="p">논리적 구분 없음 → <b>공유·보호에 불리</b>.</p><p class="mh">주소 사상 기법 (3)</p><table><thead><tr><th>기법</th><th>특징</th></tr></thead><tbody><tr><td>직접 사상(direct mapping)</td><td>PMT를 주기억장치에 두고 조회 — 느림(메모리 2회 접근)</td></tr><tr><td>연관 사상(associative mapping)</td><td>연관(고속) 기억장치(TLB)로 병렬 조회 — 빠름, 하드웨어 비쌈</td></tr><tr><td>혼합 사상(combined direct/associative)</td><td>직접+연관 혼합 — 하드웨어 비용↓, 연관 사상의 장점 취함</td></tr></tbody></table><p class="mh">세그먼테이션 시스템(segmentation system)</p><p class="p">서로 다른 크기의 <b>논리적 단위</b>로 분할. 가상 주소 <b>v = (s, d)</b>. 사상 테이블: <b>세그먼트 사상 테이블(SMT : Segment Map Table)</b>. 논리 단위라 <b>공유·보호에 유리</b>, 외부 단편화 발생.</p><p class="mh">페이징/세그먼테이션 혼합</p><p class="p">가상 주소 <b>v = (s, p, d)</b> → SMT에서 s로 PMT 위치 → PMT에서 p로 프레임 → 프레임 + d = 실주소.</p><div class="dfn"><b>페이지 공유</b><span>순수 코드(재진입 가능 코드)일 경우에만 공유 가능.</span></div><div class="hint-box"><span class="hint-ttl">📌 핵심 암기</span><ul><li>가상 주소 형식: 페이징 <b>v=(p,d)</b> · 세그먼테이션 <b>v=(s,d)</b> · 혼합 <b>v=(s,p,d)</b></li><li>PMT 엔트리 3개: 존재 비트 · 보조기억장치 주소 · 페이지 프레임 번호</li><li>존재 비트 0 → <b>페이지 부재(page fault)</b></li><li>사상 기법 3: 직접(느림) · 연관(TLB, 빠름) · 혼합(절충)</li><li>페이징: 공유·보호 불리 &nbsp;/&nbsp; 세그먼테이션: 공유·보호 유리</li></ul></div></div>
+</section>
+<section class="chapter" id="ch11" style="--c:#7c3aed;--c2:#5b21b6;--cl:#e0d6f7">
+  <div class="chead"><span class="cnum">11장</span><div><h2>가상기억장치 관리</h2><p>Virtual Memory Management</p></div></div>
+  <div class="card"><p class="mh">가상기억장치 관리 기법 (6)</p><table><thead><tr><th>기법</th><th>역할</th></tr></thead><tbody><tr><td>할당 기법(allocation)</td><td>각 프로세스에게 할당할 주기억장치 양 결정</td></tr><tr><td>호출 기법(fetch)</td><td>특정 페이지를 언제 적재할지 결정</td></tr><tr><td>배치 기법(placement)</td><td>적재 위치 결정 (최적 적합 등)</td></tr><tr><td>교체 기법(replacement)</td><td>어느 페이지를 내보낼지 결정</td></tr><tr><td>소거 기법(cleaning)</td><td>변경된 페이지를 디스크에 기입</td></tr><tr><td>부하 조정 기법(load control)</td><td>다중프로그래밍 정도 조절</td></tr></tbody></table><p class="p">목표 = <b>페이지 부재 발생율(page fault rate) F()</b> 최소화. 페이지 참조 스트링으로 분석.</p><p class="mh">할당 기법</p><table><thead><tr><th>기법</th><th>내용</th></tr></thead><tbody><tr><td>고정 할당(fixed allocation)</td><td>메모리 할당량을 실행 동안 고정</td></tr><tr><td>가변 할당(variable allocation)</td><td>메모리 할당량을 실행 동안 변화</td></tr></tbody></table><p class="mh">호출 기법</p><table><thead><tr><th>기법</th><th>내용</th></tr></thead><tbody><tr><td>요구 호출(demand fetch, demand paging)</td><td>실제 참조한 페이지만 적재 — 부재 시 오버헤드. <b>대부분 사용</b></td></tr><tr><td>예측 호출(anticipatory fetch, prepaging)</td><td>참조 전에 미리 적재 — 예측 오버헤드</td></tr></tbody></table><p class="mh">참조 비트 · 갱신 비트</p><div class="dfn"><b>참조 비트(reference/use bits)</b><span>페이지 프레임의 최근 참조 여부. 주기마다 0으로 재설정, 참조되면 1.</span></div><div class="dfn"><b>갱신 비트(update/modify/dirty bits)</b><span>페이지 프레임 내용의 변경 여부 기록.</span></div><p class="mh">지역성(Locality)</p><table><thead><tr><th>종류</th><th>의미</th></tr></thead><tbody><tr><td>시간 지역성(temporal locality)</td><td>최근 참조한 페이지가 곧 다시 참조됨</td></tr><tr><td>공간 지역성(spatial locality)</td><td>참조한 곳 근처가 곧 참조됨</td></tr></tbody></table><p class="mh">교체 기법</p><p class="p"><b>고정 할당 기반</b> (8가지)</p><table><thead><tr><th>알고리즘</th><th>내용</th></tr></thead><tbody><tr><td>MIN(OPT, B<sub>0</sub>)</td><td>앞으로 가장 늦게 참조될 페이지 교체 — 최적이나 <b>실현 곤란</b></td></tr><tr><td>무작위(Random)</td><td>임의로 교체 페이지 선택</td></tr><tr><td>FIFO</td><td>가장 먼저 적재된 페이지 교체 — <b>FIFO의 변칙(Belady's anomaly)</b></td></tr><tr><td>LRU</td><td>가장 오래 참조되지 않은 페이지 — 지역성 이용</td></tr><tr><td>LFU</td><td>참조 횟수가 가장 적은 페이지</td></tr><tr><td>NUR</td><td>참조 비트·갱신 비트 검사 — 적은 오버헤드로 LRU에 근사</td></tr><tr><td>클럭(Clock)</td><td>참조 비트 사용, 포인터를 시계 방향으로 이동</td></tr><tr><td>Second chance</td><td>FIFO + 참조 비트로 한 번 더 기회 부여</td></tr></tbody></table><p class="p"><b>가변 할당 기반</b> (3가지)</p><table><thead><tr><th>알고리즘</th><th>내용</th></tr></thead><tbody><tr><td>VMIN(Variable MIN)</td><td>가변 할당 기반의 최적 기법</td></tr><tr><td>WS(Working Set)</td><td>최근 일정 시간(window) 동안 참조한 페이지 집합을 주기억장치에 유지</td></tr><tr><td>PFF(Page Fault Frequency)</td><td>페이지 부재 빈도에 따라 할당량 조절</td></tr></tbody></table><p class="mh">소거 기법</p><table><thead><tr><th>기법</th><th>내용</th></tr></thead><tbody><tr><td>요구 소거(demand cleaning)</td><td>교체될 때 디스크에 기입 — 대부분 사용</td></tr><tr><td>예측 소거(anticipatory cleaning, precleaning)</td><td>더 변경 안 될 듯할 때 미리 기입</td></tr></tbody></table><p class="mh">부하 조정 기법(load control)</p><p class="p">다중프로그래밍 정도를 조절. 저부하 = 자원 낭비, 고부하 = 자원 경쟁 → <b>스래싱(thrashing)</b>. 스래싱 = 프레임 부족으로 페이지 교체만 반복하며 처리량 급락. 부하 줄여 해결.</p><div class="hint-box"><span class="hint-ttl">📌 핵심 암기</span><ul><li>관리 기법 6 순서: <b>할당·호출·배치·교체·소거·부하 조정</b></li><li>고정 할당 교체 8: MIN·무작위·FIFO·LRU·LFU·NUR·클럭·Second chance</li><li>가변 할당 교체 3: VMIN·WS(Working Set)·PFF</li><li>FIFO 변칙: 프레임 늘려도 부재 증가 → <b>Belady's anomaly</b></li><li>스래싱: 고부하 → 교체 반복 → 처리량 급락</li></ul></div></div>
+</section>
+<section class="chapter" id="memo" style="--c:#dc2626;--c2:#991b1b;--cl:#fee2e2">
+  <div class="chead"><span class="cnum" style="font-size:20px">★</span><div><h2>암기 필수</h2><p>정의 문장 · 목록 세트 · 짝 구분</p></div></div>
+  <div class="card"><p class="mh">정의 — 문장 그대로 외울 것</p><div class="mdef"><div class="mdef-label">교착상태(deadlock state)</div><div class="mdef-txt">"프로세스가 전혀 발생할 가능성이 없는 사건을 기다리는 경우, 그 프로세스는 교착상태에 놓여 있다고 한다."</div></div><div class="mdef"><div class="mdef-label">안전상태(safe state)</div><div class="mdef-txt">"안전 순서(safe sequence)가 하나 이상 존재하는 상태."</div></div><div class="mdef"><div class="mdef-label">페이지 부재(page fault)</div><div class="mdef-txt">"존재 비트가 0, 즉 접근할 페이지가 주기억장치에 없는 상황."</div></div><div class="mdef"><div class="mdef-label">시간 지역성</div><div class="mdef-txt">"최근 참조한 페이지가 곧 다시 참조됨."</div></div><div class="mdef"><div class="mdef-label">공간 지역성</div><div class="mdef-txt">"참조한 곳 근처가 곧 참조됨."</div></div><div class="mdef"><div class="mdef-label">스래싱(thrashing)</div><div class="mdef-txt">"고부하로 프레임 부족 → 페이지 교체만 반복 → 처리량 급락."</div></div><div class="mdef"><div class="mdef-label">FIFO의 변칙(Belady's anomaly)</div><div class="mdef-txt">"FIFO에서 프레임 수를 늘렸는데 오히려 페이지 부재가 증가하는 현상."</div></div><p class="mh">목록 — 개수 + 이름 세트</p><div class="ml-title">교착 4가지 필요조건 <span class="cnt">4가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>자원에 대한 배타적 사용 (exclusive use)</td></tr><tr><td>2</td><td>선점불가능 자원의 존재 (nonpreemptible resources)</td></tr><tr><td>3</td><td>프로세스에 대한 자원의 부분 할당 (partial allocation)</td></tr><tr><td>4</td><td>환형대기 상태의 발생 (circular wait condition)</td></tr></tbody></table><div class="ml-title">자원 분류 기준 <span class="cnt">4가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>선점 가능성 → 선점가능 / 선점불가능</td></tr><tr><td>2</td><td>할당 방식 → 전체 할당식 / 분할 할당식</td></tr><tr><td>3</td><td>할당 형태 → 배타적 / 공유식</td></tr><tr><td>4</td><td>자원의 속성 → SR(순차적 재사용) / CR(소비성)</td></tr></tbody></table><div class="ml-title">교착 해결 기법 <span class="cnt">4가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>예방(prevention)</td></tr><tr><td>2</td><td>회피(avoidance) — 은행원·Habermann</td></tr><tr><td>3</td><td>검출(detection)</td></tr><tr><td>4</td><td>복구(recovery) — 프로세스 종료 / 자원 선점</td></tr></tbody></table><div class="ml-title">9장 관리 기법 <span class="cnt">4가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>호출(fetch strategy)</td></tr><tr><td>2</td><td>배치(placement strategy)</td></tr><tr><td>3</td><td>교체(replacement strategy)</td></tr><tr><td>4</td><td>할당(allocation strategy)</td></tr></tbody></table><div class="ml-title">배치 전략 <span class="cnt">4가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>최초 적합(first-fit)</td></tr><tr><td>2</td><td>최적 적합(best-fit)</td></tr><tr><td>3</td><td>최악 적합(worst-fit)</td></tr><tr><td>4</td><td>순환 최초 적합(next-fit)</td></tr></tbody></table><div class="ml-title">11장 관리 기법 (순서 중요) <span class="cnt">6가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>할당(allocation)</td></tr><tr><td>2</td><td>호출(fetch)</td></tr><tr><td>3</td><td>배치(placement)</td></tr><tr><td>4</td><td>교체(replacement)</td></tr><tr><td>5</td><td>소거(cleaning)</td></tr><tr><td>6</td><td>부하 조정(load control)</td></tr></tbody></table><div class="ml-title">고정 할당 교체 알고리즘 <span class="cnt">8가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>MIN(OPT, B₀) — 최적, 실현 곤란</td></tr><tr><td>2</td><td>무작위(Random)</td></tr><tr><td>3</td><td>FIFO — Belady's anomaly</td></tr><tr><td>4</td><td>LRU</td></tr><tr><td>5</td><td>LFU</td></tr><tr><td>6</td><td>NUR</td></tr><tr><td>7</td><td>클럭(Clock)</td></tr><tr><td>8</td><td>Second chance</td></tr></tbody></table><div class="ml-title">가변 할당 교체 알고리즘 <span class="cnt">3가지</span></div><table><thead><tr><th>#</th><th>이름</th></tr></thead><tbody><tr><td>1</td><td>VMIN(Variable MIN)</td></tr><tr><td>2</td><td>WS(Working Set)</td></tr><tr><td>3</td><td>PFF(Page Fault Frequency)</td></tr></tbody></table><p class="mh">구분 — 헷갈리는 짝</p><table><thead><tr><th>짝</th><th>A</th><th>B</th></tr></thead><tbody><tr><td>예방 vs 회피</td><td>4조건 중 하나 <b>제거</b></td><td>항상 <b>안전상태</b> 유지</td></tr><tr><td>내부 vs 외부 단편화</td><td>영역 <b>안</b>에 남는 낭비 — FPM</td><td>흩어져 못 쓰는 낭비 — VPM</td></tr><tr><td>통합 vs 집약</td><td><b>인접</b> 빈 공간만 합침</td><td><b>전체</b> 빈 공간 한쪽으로 모음</td></tr><tr><td>직접 vs 연관 사상</td><td>주기억 조회, <b>느림</b></td><td>TLB, <b>빠름</b> (하드웨어 비쌈)</td></tr><tr><td>페이징 vs 세그먼테이션</td><td>같은 크기, PMT, <b>내부</b> 단편화, 공유·보호 불리</td><td>논리 단위, SMT, <b>외부</b> 단편화, 공유·보호 유리</td></tr><tr><td>요구 호출 vs 예측 호출</td><td>참조 후 적재 — 부재 시 오버헤드</td><td>미리 적재 — 예측 오버헤드</td></tr><tr><td>고정 vs 가변 할당</td><td>프레임 수 고정</td><td>프레임 수 실행 중 변화</td></tr><tr><td>SR vs CR 자원</td><td>없어지지 않고 <b>영구히</b> 존재</td><td>사용 후 <b>사라짐</b></td></tr></tbody></table></div>
+</section>
+<footer>교착상태 · 주기억장치 관리 · 가상기억장치 구성 · 가상기억장치 관리</footer>
+</div>
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  var secs=[].slice.call(document.querySelectorAll('.chapter'));
+  function show(id){
+    secs.forEach(function(s){s.style.display=(s.id===id)?'block':'none';});
+    tabs.forEach(function(t){t.classList.toggle('active',t.dataset.ch===id);});
+    window.scrollTo(0,0);
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.ch);});});
+  if(tabs.length)show(tabs[0].dataset.ch);
+})();
+</script></body></html>
