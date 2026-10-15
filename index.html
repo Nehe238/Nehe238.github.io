@@ -1,222 +1,31 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>웹 이미지 추출 & PDF 생성기</title>
-  <!-- jsPDF 라이브러리 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #f7f9fa; padding: 16px; color: #333; }
-    .container { max-width: 480px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-    h1 { font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; }
-    p.desc { font-size: 0.85rem; color: #666; margin-bottom: 20px; line-height: 1.4; }
-    
-    .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-    input[type="url"] { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
-    input[type="url"]:focus { border-color: #0070f3; }
-    
-    .btn { width: 100%; padding: 14px; background: #0070f3; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
-    .btn:active { background: #0056b3; }
-    .btn:disabled { background: #ccc; cursor: not-allowed; }
-    .btn-pdf { background: #10b981; margin-top: 16px; display: none; }
-    .btn-pdf:active { background: #059669; }
-    
-    #status { margin-top: 14px; font-size: 0.85rem; text-align: center; color: #555; }
-    
-    .preview-header { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; margin-bottom: 10px; font-size: 0.9rem; font-weight: 600; }
-    .image-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-height: 380px; overflow-y: auto; padding: 4px; }
-    .img-card { position: relative; border-radius: 8px; overflow: hidden; border: 2px solid transparent; background: #eee; aspect-ratio: 1; }
-    .img-card.selected { border-color: #0070f3; }
-    .img-card img { width: 100%; height: 100%; object-fit: cover; }
-    .img-card input[type="checkbox"] { position: absolute; top: 8px; left: 8px; width: 20px; height: 20px; accent-color: #0070f3; }
-  </style>
-</head>
-<body>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Computer Networks · Mock Exam 01</title><style>
+:root{--ink:#17263b;--muted:#627086;--line:#dce4ed;--blue:#2457cb;--paper:#fff}*{box-sizing:border-box}body{margin:0;background:#edf2f7;color:var(--ink);font:16px/1.75 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}header{background:#132740;color:white;padding:48px max(24px,calc((100% - 1000px)/2)) 35px}header p{color:#c7d4e8}.eyebrow{font-size:12px;letter-spacing:2px;color:#9fbfff}h1{font-size:clamp(28px,5vw,44px);line-height:1.2;margin:14px 0}h2{font-size:25px;margin:0}h3{font-size:18px;margin:0 0 14px}.meta{display:flex;gap:12px;flex-wrap:wrap}.meta span{border:1px solid #58718e;border-radius:20px;padding:4px 14px;font-size:13px}nav{position:sticky;top:0;background:#ffffffed;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:2;padding:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}a,button{font:inherit}nav a,button{border:1px solid var(--line);background:white;color:var(--ink);padding:7px 14px;border-radius:8px;text-decoration:none;cursor:pointer}button.primary{background:var(--blue);color:white;border-color:var(--blue)}main{max-width:1000px;margin:auto;padding:28px 20px 70px}.intro,.section{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:24px}.intro p{margin:6px 0}.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.section{scroll-margin-top:95px}.section-head{display:flex;justify-content:space-between;gap:18px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:24px}.section-head small{display:block;color:var(--muted);margin-top:5px}.badge{white-space:nowrap;color:var(--blue);background:#edf3ff;padding:5px 10px;border-radius:7px;font-size:14px}.question{padding:22px 0;border-bottom:1px solid var(--line)}.question:last-child{border:0;padding-bottom:0}.question p{margin:10px 0}.sub{margin:8px 0;padding-left:25px}.instruction{color:var(--muted);font-size:14px}.workspace{border:1px dashed #bbc8d9;background:#fafcff;min-height:90px;padding:12px;border-radius:8px;margin-top:16px}.workspace.large{min-height:240px}textarea{display:block;width:100%;resize:vertical;min-height:85px;border:1px solid #cad5e2;border-radius:7px;padding:12px;font:inherit;background:#fbfdff;color:var(--ink)}input{width:100%;min-width:80px;border:1px solid #cad5e2;border-radius:6px;padding:9px;font:inherit;background:#fbfdff}details{background:#eef5ff;border-radius:8px;margin-top:15px;padding:12px 16px}summary{color:#214c9d;font-weight:650;cursor:pointer}.solution{padding-top:8px}.solution p{margin:8px 0}pre{overflow:auto;line-height:1.45;padding:16px;background:#fff;border:1px solid var(--line);border-radius:8px;font-size:14px}table{border-collapse:collapse;width:100%;margin-top:15px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:12px 10px}th{background:#f4f7fb;font-size:14px}td:first-child{width:55px;color:var(--muted)}.answer-text{font-weight:650;color:#204e9d}.note{border-left:3px solid #db9d25;padding:10px 16px;background:#fffaec;margin-top:18px;font-size:14px}.footer{text-align:center;font-size:13px;color:var(--muted)}svg{width:100%;height:auto;display:block} .tablewrap{overflow:auto}body.hide-solutions details{display:none}@media(max-width:600px){.section,.intro{padding:20px}nav a,nav button{font-size:13px;padding:6px 10px}td,th{padding:10px 7px}.section-head{display:block}.badge{display:inline-block;margin-top:10px}}@media print{body{background:white;font-size:11pt}header{background:white;color:#17263b;padding:10px 0 22px}header p,.eyebrow{color:#52647b}.meta span{border-color:#aaa}nav,.tools,.footer{display:none}main{padding:0;max-width:none}.intro,.section{border:0;border-radius:0;padding:12px 0;margin:0}.section{break-before:page}.question,details,tr{break-inside:avoid}textarea{min-height:75px}input{border:0;border-bottom:1px solid #aaa;border-radius:0}details{background:#f4f4f4}.workspace.large{min-height:180px}}
+</style></head><body><header><div class="eyebrow">COMPUTER NETWORKS / MIDTERM PRACTICE</div><h1>Mock Exam 01</h1><p>과제 기반 예상 모의고사 · 문제는 영어, 학습 안내와 해설은 한국어</p><div class="meta"><span>120 minutes</span><span>55 questions</span><span>50 points</span><span>Types 1–5</span></div></header><nav><a href="#type1">Type 1 · 계산</a><a href="#type2">Type 2 · 빈칸</a><a href="#type3">Type 3 · 약어</a><a href="#type4">Type 4 · 포트</a><a href="#type5">Type 5 · 그림</a></nav><main><section class="intro"><strong>사용 안내</strong><p>HW01–HW03과 시험 공지를 바탕으로 만든 예상 문제이며, 실제 기출문제는 아닙니다. 먼저 영어 문제를 풀고 각 문제 아래의 정답·한국어 해설을 펼쳐 확인하세요.</p><p class="instruction">입력 내용은 현재 페이지에서만 유지됩니다. 새로고침하거나 파일을 닫기 전에 필요하면 인쇄 → PDF 저장으로 보관하세요. 자동 채점 기능은 없습니다.</p><div class="tools"><button class="primary" onclick="setAnswers(true)">전체 정답 펼치기</button><button onclick="setAnswers(false)">전체 정답 접기</button><button id="examButton" onclick="toggleExam()">시험 모드 · 해설 숨기기</button><button onclick="window.print()">인쇄 / PDF 저장</button></div></section><section class="section" id="type1"><div class="section-head"><div><h2>Type 1 — Numerical Questions</h2><small>계산 문제 · 공식, 단위 변환, 풀이 과정을 함께 작성하세요.</small></div><span class="badge">3 questions × 3 = 9 points</span></div><article class="question"><h3>Q1.1. Transmission and Propagation Delay</h3><p>Two hosts are connected by a link with a transmission rate of <b>2 Mbps</b>. The distance between them is <b>1,000 km</b>, and the propagation speed is <b>2 × 10⁸ m/s</b>. A packet contains <b>1,000 bytes</b>. Ignore processing and queuing delays.</p><ol class="sub" type="a"><li>Calculate the transmission delay.</li><li>Calculate the propagation delay.</li><li>Calculate the time from the start of transmission until the entire packet arrives at the destination.</li></ol><textarea aria-label="Answer for question 1.1" placeholder="Write your answer here…"></textarea><details><summary>정답 및 한국어 해설</summary><div class="solution"><p><b>a. 4 ms</b> — L = 1,000 × 8 = 8,000 bits. d<sub>trans</sub> = L/R = 8,000/(2 × 10⁶) = 0.004 s.</p><p><b>b. 5 ms</b> — m = 10⁶ m. d<sub>prop</sub> = m/s = 10⁶/(2 × 10⁸) = 0.005 s.</p><p><b>c. 9 ms</b> — 전송 지연과 전파 지연의 합입니다. 첫 비트의 도착과 마지막 비트의 도착을 구별하세요.</p></div></details></article><article class="question"><h3>Q1.2. DNS and HTTP Delay</h3><p>A DNS lookup sequentially visits two DNS servers, incurring RTTs of <b>10 ms</b> and <b>20 ms</b>. The RTT between the client and the Web server is <b>50 ms</b>. The base HTML references <b>four small objects</b> on the same server. Initially, no TCP connection exists. Ignore transmission and processing times.</p><p>Calculate the total time from clicking the link until all objects are received:</p><ol class="sub" type="a"><li>Non-persistent HTTP with no parallel connections.</li><li>Non-persistent HTTP with four parallel connections for the referenced objects.</li><li>Persistent HTTP with pipelining: after receiving the base HTML, send all four object requests together over the existing connection.</li></ol><textarea aria-label="Answer for question 1.2" placeholder="Write your answer here…"></textarea><details><summary>정답 및 한국어 해설</summary><div class="solution"><p>DNS 조회 시간 D = 10 + 20 = <b>30 ms</b>. 기본 HTML은 TCP 연결 1 RTT와 요청·응답 1 RTT가 필요합니다.</p><p><b>a. 530 ms</b> — D + 2RTT + 4 × 2RTT = 30 + 100 + 400.</p><p><b>b. 230 ms</b> — D + 2RTT + 2RTT = 30 + 100 + 100. 참조 객체 4개는 동시에 처리합니다.</p><p><b>c. 180 ms</b> — D + 2RTT + RTT = 30 + 100 + 50. 기존 연결로 요청 4개를 한꺼번에 보냅니다.</p><p>지속 연결 여부와 파이프라이닝 사용 여부를 구별해야 합니다.</p></div></details></article><article class="question"><h3>Q1.3. Internet Checksum</h3><p>Use <b>one’s-complement addition</b> on the following three <b>8-bit words</b>:</p><pre>01010011
+01100110
+01110100</pre><ol class="sub" type="a"><li>Show the addition, including the end-around carry.</li><li>Write the checksum.</li><li>What result should the receiver obtain when adding the three words and the checksum if no error is detected?</li></ol><textarea aria-label="Answer for question 1.3" placeholder="Write your answer here…"></textarea><details><summary>정답 및 한국어 해설</summary><div class="solution"><pre>  01010011
++ 01100110
+----------
+  10111001
++ 01110100
+----------
+1 00101101
 
-<div class="container">
-  <h1>웹 이미지 PDF 변환기</h1>
-  <p class="desc">링크를 입력하면 배너/아이콘을 제외한 본문 이미지만 골라내어 PDF로 묶어줍니다.</p>
+  00101101
++ 00000001  ← 자리올림을 다시 더함
+----------
+  00101110
 
-  <div class="input-group">
-    <input type="url" id="urlInput" placeholder="https://example.com" />
-    <button class="btn" id="extractBtn" onclick="extractImages()">이미지 추출하기</button>
-  </div>
-
-  <div id="status"></div>
-
-  <div id="resultArea" style="display: none;">
-    <div class="preview-header">
-      <span id="imgCount">추출된 이미지 (0장)</span>
-      <span style="font-size: 0.8rem; color: #888;">터치하여 선택/해제</span>
-    </div>
-    <div class="image-grid" id="imageGrid"></div>
-    <button class="btn btn-pdf" id="pdfBtn" onclick="generatePDF()">선택한 이미지 PDF 다운로드</button>
-  </div>
-</div>
-
-<script>
-  let loadedImages = [];
-
-  // 배너, 아이콘, 광고 필터링 규칙
-  const IGNORE_PATTERNS = [
-    'banner', 'ad_', 'ads', 'icon', 'logo', 'badge', 'btn', 'button', 
-    'thumb_small', 'favicon', 'avatar', 'profile', 'pixel', 'tracker', '1x1'
-  ];
-
-  async function extractImages() {
-    const url = document.getElementById('urlInput').value.trim();
-    const status = document.getElementById('status');
-    const grid = document.getElementById('imageGrid');
-    const extractBtn = document.getElementById('extractBtn');
-    const resultArea = document.getElementById('resultArea');
-    const pdfBtn = document.getElementById('pdfBtn');
-
-    if (!url || !url.startsWith('http')) {
-      alert('올바른 URL(http/https 포함)을 입력해주세요.');
-      return;
-    }
-
-    extractBtn.disabled = true;
-    status.innerText = '웹페이지를 분석하고 이미지를 찾는 중...';
-    grid.innerHTML = '';
-    resultArea.style.display = 'none';
-    loadedImages = [];
-
-    try {
-      // CORS 우회 프록시 활용
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl);
-      const data = await res.json();
-      
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(data.contents, 'text/html');
-      
-      const imgElements = Array.from(doc.querySelectorAll('img'));
-      const rawSrcs = imgElements.map(img => {
-        let src = img.getAttribute('data-src') || img.getAttribute('data-original') || img.getAttribute('src') || '';
-        try {
-          return new URL(src, url).href; // 상대경로를 절대경로로 변환
-        } catch (e) {
-          return null;
-        }
-      }).filter(src => !!src && !src.startsWith('data:image/svg'));
-
-      // 중복 및 키워드 필터링
-      const filteredUrls = [...new Set(rawSrcs)].filter(imgUrl => {
-        const lower = imgUrl.toLowerCase();
-        return !IGNORE_PATTERNS.some(pattern => lower.includes(pattern));
-      });
-
-      status.innerText = `이미지 ${filteredUrls.length}개 검수 중...`;
-
-      // 실제 이미지 로딩 및 해상도 필터 (200px 미만 배너/아이콘 제외)
-      for (const imgUrl of filteredUrls) {
-        const proxiedImg = `https://api.allorigins.win/raw?url=${encodeURIComponent(imgUrl)}`;
-        await new Promise((resolve) => {
-          const img = new Image();
-          img.crossOrigin = 'Anonymous';
-          img.onload = () => {
-            if (img.naturalWidth >= 200 && img.naturalHeight >= 200) {
-              loadedImages.push({ element: img, src: proxiedImg, width: img.naturalWidth, height: img.naturalHeight });
-            }
-            resolve();
-          };
-          img.onerror = () => resolve();
-          img.src = proxiedImg;
-        });
-      }
-
-      if (loadedImages.length === 0) {
-        status.innerText = '가져올 수 있는 본문 이미지가 없습니다. (JS 렌더링 사이트 또는 보안 차단)';
-        extractBtn.disabled = false;
-        return;
-      }
-
-      status.innerText = '';
-      resultArea.style.display = 'block';
-      pdfBtn.style.display = 'block';
-      document.getElementById('imgCount').innerText = `선택된 이미지 (${loadedImages.length}장)`;
-
-      // 화면에 이미지 프리뷰 카드 렌더링
-      loadedImages.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'img-card selected';
-        card.innerHTML = `
-          <input type="checkbox" checked id="chk_${index}">
-          <img src="${item.src}">
-        `;
-        card.onclick = (e) => {
-          if (e.target.tagName !== 'INPUT') {
-            const chk = card.querySelector('input');
-            chk.checked = !chk.checked;
-          }
-          card.classList.toggle('selected', card.querySelector('input').checked);
-        };
-        grid.appendChild(card);
-      });
-
-    } catch (err) {
-      status.innerText = '페이지를 불러오지 못했습니다. 사이트 주소를 확인해주세요.';
-    } finally {
-      extractBtn.disabled = false;
-    }
-  }
-
-  async function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const pdfBtn = document.getElementById('pdfBtn');
-    const status = document.getElementById('status');
-
-    const selectedIndices = [];
-    loadedImages.forEach((_, idx) => {
-      const chk = document.getElementById(`chk_${idx}`);
-      if (chk && chk.checked) selectedIndices.push(idx);
-    });
-
-    if (selectedIndices.length === 0) {
-      alert('PDF로 만들 이미지를 1개 이상 선택해주세요.');
-      return;
-    }
-
-    pdfBtn.disabled = true;
-    status.innerText = 'PDF 문서 생성 중...';
-
-    const pageWidth = 210; // A4 가로 (mm)
-    const pageHeight = 297; // A4 세로 (mm)
-    const margin = 10;
-    const maxWidth = pageWidth - (margin * 2);
-    const maxHeight = pageHeight - (margin * 2);
-
-    for (let i = 0; i < selectedIndices.length; i++) {
-      if (i > 0) pdf.addPage();
-
-      const item = loadedImages[selectedIndices[i]];
-      const canvas = document.createElement('canvas');
-      canvas.width = item.width;
-      canvas.height = item.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(item.element, 0, 0);
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.85);
-
-      // 비율 계산 (A4 안에 꽉 차게 맞춤)
-      const ratio = Math.min(maxWidth / item.width, maxHeight / item.height);
-      const renderW = item.width * ratio;
-      const renderH = item.height * ratio;
-      const posX = (pageWidth - renderW) / 2;
-      const posY = (pageHeight - renderH) / 2;
-
-      pdf.addImage(imgData, 'JPEG', posX, posY, renderW, renderH);
-    }
-
-    pdf.save('extracted_images.pdf');
-    status.innerText = '다운로드가 완료되었습니다!';
-    pdfBtn.disabled = false;
-  }
-</script>
-
-</body>
-</html>
+Checksum: 11010001</pre><p><b>b. 11010001</b> — 합의 모든 비트를 반전합니다.</p><p><b>c. 11111111</b> — 수신 측 합이 모두 1이면 오류가 검출되지 않은 것입니다. 일부 오류는 체크섬에 잡히지 않을 수 있으므로 무오류를 보장하지는 않습니다.</p></div></details></article></section><section class="section" id="type2"><div class="section-head"><div><h2>Type 2 — Short Questions — Fill in the Blanks</h2><small>빈칸 채우기 · 알맞은 영어 용어나 식을 입력하세요.</small></div><span class="badge">20 questions × 1 = 20 points</span></div><article class="question"><p><b>Q2.1.</b> The time required to push all packet bits onto a link is called ______ delay.</p><input aria-label="Answer for Q2.1" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Transmission</p><p>모든 비트를 링크에 밀어 넣는 시간으로, L/R로 계산해.</p></div></details></article><article class="question"><p><b>Q2.2.</b> The time required for a bit to travel from one end of a link to the other is called ______ delay.</p><input aria-label="Answer for Q2.2" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Propagation</p><p>비트의 이동 시간으로, 거리/전파 속도야.</p></div></details></article><article class="question"><p><b>Q2.3.</b> For a path with link rates R₁, R₂, and R₃ and no competing traffic, throughput is limited by ______.</p><input aria-label="Answer for Q2.3" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">min(R₁, R₂, R₃)</p><p>가장 느린 병목 링크가 처리율을 제한해.</p></div></details></article><article class="question"><p><b>Q2.4.</b> In ______ switching, resources are reserved for a communication session.</p><input aria-label="Answer for Q2.4" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Circuit</p><p>회선 교환은 세션을 위해 자원을 예약해.</p></div></details></article><article class="question"><p><b>Q2.5.</b> A router using ______ transmission must receive the entire packet before forwarding it.</p><input aria-label="Answer for Q2.5" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Store-and-forward</p><p>패킷 전체를 받은 다음 전달하는 저장 후 전달 방식이야.</p></div></details></article><article class="question"><p><b>Q2.6.</b> DNS translates a hostname into an ______ address.</p><input aria-label="Answer for Q2.6" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">IP</p><p>호스트 이름을 IP 주소에 대응시켜.</p></div></details></article><article class="question"><p><b>Q2.7.</b> HTTP is a ______ protocol: it does not inherently retain information about previous requests.</p><input aria-label="Answer for Q2.7" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Stateless</p><p>HTTP 자체는 이전 요청의 상태를 유지하지 않아.</p></div></details></article><article class="question"><p><b>Q2.8.</b> A Web cache that satisfies a request locally produces a cache ______.</p><input aria-label="Answer for Q2.8" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Hit</p><p>캐시에 객체가 있어 직접 응답하면 캐시 적중이야.</p></div></details></article><article class="question"><p><b>Q2.9.</b> The HTTP request method commonly used to retrieve an object is ______.</p><input aria-label="Answer for Q2.9" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">GET</p><p>객체를 조회하는 요청 메서드야.</p></div></details></article><article class="question"><p><b>Q2.10.</b> In DNS, an ______ record maps a hostname to an IPv4 address.</p><input aria-label="Answer for Q2.10" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">A</p><p>A 레코드는 IPv4 주소, AAAA 레코드는 IPv6 주소에 대응해.</p></div></details></article><article class="question"><p><b>Q2.11.</b> ______ provides a reliable, ordered byte-stream transport service.</p><input aria-label="Answer for Q2.11" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">TCP</p><p>TCP는 신뢰성과 순서가 보장되는 바이트 스트림을 제공해.</p></div></details></article><article class="question"><p><b>Q2.12.</b> UDP does not guarantee delivery or ______.</p><input aria-label="Answer for Q2.12" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Ordering / in-order delivery</p><p>UDP는 전달과 도착 순서를 보장하지 않아.</p></div></details></article><article class="question"><p><b>Q2.13.</b> A receiver sends an ______ to indicate successful reception.</p><input aria-label="Answer for Q2.13" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">ACK</p><p>정상 수신을 알리는 긍정 확인 응답이야.</p></div></details></article><article class="question"><p><b>Q2.14.</b> A receiver may send a ______ to indicate that a packet was received with errors.</p><input aria-label="Answer for Q2.14" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">NAK</p><p>오류 수신을 알리는 부정 확인 응답이야.</p></div></details></article><article class="question"><p><b>Q2.15.</b> A packet’s ______ number allows the receiver to distinguish new packets from duplicates.</p><input aria-label="Answer for Q2.15" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Sequence</p><p>순서 번호로 새 패킷과 중복 패킷을 구별해.</p></div></details></article><article class="question"><p><b>Q2.16.</b> In rdt3.0, the sender uses a ______ to recover from lost packets or acknowledgments.</p><input aria-label="Answer for Q2.16" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Timer</p><p>타이머가 만료되면 재전송해서 손실에 대응해.</p></div></details></article><article class="question"><p><b>Q2.17.</b> In Go-Back-N, a timeout causes retransmission of all sent but ______ packets.</p><input aria-label="Answer for Q2.17" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Unacknowledged</p><p>확인 응답을 받지 못한 전송 패킷들을 다시 보내.</p></div></details></article><article class="question"><p><b>Q2.18.</b> TCP’s congestion window is commonly denoted by ______.</p><input aria-label="Answer for Q2.18" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">cwnd</p><p>혼잡 제어를 위해 송신량을 제한하는 윈도야.</p></div></details></article><article class="question"><p><b>Q2.19.</b> TCP’s TimeoutInterval is calculated as EstimatedRTT + 4 × ______.</p><input aria-label="Answer for Q2.19" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">DevRTT</p><p>추정 RTT에 변동성을 반영한 여유 시간을 더해.</p></div></details></article><article class="question"><p><b>Q2.20.</b> In TCP congestion avoidance, cwnd increases by approximately one MSS per ______.</p><input aria-label="Answer for Q2.20" placeholder="Your answer"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">RTT</p><p>혼잡 회피에서는 대략 RTT마다 1 MSS씩 선형 증가해.</p></div></details></article></section><section class="section" id="type3"><div class="section-head"><div><h2>Type 3 — Full Terms of Acronyms</h2><small>약어 · 영어 전체 명칭을 정확히 작성하세요.</small></div><span class="badge">20 acronyms × 0.5 = 10 points</span></div><article class="question"><label for="acro1"><b>Q3.1. Write the full term for ISP.</b></label><input id="acro1" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Internet Service Provider</p><p>인터넷 서비스 제공자</p></div></details></article><article class="question"><label for="acro2"><b>Q3.2. Write the full term for HFC.</b></label><input id="acro2" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Hybrid Fiber Coax</p><p>광섬유·동축 혼합망</p></div></details></article><article class="question"><label for="acro3"><b>Q3.3. Write the full term for FTTH.</b></label><input id="acro3" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Fiber To The Home</p><p>가정까지 연결하는 광섬유</p></div></details></article><article class="question"><label for="acro4"><b>Q3.4. Write the full term for TDM.</b></label><input id="acro4" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Time Division Multiplexing</p><p>시분할 다중화</p></div></details></article><article class="question"><label for="acro5"><b>Q3.5. Write the full term for DNS.</b></label><input id="acro5" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Domain Name System</p><p>도메인 이름 시스템</p></div></details></article><article class="question"><label for="acro6"><b>Q3.6. Write the full term for HTTP.</b></label><input id="acro6" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Hypertext Transfer Protocol</p><p>하이퍼텍스트 전송 프로토콜</p></div></details></article><article class="question"><label for="acro7"><b>Q3.7. Write the full term for URL.</b></label><input id="acro7" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Uniform Resource Locator</p><p>자원의 위치를 나타내는 주소</p></div></details></article><article class="question"><label for="acro8"><b>Q3.8. Write the full term for SMTP.</b></label><input id="acro8" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Simple Mail Transfer Protocol</p><p>메일 전송 프로토콜</p></div></details></article><article class="question"><label for="acro9"><b>Q3.9. Write the full term for IMAP.</b></label><input id="acro9" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Internet Message Access Protocol</p><p>메일 접근 프로토콜</p></div></details></article><article class="question"><label for="acro10"><b>Q3.10. Write the full term for CDN.</b></label><input id="acro10" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Content Delivery Network</p><p>콘텐츠 전송 네트워크</p></div></details></article><article class="question"><label for="acro11"><b>Q3.11. Write the full term for UDP.</b></label><input id="acro11" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">User Datagram Protocol</p><p>사용자 데이터그램 프로토콜</p></div></details></article><article class="question"><label for="acro12"><b>Q3.12. Write the full term for TCP.</b></label><input id="acro12" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Transmission Control Protocol</p><p>전송 제어 프로토콜</p></div></details></article><article class="question"><label for="acro13"><b>Q3.13. Write the full term for CRC.</b></label><input id="acro13" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Cyclic Redundancy Check</p><p>순환 중복 검사</p></div></details></article><article class="question"><label for="acro14"><b>Q3.14. Write the full term for ARQ.</b></label><input id="acro14" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Automatic Repeat reQuest</p><p>자동 반복 요청</p></div></details></article><article class="question"><label for="acro15"><b>Q3.15. Write the full term for FSM.</b></label><input id="acro15" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Finite State Machine</p><p>유한 상태 기계</p></div></details></article><article class="question"><label for="acro16"><b>Q3.16. Write the full term for RTT.</b></label><input id="acro16" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Round-Trip Time</p><p>왕복 시간</p></div></details></article><article class="question"><label for="acro17"><b>Q3.17. Write the full term for MSS.</b></label><input id="acro17" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Maximum Segment Size</p><p>최대 세그먼트 데이터 크기</p></div></details></article><article class="question"><label for="acro18"><b>Q3.18. Write the full term for GBN.</b></label><input id="acro18" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Go-Back-N</p><p>미확인 패킷들을 되돌아가 재전송하는 방식</p></div></details></article><article class="question"><label for="acro19"><b>Q3.19. Write the full term for SR.</b></label><input id="acro19" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Selective Repeat</p><p>선택적 반복 재전송</p></div></details></article><article class="question"><label for="acro20"><b>Q3.20. Write the full term for AIMD.</b></label><input id="acro20" placeholder="Full English term"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">Additive Increase Multiplicative Decrease</p><p>가산 증가·승산 감소</p></div></details></article></section><section class="section" id="type4"><div class="section-head"><div><h2>Type 4 — Application Protocol Port Numbers</h2><small>포트 번호 · 아래 조건에 해당하는 기본 서버 포트를 쓰세요.</small></div><span class="badge">10 protocols × 0.5 = 5 points</span></div><article class="question"><label for="port1"><b>Q4.1. Write the default server port number for HTTP.</b></label><input id="port1" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">80</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port2"><b>Q4.2. Write the default server port number for HTTPS.</b></label><input id="port2" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">443</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port3"><b>Q4.3. Write the default server port number for FTP — control connection.</b></label><input id="port3" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">21</p><p>FTP 제어 연결의 포트입니다. 데이터 연결과 구별하세요.</p></div></details></article><article class="question"><label for="port4"><b>Q4.4. Write the default server port number for SSH.</b></label><input id="port4" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">22</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port5"><b>Q4.5. Write the default server port number for Telnet.</b></label><input id="port5" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">23</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port6"><b>Q4.6. Write the default server port number for SMTP — server-to-server.</b></label><input id="port6" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">25</p><p>서버 간 메일 전송 기준입니다.</p></div></details></article><article class="question"><label for="port7"><b>Q4.7. Write the default server port number for DNS.</b></label><input id="port7" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">53</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port8"><b>Q4.8. Write the default server port number for POP3.</b></label><input id="port8" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">110</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port9"><b>Q4.9. Write the default server port number for IMAP.</b></label><input id="port9" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">143</p><p>프로토콜 이름과 기본 포트 번호를 함께 암기하세요.</p></div></details></article><article class="question"><label for="port10"><b>Q4.10. Write the default server port number for SNMP — requests.</b></label><input id="port10" inputmode="numeric" placeholder="Port number"><details><summary>정답 및 한국어 해설</summary><div class="solution"><p class="answer-text">161</p><p>일반 요청 기준입니다. 트랩 포트와 구별하세요.</p></div></details></article></section><section class="section" id="type5"><div class="section-head"><div><h2>Type 5 — Drawing — Formats and FSM</h2><small>그림 문제 · 종이에 직접 그리거나 아래에 상태·필드를 텍스트로 정리하세요.</small></div><span class="badge">2 questions × 3 = 6 points</span></div><article class="question"><h3>Q5.1. UDP Segment Format</h3><p>Draw the UDP segment format. Label <b>all header fields</b> and indicate the <b>size of each field in bits</b>. Also state the total UDP header size and what the Length field measures.</p><div class="workspace large">그림 연습 공간 · 인쇄 후 직접 그려보세요.</div><textarea aria-label="Answer for question 5.1" placeholder="Write your answer here…"></textarea><details><summary>정답 및 한국어 해설</summary><div class="solution"><pre>                    32 bits
+        +----------------+----------------+
+        | Source Port    | Destination    |
+        | (16 bits)      | Port (16 bits) |
+        +----------------+----------------+
+        | Length         | Checksum       |
+        | (16 bits)      | (16 bits)      |
+        +----------------+----------------+
+        |       Application Data          |
+        |       (variable length)         |
+        +---------------------------------+</pre><p>각 필드는 <b>16 bits</b>, 헤더 전체는 <b>8 bytes</b>입니다. Length는 <b>UDP 헤더 + 데이터의 전체 길이</b>를 바이트 단위로 나타냅니다.</p><p>채점 기준: 필드 이름·배치 1점 / 비트 수·헤더 크기 1점 / Length 의미 1점.</p></div></details></article><article class="question"><h3>Q5.2. Receiver FSM for rdt2.2</h3><p>Draw the receiver FSM for <b>rdt2.2</b>. The initial state is <b>Wait for 0</b>. Show both states, transition conditions, and actions for:</p><ol class="sub" type="a"><li>An uncorrupted packet with the expected sequence number.</li><li>A corrupted packet or an uncorrupted packet with an unexpected sequence number.</li></ol><p>Assume that an ACK1 packet is available initially for duplicate-ACK responses.</p><div class="workspace large">그림 연습 공간 · 상태와 화살표 위의 조건 / 동작을 표시하세요.</div><textarea aria-label="Answer for question 5.2" placeholder="Write your answer here…"></textarea><details><summary>정답 및 한국어 해설</summary><div class="solution"><svg viewBox="0 0 820 355" role="img" aria-label="rdt2.2 receiver FSM"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2457cb"/></marker></defs><g fill="none" stroke="#2457cb" stroke-width="2.2" marker-end="url(#arrow)"><path d="M45 180 H120"/><path d="M270 155 Q410 60 550 155"/><path d="M550 205 Q410 295 270 205"/><path d="M155 125 C40 20 330 20 235 125"/><path d="M585 125 C490 20 780 20 665 125"/></g><g fill="#fff" stroke="#2457cb" stroke-width="2.2"><circle cx="195" cy="180" r="75"/><circle cx="625" cy="180" r="75"/></g><g text-anchor="middle" fill="#17263b" font-family="system-ui,sans-serif" font-size="16"><text x="195" y="176">Wait for 0</text><text x="195" y="200" font-size="13">기대 번호: 0</text><text x="625" y="176">Wait for 1</text><text x="625" y="200" font-size="13">기대 번호: 1</text><text x="410" y="93">정상 pkt0 수신</text><text x="410" y="115" font-size="14">데이터 전달 / ACK0 전송</text><text x="410" y="285">정상 pkt1 수신</text><text x="410" y="307" font-size="14">데이터 전달 / ACK1 전송</text><text x="195" y="22" font-size="14">손상 또는 정상 pkt1</text><text x="195" y="43" font-size="14">ACK1 전송 / 상태 유지</text><text x="625" y="22" font-size="14">손상 또는 정상 pkt0</text><text x="625" y="43" font-size="14">ACK0 전송 / 상태 유지</text></g></svg><div class="tablewrap"><table><tr><th>현재 상태</th><th>수신 조건</th><th>동작</th><th>다음 상태</th></tr><tr><td>Wait 0</td><td>정상 pkt0</td><td>데이터 전달, ACK0 전송</td><td>Wait 1</td></tr><tr><td>Wait 0</td><td>손상 또는 정상 pkt1</td><td>ACK1 전송, 데이터 전달 안 함</td><td>Wait 0</td></tr><tr><td>Wait 1</td><td>정상 pkt1</td><td>데이터 전달, ACK1 전송</td><td>Wait 0</td></tr><tr><td>Wait 1</td><td>손상 또는 정상 pkt0</td><td>ACK0 전송, 데이터 전달 안 함</td><td>Wait 1</td></tr></table></div><p><b>rdt2.2는 NAK를 사용하지 않습니다.</b> 마지막 정상 패킷의 ACK를 반복 전송합니다. 중복 패킷의 데이터를 상위 계층에 다시 전달하면 안 됩니다.</p><p>초기 상태의 ACK1 응답은 문제에 명시된 초기화 가정입니다.</p><p>채점 기준: 상태·초기 상태 1점 / 정상 수신 전이 1점 / 손상·중복 수신 처리 1점.</p></div></details></article></section><div class="note"><b>복습 범위 안내</b><br>이 회차는 전체 출제 후보 중 일부를 선택했습니다. HTTP·DNS·TCP 형식, rdt3.0·GBN·TCP 혼잡 제어 FSM, RTT 추정·P2P 배포·캐시 계산도 별도로 복습하세요.</div><p class="footer">Computer Networks · Practice Set 01 · 과제 기반 예상 문제</p></main><script>
+function setAnswers(open){document.body.classList.remove('hide-solutions');document.getElementById('examButton').textContent='시험 모드 · 해설 숨기기';document.querySelectorAll('details').forEach(x=>x.open=open)}
+function toggleExam(){const on=document.body.classList.toggle('hide-solutions');document.getElementById('examButton').textContent=on?'학습 모드 · 해설 표시':'시험 모드 · 해설 숨기기'}
+</script></body></html>
