@@ -39,8 +39,9 @@ progress{display:block;width:100%;height:8px;accent-color:var(--green)}.timer{bo
 <div class="row spread"><div class="row"><span id="kind" class="tag"></span><span id="chapter" class="muted" hidden></span></div><span id="number" class="number"></span></div>
 <h2 id="prompt" class="prompt" tabindex="-1"></h2>
 <div id="answer"></div>
+<p id="shortcut" class="muted" hidden></p>
 <div id="source" class="source muted" aria-label="문항 출처" hidden></div>
-<div id="feedback" class="feedback" hidden></div>
+<div id="feedback" class="feedback" aria-live="polite" hidden></div>
 <div class="actions spread"><button id="prev">← 이전</button><button id="check" hidden>정답·해설 보기</button><button id="next" class="primary">다음 →</button></div>
 </section>
 </div>
@@ -120,7 +121,8 @@ function jump(id) {
   state.current = id;
   save();
   render();
-  $("prompt").focus({preventScroll:true});
+  const field = study && bank[id].t !== "객관식" && !state.revealed[id] ? $("answer").querySelector("input, textarea") : $("prompt");
+  field.focus({preventScroll:true});
   $("prompt").scrollIntoView({block:"nearest"});
 }
 function stats() {
@@ -179,7 +181,7 @@ function render() {
   $("timeNote").hidden = study;
   $("studyMode").setAttribute("aria-pressed", String(study));
   $("examMode").setAttribute("aria-pressed", String(!study));
-  $("modeNote").textContent = study ? "한 문제씩 풀고 정답·해설을 확인하세요. 답안을 고쳐 다시 확인할 수 있습니다." : "38문항을 풀고 제출하면 전체 채점 결과를 볼 수 있습니다.";
+  $("modeNote").textContent = study ? "한 문제씩 바로 채점하고 키보드로 다음 문제로 이동할 수 있습니다." : "38문항을 풀고 제출하면 전체 채점 결과를 볼 수 있습니다.";
   $("reset").textContent = study ? "학습 답안 초기화" : "전체 다시 풀기";
   $("reset").hidden = !state.submitted && !state.ids.some(answered) && !state.deadline && state.remaining === 3000000 && state.ids.length === all.length;
   $("filter").value = filter;
@@ -201,6 +203,11 @@ function render() {
   $("number").textContent = item ? (id + 1) + "번 · " + (ids.indexOf(id) + 1) + " / " + ids.length : "";
   $("prompt").textContent = item ? item.q.replace(/^(주관식|서술형) · /,"") : "이 범위에서 검토할 문항이 없습니다.";
   $("prev").disabled = !item || ids.indexOf(id) === 0;
+  $("shortcut").hidden = !study || !item;
+  $("shortcut").textContent = !item ? "" : item.t === "객관식"
+    ? "1–4 보기 선택 및 채점 · Space 다음 · ← 이전"
+    : item.t === "단답형" ? "Enter 채점 · 채점 후 Space 다음 · ← 이전"
+    : "Ctrl+Enter 예시 답안 확인 · 확인 후 Space 다음 · ← 이전";
   $("check").hidden = !study || !item;
   $("check").textContent = study && state.revealed[id] ? "정답·해설 가리기" : "정답·해설 보기";
   $("next").disabled = !item || (study && ids.indexOf(id) === ids.length - 1);
@@ -217,7 +224,10 @@ function render() {
         const input = document.createElement("input");
         input.type = "radio"; input.name = "choice"; input.value = String(index);
         input.checked = response(id) === input.value; input.disabled = state.submitted;
-        input.onchange = () => update(id, input.value);
+        input.onchange = () => {
+          update(id, input.value);
+          if (study) showAnswer(id);
+        };
         const label = node("label", "", "choice");
         label.append(input, node("span", (index + 1) + ". " + choice));
         choices.append(label);
@@ -312,17 +322,58 @@ function switchMode(isStudy) {
   state = loadMode();
   filter = "all";
   render();
+  if (study) $("prompt").focus({preventScroll:true});
 }
 $("studyMode").onclick = () => switchMode(true);
 $("examMode").onclick = () => switchMode(false);
-$("check").onclick = () => {
-  const id = state.current;
-  state.revealed[id] = !state.revealed[id];
+function showAnswer(id) {
+  state.revealed[id] = true;
   save();
   feedback(id, bank[id]);
-  $("check").textContent = state.revealed[id] ? "정답·해설 가리기" : "정답·해설 보기";
-  if (state.revealed[id]) $("feedback").scrollIntoView({block:"nearest"});
+  $("check").textContent = "정답·해설 가리기";
+  $("prompt").focus({preventScroll:true});
+  $("feedback").scrollIntoView({block:"nearest"});
+}
+$("check").onclick = () => {
+  const id = state.current;
+  if (!state.revealed[id]) {
+    showAnswer(id);
+    return;
+  }
+  state.revealed[id] = false;
+  save();
+  feedback(id, bank[id]);
+  $("check").textContent = "정답·해설 보기";
 };
+document.addEventListener("keydown", event => {
+  if (!study || event.defaultPrevented || event.isComposing || event.keyCode === 229 || $("confirm").open) return;
+  const id = state.current;
+  const item = bank[id];
+  const target = event.target;
+  const textInput = target.matches?.('input[type="text"], textarea');
+  const submitText = event.key === "Enter" && (item.t === "단답형" || (target.matches?.("textarea") && (event.ctrlKey || event.metaKey)));
+  if (textInput) {
+    if (submitText) {
+      event.preventDefault();
+      showAnswer(id);
+    }
+    return;
+  }
+  if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey || target.matches?.("select")) return;
+  if (item.t === "객관식" && /^[1-4]$/.test(event.key)) {
+    event.preventDefault();
+    const index = Number(event.key) - 1;
+    $("answer").querySelectorAll("input")[index].checked = true;
+    update(id, String(index));
+    showAnswer(id);
+  } else if (event.code === "Space" && !target.matches?.("button")) {
+    event.preventDefault();
+    if (!event.repeat && !$("next").disabled) $("next").click();
+  } else if (event.key === "ArrowLeft" && !target.matches?.("input")) {
+    event.preventDefault();
+    if (!event.repeat && !$("prev").disabled) $("prev").click();
+  }
+});
 $("submit").onclick = submit;
 $("filter").onchange = event => { filter = event.target.value; render(); };
 $("retry").onclick = () => {
